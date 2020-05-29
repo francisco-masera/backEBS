@@ -10,6 +10,9 @@ public abstract class ArticuloVenta {
 	protected DetallePedido detalle;
 	protected HistorialVentas ventas;
 
+	public ArticuloVenta() {
+	}
+
 	public ArticuloVenta(long id, String denominacion, String descripcion, float precioVenta, String imagen,
 			boolean enVenta, DetallePedido detalle, HistorialVentas ventas) {
 		this.id = id;

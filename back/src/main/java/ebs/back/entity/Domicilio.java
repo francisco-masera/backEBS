@@ -1,13 +1,5 @@
 package ebs.back.entity;
 
-import java.beans.Transient;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 public class Domicilio {
 
 	private long id;
@@ -17,6 +9,9 @@ public class Domicilio {
 	private int piso;
 	private String departamento;
 	private Persona persona;
+
+	public Domicilio() {
+	}
 
 	public Domicilio(long id, String localidad, String calle, int numero, int piso, String departamento,
 			Persona persona) {

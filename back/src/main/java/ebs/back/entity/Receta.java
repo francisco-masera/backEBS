@@ -1,19 +1,6 @@
 package ebs.back.entity;
 
-import java.beans.Transient;
 import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 public class Receta {
 
@@ -22,8 +9,10 @@ public class Receta {
 	private ArticuloManufacturado manufacturado;
 	private List<ArticuloInsumo> insumos;
 
+	public Receta() {
+	}
+
 	public Receta(long id, float cantidadInsumo, ArticuloManufacturado manufacturado, List<ArticuloInsumo> insumos) {
-		super();
 		this.id = id;
 		this.cantidadInsumo = cantidadInsumo;
 		this.manufacturado = manufacturado;

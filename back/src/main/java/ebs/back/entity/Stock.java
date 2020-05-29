@@ -1,12 +1,5 @@
 package ebs.back.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-
 public class Stock {
 
 	private long id;
@@ -15,6 +8,9 @@ public class Stock {
 	private long maximo;
 	private ArticuloInsumo articuloInsumo;
 	private ArticuloInsumoVenta articuloInsumoVenta;
+
+	public Stock() {
+	}
 
 	public Stock(long id, long actual, int minimo, long maximo, ArticuloInsumo articuloInsumo,
 			ArticuloInsumoVenta articuloInsumoVenta) {

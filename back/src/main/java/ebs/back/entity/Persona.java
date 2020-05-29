@@ -13,6 +13,9 @@ public abstract class Persona {
 	protected String foto;
 	protected List<Domicilio> domicilios = new ArrayList<>();
 
+	public Persona() {
+	}
+
 	public Persona(long id, String nombre, String apellido, int telefono, String email, String foto,
 			List<Domicilio> domicilios) {
 		this.id = id;

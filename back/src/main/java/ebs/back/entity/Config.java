@@ -1,16 +1,13 @@
 package ebs.back.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 public class Config {
 
 	private long id;
 	private int cantidadCocineros;
 	private String emailEmpresa;
+
+	public Config() {
+	}
 
 	public Config(int id, int cantidadCocineros, String emailEmpresa) {
 		this.id = id;

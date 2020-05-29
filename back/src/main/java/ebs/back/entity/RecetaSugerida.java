@@ -1,15 +1,7 @@
 package ebs.back.entity;
 
-import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 public class RecetaSugerida {
 
@@ -18,6 +10,9 @@ public class RecetaSugerida {
 	private boolean estado;
 	private List<ArticuloInsumo> insumos = new ArrayList<>();
 	private SugerenciaChef sugerenciaChef;
+
+	public RecetaSugerida() {
+	}
 
 	public RecetaSugerida(long id, float cantidadInsumo, boolean estado, List<ArticuloInsumo> insumos,
 			SugerenciaChef sugerenciaChef) {

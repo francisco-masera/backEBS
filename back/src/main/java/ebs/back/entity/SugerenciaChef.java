@@ -1,12 +1,5 @@
 package ebs.back.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-
 public class SugerenciaChef extends ArticuloVenta {
 
 	private long id;
@@ -15,6 +8,10 @@ public class SugerenciaChef extends ArticuloVenta {
 	private boolean vegano;
 	private boolean vegetariano;
 	private RecetaSugerida recetaSugerida;
+
+	public SugerenciaChef() {
+		super();
+	}
 
 	public SugerenciaChef(long id, String denomiacion, String descripcion, float precioVenta, String imagen,
 			boolean enVenta, DetallePedido detalle, HistorialVentas ventas, int tiempoCocina, boolean aptoCeliaco,

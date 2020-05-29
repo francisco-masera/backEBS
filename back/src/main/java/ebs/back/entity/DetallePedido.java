@@ -1,21 +1,14 @@
 package ebs.back.entity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
 public class DetallePedido {
 
 	private long id;
 	private int cantidad;
 	private ArticuloVenta articulo;
 	private Pedido pedido;
+
+	public DetallePedido() {
+	}
 
 	public DetallePedido(long id, int cantidad, ArticuloVenta articulo, Pedido pedido) {
 		this.id = id;

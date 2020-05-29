@@ -8,6 +8,10 @@ public class ArticuloInsumoVenta extends ArticuloVenta {
 	private Stock stock;
 	private RubroInsumo rubro;
 
+	public ArticuloInsumoVenta() {
+		super();
+	}
+
 	public ArticuloInsumoVenta(long id, String denomiacion, String descripcion, float precioVenta, String imagen,
 			boolean enVenta, DetallePedido detalle, HistorialVentas ventas, int unidadMedida, OrdenCompra ordenCompra,
 			Stock stock, RubroInsumo rubro) {

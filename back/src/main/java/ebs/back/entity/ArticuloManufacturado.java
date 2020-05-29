@@ -10,10 +10,13 @@ public class ArticuloManufacturado extends ArticuloVenta {
 	private RubroManufacturado rubro;
 	private Receta receta;
 
-	public ArticuloManufacturado(long id, String denomiacion, String descripcion, float precioVenta, String imagen,
-			boolean enVenta, DetallePedido detalle, HistorialVentas ventas, int tiempoCocina, boolean aptoCeliaco,
-			boolean vegano, boolean vegetariano, RubroManufacturado rubro, Receta receta) {
-		super(id, denomiacion, descripcion, precioVenta, imagen, enVenta, detalle, ventas);
+	public ArticuloManufacturado() {
+		super();
+	}
+
+	public ArticuloManufacturado(long id, int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
+			RubroManufacturado rubro, Receta receta) {
+		super();
 		this.id = id;
 		this.tiempoCocina = tiempoCocina;
 		this.aptoCeliaco = aptoCeliaco;

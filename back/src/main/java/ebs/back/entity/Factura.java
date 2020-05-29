@@ -4,18 +4,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 public class Factura {
 
 	private long id;
@@ -24,6 +12,9 @@ public class Factura {
 	private double total;
 	private boolean formaPago;
 	private Pedido pedido;
+
+	public Factura() {
+	}
 
 	public Factura(long id, LocalDateTime fechaHora, long numero, double total, boolean formaPago, Pedido pedido) {
 		this.id = id;

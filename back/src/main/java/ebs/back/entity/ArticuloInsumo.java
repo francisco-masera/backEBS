@@ -12,6 +12,9 @@ public class ArticuloInsumo {
 	private Stock stock;
 	private OrdenCompra ordenCompra;
 
+	public ArticuloInsumo() {
+	}
+
 	public ArticuloInsumo(long id, String unidadMedida, String denominacion, boolean esExtra, RubroInsumo rubro,
 			Receta receta, RecetaSugerida recetaSugerida, Stock stock, OrdenCompra ordenCompra) {
 		this.id = id;

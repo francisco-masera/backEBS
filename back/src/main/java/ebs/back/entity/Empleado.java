@@ -9,6 +9,10 @@ public class Empleado extends Persona {
 	private String contrasenia;
 	private String rol;
 
+	public Empleado() {
+		super();
+	}
+
 	public Empleado(long id, String nombre, String apellido, int telefono, String email, String foto,
 			List<Domicilio> domicilios, String usuario, String contrasenia, String rol) {
 		super(id, nombre, apellido, telefono, email, foto, domicilios);

@@ -9,6 +9,10 @@ public class Cliente extends Persona {
 	private List<TarjetaDebito> tarjetas;
 	private List<Pedido> pedidos = new ArrayList<>();
 
+	public Cliente() {
+		super();
+	}
+
 	public Cliente(long id, String nombre, String apellido, int telefono, String email, String foto,
 			List<Domicilio> domicilios, List<TarjetaDebito> tarjetas, List<Pedido> pedidos) {
 		super(id, nombre, apellido, telefono, email, foto, domicilios);

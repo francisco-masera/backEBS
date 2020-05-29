@@ -16,6 +16,9 @@ public class Pedido {
 	private Cliente cliente;
 	private List<DetallePedido> detalles = new ArrayList<>();
 
+	public Pedido() {
+	}
+
 	public Pedido(long id, long numero, String estado, LocalTime hora, boolean tipoEntrega, Factura factura,
 			Cliente cliente, List<DetallePedido> detalles) {
 		this.id = id;

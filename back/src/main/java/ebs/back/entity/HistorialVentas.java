@@ -5,14 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 public class HistorialVentas {
 
 	private long id;
@@ -21,6 +13,9 @@ public class HistorialVentas {
 	private float costo;
 	private double total;
 	private List<ArticuloVenta> articulos = new ArrayList<>();
+
+	public HistorialVentas() {
+	}
 
 	public HistorialVentas(long id, LocalDate fechaVenta, float precioVenta, float costo, double total,
 			List<ArticuloVenta> articulos) {
