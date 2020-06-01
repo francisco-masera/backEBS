@@ -6,6 +6,7 @@ public class ArticuloInsumo {
 	private String unidadMedida;
 	private String denominacion;
 	private boolean esExtra;
+	private float costo;
 	private RubroInsumo rubro;
 	private Receta receta;
 	private RecetaSugerida recetaSugerida;
@@ -15,12 +16,13 @@ public class ArticuloInsumo {
 	public ArticuloInsumo() {
 	}
 
-	public ArticuloInsumo(long id, String unidadMedida, String denominacion, boolean esExtra, RubroInsumo rubro,
-			Receta receta, RecetaSugerida recetaSugerida, Stock stock, OrdenCompra ordenCompra) {
+	public ArticuloInsumo(long id, String unidadMedida, String denominacion, boolean esExtra, float costo,
+			RubroInsumo rubro, Receta receta, RecetaSugerida recetaSugerida, Stock stock, OrdenCompra ordenCompra) {
 		this.id = id;
 		this.unidadMedida = unidadMedida;
 		this.denominacion = denominacion;
 		this.esExtra = esExtra;
+		this.costo = costo;
 		this.rubro = rubro;
 		this.receta = receta;
 		this.recetaSugerida = recetaSugerida;
@@ -58,6 +60,14 @@ public class ArticuloInsumo {
 
 	public void setEsExtra(boolean esExtra) {
 		this.esExtra = esExtra;
+	}
+
+	public float getCosto() {
+		return costo;
+	}
+
+	public void setCosto(float costo) {
+		this.costo = costo;
 	}
 
 	public RubroInsumo getRubro() {
