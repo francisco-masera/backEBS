@@ -83,7 +83,11 @@ public class HistorialVentas {
 
 	}
 
-	public void agregarArticulo(ArticuloManufacturado manufacturado) {
+	public void agregarArticulo(ArticuloManufacturado articulo) {
+
+	}
+
+	public void agregarArticulo(ArticuloInsumoVenta agregarArticulo) {
 
 	}
 }

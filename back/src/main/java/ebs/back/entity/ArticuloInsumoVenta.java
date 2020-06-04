@@ -3,7 +3,7 @@ package ebs.back.entity;
 public class ArticuloInsumoVenta extends ArticuloVenta {
 
 	private long id;
-	private int unidadMedida;
+	private String unidadMedida;
 	private OrdenCompra ordenCompra;
 	private Stock stock;
 	private RubroInsumo rubro;
@@ -13,8 +13,8 @@ public class ArticuloInsumoVenta extends ArticuloVenta {
 	}
 
 	public ArticuloInsumoVenta(long id, String denomiacion, String descripcion, float precioVenta, String imagen,
-			boolean enVenta, DetallePedido detalle, HistorialVentas ventas, int unidadMedida, OrdenCompra ordenCompra,
-			Stock stock, RubroInsumo rubro) {
+			boolean enVenta, DetallePedido detalle, HistorialVentas ventas, String unidadMedida,
+			OrdenCompra ordenCompra, Stock stock, RubroInsumo rubro) {
 		super(id, denomiacion, descripcion, precioVenta, imagen, enVenta, detalle, ventas);
 		this.id = id;
 		this.unidadMedida = unidadMedida;
@@ -32,11 +32,11 @@ public class ArticuloInsumoVenta extends ArticuloVenta {
 		this.id = id;
 	}
 
-	public int getUnidadMedida() {
+	public String getUnidadMedida() {
 		return unidadMedida;
 	}
 
-	public void setUnidadMedida(int unidadMedida) {
+	public void setUnidadMedida(String unidadMedida) {
 		this.unidadMedida = unidadMedida;
 	}
 

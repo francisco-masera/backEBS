@@ -3,7 +3,6 @@ package ebs.back.entity;
 public class Compra {
 
 	private long id;
-
 	private float precioUnitario;
 	private float cantidad;
 	private OrdenCompra ordenCompra;
