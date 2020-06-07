@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Pedido {
 
-	private long id;
+	private Long id;
 	private long numero;
 	private String estado;
 	private LocalTime hora;
@@ -19,7 +19,7 @@ public class Pedido {
 	public Pedido() {
 	}
 
-	public Pedido(long id, long numero, String estado, LocalTime hora, boolean tipoEntrega, Factura factura,
+	public Pedido(Long id, long numero, String estado, LocalTime hora, boolean tipoEntrega, Factura factura,
 			Cliente cliente, List<DetallePedido> detalles) {
 		this.id = id;
 		this.numero = numero;
@@ -31,11 +31,11 @@ public class Pedido {
 		this.detalles = detalles;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

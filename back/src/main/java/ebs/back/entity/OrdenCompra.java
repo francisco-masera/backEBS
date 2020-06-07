@@ -7,7 +7,7 @@ import java.util.List;
 
 public class OrdenCompra {
 
-	private long id;
+	private Long id;
 	private long numero;
 	private LocalDateTime fechaHora;
 	private Compra compra;
@@ -17,7 +17,7 @@ public class OrdenCompra {
 	public OrdenCompra() {
 	}
 
-	public OrdenCompra(long id, long numero, LocalDateTime fechaHora, Compra compra, List<ArticuloInsumo> insumos,
+	public OrdenCompra(Long id, long numero, LocalDateTime fechaHora, Compra compra, List<ArticuloInsumo> insumos,
 			List<ArticuloInsumoVenta> insumosVenta) {
 		this.id = id;
 		this.numero = numero;
@@ -27,11 +27,11 @@ public class OrdenCompra {
 		this.insumosVenta = insumosVenta;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

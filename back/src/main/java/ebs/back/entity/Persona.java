@@ -5,7 +5,7 @@ import java.util.List;
 
 public abstract class Persona {
 
-	protected long id;
+	protected Long id;
 	protected String nombre;
 	protected String apellido;
 	protected int telefono;
@@ -16,7 +16,7 @@ public abstract class Persona {
 	public Persona() {
 	}
 
-	public Persona(long id, String nombre, String apellido, int telefono, String email, String foto,
+	public Persona(Long id, String nombre, String apellido, int telefono, String email, String foto,
 			List<Domicilio> domicilios) {
 		this.id = id;
 		this.nombre = nombre;
@@ -27,11 +27,11 @@ public abstract class Persona {
 		this.domicilios = domicilios;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

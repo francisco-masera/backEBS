@@ -2,7 +2,7 @@ package ebs.back.entity;
 
 public class Compra {
 
-	private long id;
+	private Long id;
 	private float precioUnitario;
 	private float cantidad;
 	private OrdenCompra ordenCompra;
@@ -10,18 +10,18 @@ public class Compra {
 	public Compra() {
 	}
 
-	public Compra(long id, float precioUnitario, float cantidad, OrdenCompra ordenCompra) {
+	public Compra(Long id, float precioUnitario, float cantidad, OrdenCompra ordenCompra) {
 		this.id = id;
 		this.precioUnitario = precioUnitario;
 		this.cantidad = cantidad;
 		this.ordenCompra = ordenCompra;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

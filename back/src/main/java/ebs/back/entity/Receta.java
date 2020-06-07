@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Receta {
 
-	private long id;
+	private Long id;
 	private float cantidadInsumo;
 	private ArticuloManufacturado manufacturado;
 	private List<ArticuloInsumo> insumos;
@@ -12,18 +12,18 @@ public class Receta {
 	public Receta() {
 	}
 
-	public Receta(long id, float cantidadInsumo, ArticuloManufacturado manufacturado, List<ArticuloInsumo> insumos) {
+	public Receta(Long id, float cantidadInsumo, ArticuloManufacturado manufacturado, List<ArticuloInsumo> insumos) {
 		this.id = id;
 		this.cantidadInsumo = cantidadInsumo;
 		this.manufacturado = manufacturado;
 		this.insumos = insumos;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

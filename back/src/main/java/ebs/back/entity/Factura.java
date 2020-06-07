@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class Factura {
 
-	private long id;
+	private Long id;
 	private LocalDateTime fechaHora;
 	private long numero;
 	private double total;
@@ -16,7 +16,7 @@ public class Factura {
 	public Factura() {
 	}
 
-	public Factura(long id, LocalDateTime fechaHora, long numero, double total, boolean formaPago, Pedido pedido) {
+	public Factura(Long id, LocalDateTime fechaHora, long numero, double total, boolean formaPago, Pedido pedido) {
 		this.id = id;
 		this.fechaHora = fechaHora;
 		this.numero = numero;
@@ -25,11 +25,11 @@ public class Factura {
 		this.pedido = pedido;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

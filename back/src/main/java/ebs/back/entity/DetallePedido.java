@@ -2,7 +2,7 @@ package ebs.back.entity;
 
 public class DetallePedido {
 
-	private long id;
+	private Long id;
 	private int cantidad;
 	private ArticuloVenta articulo;
 	private Pedido pedido;
@@ -10,18 +10,18 @@ public class DetallePedido {
 	public DetallePedido() {
 	}
 
-	public DetallePedido(long id, int cantidad, ArticuloVenta articulo, Pedido pedido) {
+	public DetallePedido(Long id, int cantidad, ArticuloVenta articulo, Pedido pedido) {
 		this.id = id;
 		this.cantidad = cantidad;
 		this.articulo = articulo;
 		this.pedido = pedido;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

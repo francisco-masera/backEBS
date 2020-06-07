@@ -2,24 +2,24 @@ package ebs.back.entity;
 
 public class Config {
 
-	private long id;
+	private Long id;
 	private int cantidadCocineros;
 	private String emailEmpresa;
 
 	public Config() {
 	}
 
-	public Config(int id, int cantidadCocineros, String emailEmpresa) {
+	public Config(Long id, int cantidadCocineros, String emailEmpresa) {
 		this.id = id;
 		this.cantidadCocineros = cantidadCocineros;
 		this.emailEmpresa = emailEmpresa;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

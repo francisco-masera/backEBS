@@ -5,7 +5,7 @@ import java.util.List;
 
 public class RecetaSugerida {
 
-	private long id;
+	private Long id;
 	private float cantidadInsumo;
 	private boolean estado;
 	private List<ArticuloInsumo> insumos = new ArrayList<>();
@@ -14,7 +14,7 @@ public class RecetaSugerida {
 	public RecetaSugerida() {
 	}
 
-	public RecetaSugerida(long id, float cantidadInsumo, boolean estado, List<ArticuloInsumo> insumos,
+	public RecetaSugerida(Long id, float cantidadInsumo, boolean estado, List<ArticuloInsumo> insumos,
 			SugerenciaChef sugerenciaChef) {
 		this.id = id;
 		this.cantidadInsumo = cantidadInsumo;
@@ -23,11 +23,11 @@ public class RecetaSugerida {
 		this.sugerenciaChef = sugerenciaChef;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

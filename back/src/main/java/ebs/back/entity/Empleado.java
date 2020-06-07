@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Empleado extends Persona {
 
-	private long id;
+	private Long id;
 	private String usuario;
 	private String contrasenia;
 	private String rol;
@@ -13,7 +13,7 @@ public class Empleado extends Persona {
 		super();
 	}
 
-	public Empleado(long id, String nombre, String apellido, int telefono, String email, String foto,
+	public Empleado(Long id, String nombre, String apellido, int telefono, String email, String foto,
 			List<Domicilio> domicilios, String usuario, String contrasenia, String rol) {
 		super(id, nombre, apellido, telefono, email, foto, domicilios);
 		this.id = id;
@@ -22,11 +22,11 @@ public class Empleado extends Persona {
 		this.rol = rol;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

@@ -1,7 +1,8 @@
 package ebs.back.entity;
 
 public abstract class ArticuloVenta {
-	protected long id;
+	
+	protected Long id;
 	protected String denominacion;
 	protected String descripcion;
 	protected float precioVenta;
@@ -13,7 +14,7 @@ public abstract class ArticuloVenta {
 	public ArticuloVenta() {
 	}
 
-	public ArticuloVenta(long id, String denominacion, String descripcion, float precioVenta, String imagen,
+	public ArticuloVenta(Long id, String denominacion, String descripcion, float precioVenta, String imagen,
 			boolean enVenta, DetallePedido detalle, HistorialVentas ventas) {
 		this.id = id;
 		this.denominacion = denominacion;
@@ -25,11 +26,11 @@ public abstract class ArticuloVenta {
 		this.ventas = ventas;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

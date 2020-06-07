@@ -7,7 +7,7 @@ import java.util.List;
 
 public class HistorialVentas {
 
-	private long id;
+	private Long id;
 	private LocalDate fechaVenta;
 	private float precioVenta;
 	private float costo;
@@ -17,7 +17,7 @@ public class HistorialVentas {
 	public HistorialVentas() {
 	}
 
-	public HistorialVentas(long id, LocalDate fechaVenta, float precioVenta, float costo, double total,
+	public HistorialVentas(Long id, LocalDate fechaVenta, float precioVenta, float costo, double total,
 			List<ArticuloVenta> articulos) {
 		this.id = id;
 		this.fechaVenta = fechaVenta;
@@ -27,11 +27,11 @@ public class HistorialVentas {
 		this.articulos = articulos;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

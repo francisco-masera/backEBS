@@ -4,7 +4,7 @@ import java.util.List;
 
 public class RubroInsumo {
 
-	private long id;
+	private Long id;
 	private String denominacion;
 	private RubroInsumo rubro;
 	private List<RubroInsumo> rubros;
@@ -14,7 +14,7 @@ public class RubroInsumo {
 	public RubroInsumo() {
 	}
 
-	public RubroInsumo(long id, String denominacion, RubroInsumo rubro, List<RubroInsumo> rubros,
+	public RubroInsumo(Long id, String denominacion, RubroInsumo rubro, List<RubroInsumo> rubros,
 			List<ArticuloInsumoVenta> insumosVenta, List<ArticuloInsumo> insumos) {
 		this.id = id;
 		this.denominacion = denominacion;
@@ -25,11 +25,11 @@ public class RubroInsumo {
 
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

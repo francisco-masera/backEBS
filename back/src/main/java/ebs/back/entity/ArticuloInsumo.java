@@ -2,7 +2,7 @@ package ebs.back.entity;
 
 public class ArticuloInsumo {
 
-	private long id;
+	private Long id;
 	private String unidadMedida;
 	private String denominacion;
 	private boolean esExtra;
@@ -15,7 +15,7 @@ public class ArticuloInsumo {
 	public ArticuloInsumo() {
 	}
 
-	public ArticuloInsumo(long id, String unidadMedida, String denominacion, boolean esExtra, RubroInsumo rubro,
+	public ArticuloInsumo(Long id, String unidadMedida, String denominacion, boolean esExtra, RubroInsumo rubro,
 			Receta receta, RecetaSugerida recetaSugerida, Stock stock, OrdenCompra ordenCompra) {
 		this.id = id;
 		this.unidadMedida = unidadMedida;
@@ -28,11 +28,11 @@ public class ArticuloInsumo {
 		this.ordenCompra = ordenCompra;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

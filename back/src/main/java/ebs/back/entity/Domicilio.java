@@ -2,7 +2,7 @@ package ebs.back.entity;
 
 public class Domicilio {
 
-	private long id;
+	private Long id;
 	private String localidad;
 	private String calle;
 	private int numero;
@@ -13,7 +13,7 @@ public class Domicilio {
 	public Domicilio() {
 	}
 
-	public Domicilio(long id, String localidad, String calle, int numero, int piso, String departamento,
+	public Domicilio(Long id, String localidad, String calle, int numero, int piso, String departamento,
 			Persona persona) {
 		this.id = id;
 		this.localidad = localidad;
@@ -24,11 +24,11 @@ public class Domicilio {
 		this.persona = persona;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class TarjetaDebito {
 
-	private long id;
+	private Long id;
 	private long numero;
 	private LocalDate vecimiento;
 	private String nombreTitular;
@@ -16,8 +16,7 @@ public class TarjetaDebito {
 	public TarjetaDebito() {
 	}
 
-	public TarjetaDebito(long id, long numero, LocalDate vecimiento, MonthDay diaVencimiento, String nombreTitular,
-			Cliente cliente) {
+	public TarjetaDebito(Long id, long numero, LocalDate vecimiento, String nombreTitular, Cliente cliente) {
 		this.id = id;
 		this.numero = numero;
 		this.vecimiento = vecimiento;
@@ -25,11 +24,11 @@ public class TarjetaDebito {
 		this.cliente = cliente;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

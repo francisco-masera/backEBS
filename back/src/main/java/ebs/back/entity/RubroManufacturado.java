@@ -1,24 +1,25 @@
 package ebs.back.entity;
 
 public class RubroManufacturado {
-	private long id;
+
+	private Long id;
 	private String denominacion;
 	private ArticuloManufacturado manufacturado;
 
 	public RubroManufacturado() {
 	}
 
-	public RubroManufacturado(long id, String deominacion, ArticuloManufacturado manufacturado) {
+	public RubroManufacturado(Long id, String deominacion, ArticuloManufacturado manufacturado) {
 		this.id = id;
 		this.denominacion = deominacion;
 		this.manufacturado = manufacturado;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

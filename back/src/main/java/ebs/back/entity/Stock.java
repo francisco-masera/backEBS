@@ -2,7 +2,7 @@ package ebs.back.entity;
 
 public class Stock {
 
-	private long id;
+	private Long id;
 	private long actual;
 	private int minimo;
 	private long maximo;
@@ -12,7 +12,7 @@ public class Stock {
 	public Stock() {
 	}
 
-	public Stock(long id, long actual, int minimo, long maximo, ArticuloInsumo articuloInsumo,
+	public Stock(Long id, long actual, int minimo, long maximo, ArticuloInsumo articuloInsumo,
 			ArticuloInsumoVenta articuloInsumoVenta) {
 		this.id = id;
 		this.actual = actual;
@@ -22,15 +22,15 @@ public class Stock {
 		this.articuloInsumoVenta = articuloInsumoVenta;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public long getActual() {
+	public Long getActual() {
 		return actual;
 	}
 
