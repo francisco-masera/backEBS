@@ -5,31 +5,23 @@ import java.time.MonthDay;
 import java.time.ZoneId;
 import java.util.Date;
 
-public class TarjetaDebito {
+public class TarjetaDebito extends BaseEntity {
 
-	private Long id;
 	private long numero;
 	private LocalDate vecimiento;
 	private String nombreTitular;
 	private Cliente cliente;
 
 	public TarjetaDebito() {
+		super();
 	}
 
-	public TarjetaDebito(Long id, long numero, LocalDate vecimiento, String nombreTitular, Cliente cliente) {
-		this.id = id;
+	public TarjetaDebito(long numero, LocalDate vecimiento, String nombreTitular, Cliente cliente) {
+		super();
 		this.numero = numero;
 		this.vecimiento = vecimiento;
 		this.nombreTitular = nombreTitular;
 		this.cliente = cliente;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public long getNumero() {

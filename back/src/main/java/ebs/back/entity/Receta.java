@@ -2,29 +2,22 @@ package ebs.back.entity;
 
 import java.util.List;
 
-public class Receta {
+public class Receta extends BaseEntity {
 
-	private Long id;
 	private float cantidadInsumo;
 	private ArticuloManufacturado manufacturado;
 	private List<ArticuloInsumo> insumos;
 
 	public Receta() {
+		super();
 	}
 
-	public Receta(Long id, float cantidadInsumo, ArticuloManufacturado manufacturado, List<ArticuloInsumo> insumos) {
-		this.id = id;
+	public Receta(float cantidadInsumo, ArticuloManufacturado manufacturado, List<ArticuloInsumo> insumos) {
+		super();
+
 		this.cantidadInsumo = cantidadInsumo;
 		this.manufacturado = manufacturado;
 		this.insumos = insumos;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public float getCantidadInsumo() {

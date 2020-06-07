@@ -1,8 +1,7 @@
 package ebs.back.entity;
 
-public class ArticuloInsumo {
+public class ArticuloInsumo extends BaseEntity {
 
-	private Long id;
 	private String unidadMedida;
 	private String denominacion;
 	private boolean esExtra;
@@ -13,11 +12,12 @@ public class ArticuloInsumo {
 	private OrdenCompra ordenCompra;
 
 	public ArticuloInsumo() {
+		super();
 	}
 
-	public ArticuloInsumo(Long id, String unidadMedida, String denominacion, boolean esExtra, RubroInsumo rubro,
-			Receta receta, RecetaSugerida recetaSugerida, Stock stock, OrdenCompra ordenCompra) {
-		this.id = id;
+	public ArticuloInsumo(String unidadMedida, String denominacion, boolean esExtra, RubroInsumo rubro, Receta receta,
+			RecetaSugerida recetaSugerida, Stock stock, OrdenCompra ordenCompra) {
+		super();
 		this.unidadMedida = unidadMedida;
 		this.denominacion = denominacion;
 		this.esExtra = esExtra;
@@ -26,14 +26,6 @@ public class ArticuloInsumo {
 		this.recetaSugerida = recetaSugerida;
 		this.stock = stock;
 		this.ordenCompra = ordenCompra;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getUnidadMedida() {

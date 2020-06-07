@@ -2,7 +2,6 @@ package ebs.back.entity;
 
 public class ArticuloManufacturado extends ArticuloVenta {
 
-	private Long id;
 	private int tiempoCocina;
 	private boolean aptoCeliaco;
 	private boolean vegano;
@@ -14,24 +13,16 @@ public class ArticuloManufacturado extends ArticuloVenta {
 		super();
 	}
 
-	public ArticuloManufacturado(Long id, int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
+	public ArticuloManufacturado(int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
+
 			RubroManufacturado rubro, Receta receta) {
 		super();
-		this.id = id;
 		this.tiempoCocina = tiempoCocina;
 		this.aptoCeliaco = aptoCeliaco;
 		this.vegano = vegano;
 		this.vegetariano = vegetariano;
 		this.rubro = rubro;
 		this.receta = receta;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public int getTiempoCocina() {

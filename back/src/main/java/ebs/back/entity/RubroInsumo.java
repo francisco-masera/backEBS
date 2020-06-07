@@ -2,9 +2,8 @@ package ebs.back.entity;
 
 import java.util.List;
 
-public class RubroInsumo {
+public class RubroInsumo extends BaseEntity {
 
-	private Long id;
 	private String denominacion;
 	private RubroInsumo rubro;
 	private List<RubroInsumo> rubros;
@@ -12,25 +11,19 @@ public class RubroInsumo {
 	private List<ArticuloInsumo> insumos;
 
 	public RubroInsumo() {
+		super();
 	}
 
-	public RubroInsumo(Long id, String denominacion, RubroInsumo rubro, List<RubroInsumo> rubros,
+	public RubroInsumo(String denominacion, RubroInsumo rubro, List<RubroInsumo> rubros,
+
 			List<ArticuloInsumoVenta> insumosVenta, List<ArticuloInsumo> insumos) {
-		this.id = id;
+		super();
 		this.denominacion = denominacion;
 		this.rubro = rubro;
 		this.rubros = rubros;
 		this.insumosVenta = insumosVenta;
 		this.insumos = insumos;
 
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getDenominacion() {

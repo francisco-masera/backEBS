@@ -1,26 +1,18 @@
 package ebs.back.entity;
 
-public class RubroManufacturado {
+public class RubroManufacturado extends BaseEntity {
 
-	private Long id;
 	private String denominacion;
 	private ArticuloManufacturado manufacturado;
 
 	public RubroManufacturado() {
+		super();
 	}
 
-	public RubroManufacturado(Long id, String deominacion, ArticuloManufacturado manufacturado) {
-		this.id = id;
-		this.denominacion = deominacion;
+	public RubroManufacturado(String denominacion, ArticuloManufacturado manufacturado) {
+		super();
+		this.denominacion = denominacion;
 		this.manufacturado = manufacturado;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getDenominacion() {

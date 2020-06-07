@@ -5,9 +5,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-public class OrdenCompra {
+public class OrdenCompra extends BaseEntity {
 
-	private Long id;
 	private long numero;
 	private LocalDateTime fechaHora;
 	private Compra compra;
@@ -15,24 +14,17 @@ public class OrdenCompra {
 	private List<ArticuloInsumoVenta> insumosVenta;
 
 	public OrdenCompra() {
+		super();
 	}
 
-	public OrdenCompra(Long id, long numero, LocalDateTime fechaHora, Compra compra, List<ArticuloInsumo> insumos,
+	public OrdenCompra(long numero, LocalDateTime fechaHora, Compra compra, List<ArticuloInsumo> insumos,
 			List<ArticuloInsumoVenta> insumosVenta) {
-		this.id = id;
+		super();
 		this.numero = numero;
 		this.fechaHora = fechaHora;
 		this.compra = compra;
 		this.insumos = insumos;
 		this.insumosVenta = insumosVenta;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public long getNumero() {

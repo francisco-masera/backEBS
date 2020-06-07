@@ -5,9 +5,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistorialVentas {
+public class HistorialVentas extends BaseEntity {
 
-	private Long id;
 	private LocalDate fechaVenta;
 	private float precioVenta;
 	private float costo;
@@ -15,24 +14,18 @@ public class HistorialVentas {
 	private List<ArticuloVenta> articulos = new ArrayList<>();
 
 	public HistorialVentas() {
+		super();
 	}
 
-	public HistorialVentas(Long id, LocalDate fechaVenta, float precioVenta, float costo, double total,
+	public HistorialVentas(LocalDate fechaVenta, float precioVenta, float costo, double total,
+
 			List<ArticuloVenta> articulos) {
-		this.id = id;
+		super();
 		this.fechaVenta = fechaVenta;
 		this.precioVenta = precioVenta;
 		this.costo = costo;
 		this.total = total;
 		this.articulos = articulos;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public LocalDate getFechaVenta() {

@@ -2,7 +2,6 @@ package ebs.back.entity;
 
 public class SugerenciaChef extends ArticuloVenta {
 
-	private Long id;
 	private int tiempoCocina;
 	private boolean aptoCeliaco;
 	private boolean vegano;
@@ -13,24 +12,15 @@ public class SugerenciaChef extends ArticuloVenta {
 		super();
 	}
 
-	public SugerenciaChef(Long id, String denomiacion, String descripcion, float precioVenta, String imagen,
-			boolean enVenta, DetallePedido detalle, HistorialVentas ventas, int tiempoCocina, boolean aptoCeliaco,
-			boolean vegano, boolean vegetariano, RecetaSugerida recetaSugerida) {
-		super(id, denomiacion, descripcion, precioVenta, imagen, enVenta, detalle, ventas);
-		this.id = id;
+	public SugerenciaChef(int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
+			RecetaSugerida recetaSugerida) {
+		super();
+
 		this.tiempoCocina = tiempoCocina;
 		this.aptoCeliaco = aptoCeliaco;
 		this.vegano = vegano;
 		this.vegetariano = vegetariano;
 		this.recetaSugerida = recetaSugerida;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public int getTiempoCocina() {

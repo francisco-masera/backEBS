@@ -1,8 +1,7 @@
 package ebs.back.entity;
 
-public class Domicilio {
+public class Domicilio extends BaseEntity {
 
-	private Long id;
 	private String localidad;
 	private String calle;
 	private int numero;
@@ -11,25 +10,17 @@ public class Domicilio {
 	private Persona persona;
 
 	public Domicilio() {
+		super();
 	}
 
-	public Domicilio(Long id, String localidad, String calle, int numero, int piso, String departamento,
-			Persona persona) {
-		this.id = id;
+	public Domicilio(String localidad, String calle, int numero, int piso, String departamento, Persona persona) {
+		super();
 		this.localidad = localidad;
 		this.calle = calle;
 		this.numero = numero;
 		this.piso = piso;
 		this.departamento = departamento;
 		this.persona = persona;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getLocalidad() {

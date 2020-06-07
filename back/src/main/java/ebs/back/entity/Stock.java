@@ -1,8 +1,7 @@
 package ebs.back.entity;
 
-public class Stock {
+public class Stock extends BaseEntity {
 
-	private Long id;
 	private long actual;
 	private int minimo;
 	private long maximo;
@@ -10,11 +9,12 @@ public class Stock {
 	private ArticuloInsumoVenta articuloInsumoVenta;
 
 	public Stock() {
+		super();
 	}
 
-	public Stock(Long id, long actual, int minimo, long maximo, ArticuloInsumo articuloInsumo,
+	public Stock(long actual, int minimo, long maximo, ArticuloInsumo articuloInsumo,
 			ArticuloInsumoVenta articuloInsumoVenta) {
-		this.id = id;
+		super();
 		this.actual = actual;
 		this.minimo = minimo;
 		this.maximo = maximo;
@@ -22,15 +22,8 @@ public class Stock {
 		this.articuloInsumoVenta = articuloInsumoVenta;
 	}
 
-	public Long getId() {
-		return id;
-	}
+	public long getActual() {
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getActual() {
 		return actual;
 	}
 

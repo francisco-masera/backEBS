@@ -1,28 +1,21 @@
 package ebs.back.entity;
 
-public class DetallePedido {
+public class DetallePedido extends BaseEntity {
 
-	private Long id;
 	private int cantidad;
 	private ArticuloVenta articulo;
 	private Pedido pedido;
 
 	public DetallePedido() {
+		super();
 	}
 
-	public DetallePedido(Long id, int cantidad, ArticuloVenta articulo, Pedido pedido) {
-		this.id = id;
+	public DetallePedido(int cantidad, ArticuloVenta articulo, Pedido pedido) {
+		super();
+
 		this.cantidad = cantidad;
 		this.articulo = articulo;
 		this.pedido = pedido;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public int getCantidad() {

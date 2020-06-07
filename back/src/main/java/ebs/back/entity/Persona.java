@@ -3,9 +3,8 @@ package ebs.back.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Persona {
+public abstract class Persona extends BaseEntity {
 
-	protected Long id;
 	protected String nombre;
 	protected String apellido;
 	protected int telefono;
@@ -14,25 +13,18 @@ public abstract class Persona {
 	protected List<Domicilio> domicilios = new ArrayList<>();
 
 	public Persona() {
+		super();
 	}
 
-	public Persona(Long id, String nombre, String apellido, int telefono, String email, String foto,
+	public Persona(String nombre, String apellido, int telefono, String email, String foto,
 			List<Domicilio> domicilios) {
-		this.id = id;
+		super();
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.telefono = telefono;
 		this.email = email;
 		this.foto = foto;
 		this.domicilios = domicilios;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getNombre() {

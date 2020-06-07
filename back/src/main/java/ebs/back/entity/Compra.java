@@ -1,28 +1,21 @@
 package ebs.back.entity;
 
-public class Compra {
+public class Compra extends BaseEntity {
 
-	private Long id;
 	private float precioUnitario;
 	private float cantidad;
 	private OrdenCompra ordenCompra;
 
 	public Compra() {
+		super();
 	}
 
-	public Compra(Long id, float precioUnitario, float cantidad, OrdenCompra ordenCompra) {
-		this.id = id;
+	public Compra(float precioUnitario, float cantidad, OrdenCompra ordenCompra) {
+		super();
+
 		this.precioUnitario = precioUnitario;
 		this.cantidad = cantidad;
 		this.ordenCompra = ordenCompra;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public float getPrecioUnitario() {

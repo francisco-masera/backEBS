@@ -1,26 +1,21 @@
 package ebs.back.entity;
 
-public class Config {
+public class Config extends BaseEntity {
 
-	private Long id;
+
 	private int cantidadCocineros;
 	private String emailEmpresa;
 
 	public Config() {
+		super();
 	}
 
-	public Config(Long id, int cantidadCocineros, String emailEmpresa) {
-		this.id = id;
+
+	public Config(int cantidadCocineros, String emailEmpresa) {
+		super();
+
 		this.cantidadCocineros = cantidadCocineros;
 		this.emailEmpresa = emailEmpresa;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public int getCantidadCocineros() {

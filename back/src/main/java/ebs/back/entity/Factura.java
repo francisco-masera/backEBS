@@ -4,9 +4,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-public class Factura {
+public class Factura extends BaseEntity {
 
-	private Long id;
 	private LocalDateTime fechaHora;
 	private long numero;
 	private double total;
@@ -14,23 +13,16 @@ public class Factura {
 	private Pedido pedido;
 
 	public Factura() {
+		super();
 	}
 
-	public Factura(Long id, LocalDateTime fechaHora, long numero, double total, boolean formaPago, Pedido pedido) {
-		this.id = id;
+	public Factura(LocalDateTime fechaHora, long numero, double total, boolean formaPago, Pedido pedido) {
+		super();
 		this.fechaHora = fechaHora;
 		this.numero = numero;
 		this.total = total;
 		this.formaPago = formaPago;
 		this.pedido = pedido;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public LocalDateTime getFechaHora() {

@@ -5,9 +5,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pedido {
+public class Pedido extends BaseEntity {
 
-	private Long id;
 	private long numero;
 	private String estado;
 	private LocalTime hora;
@@ -17,11 +16,12 @@ public class Pedido {
 	private List<DetallePedido> detalles = new ArrayList<>();
 
 	public Pedido() {
+		super();
 	}
 
-	public Pedido(Long id, long numero, String estado, LocalTime hora, boolean tipoEntrega, Factura factura,
-			Cliente cliente, List<DetallePedido> detalles) {
-		this.id = id;
+	public Pedido(long numero, String estado, LocalTime hora, boolean tipoEntrega, Factura factura, Cliente cliente,
+			List<DetallePedido> detalles) {
+		super();
 		this.numero = numero;
 		this.estado = estado;
 		this.hora = hora;
@@ -29,14 +29,6 @@ public class Pedido {
 		this.factura = factura;
 		this.cliente = cliente;
 		this.detalles = detalles;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public long getNumero() {

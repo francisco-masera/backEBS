@@ -2,7 +2,6 @@ package ebs.back.entity;
 
 public class ArticuloInsumoVenta extends ArticuloVenta {
 
-	private Long id;
 	private String unidadMedida;
 	private OrdenCompra ordenCompra;
 	private Stock stock;
@@ -12,24 +11,12 @@ public class ArticuloInsumoVenta extends ArticuloVenta {
 		super();
 	}
 
-	public ArticuloInsumoVenta(Long id, String denomiacion, String descripcion, float precioVenta, String imagen,
-			boolean enVenta, DetallePedido detalle, HistorialVentas ventas, String unidadMedida,
-			OrdenCompra ordenCompra, Stock stock, RubroInsumo rubro) {
-		super(id, denomiacion, descripcion, precioVenta, imagen, enVenta, detalle, ventas);
-		this.id = id;
+	public ArticuloInsumoVenta(String unidadMedida, OrdenCompra ordenCompra, Stock stock, RubroInsumo rubro) {
+		super();
 		this.unidadMedida = unidadMedida;
-
 		this.ordenCompra = ordenCompra;
 		this.stock = stock;
 		this.rubro = rubro;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getUnidadMedida() {

@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Cliente extends Persona {
 
-	private Long id;
 	private List<TarjetaDebito> tarjetas;
 	private List<Pedido> pedidos = new ArrayList<>();
 
@@ -13,20 +12,11 @@ public class Cliente extends Persona {
 		super();
 	}
 
-	public Cliente(Long id, String nombre, String apellido, int telefono, String email, String foto,
-			List<Domicilio> domicilios, List<TarjetaDebito> tarjetas, List<Pedido> pedidos) {
-		super(id, nombre, apellido, telefono, email, foto, domicilios);
-		this.id = id;
+	public Cliente(List<TarjetaDebito> tarjetas, List<Pedido> pedidos) {
+		super();
+
 		this.tarjetas = tarjetas;
 		this.pedidos = pedidos;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public List<Pedido> getPedidos() {

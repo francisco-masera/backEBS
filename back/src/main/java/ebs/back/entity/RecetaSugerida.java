@@ -3,32 +3,25 @@ package ebs.back.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecetaSugerida {
+public class RecetaSugerida extends BaseEntity {
 
-	private Long id;
 	private float cantidadInsumo;
 	private boolean estado;
 	private List<ArticuloInsumo> insumos = new ArrayList<>();
 	private SugerenciaChef sugerenciaChef;
 
 	public RecetaSugerida() {
+		super();
 	}
 
-	public RecetaSugerida(Long id, float cantidadInsumo, boolean estado, List<ArticuloInsumo> insumos,
+	public RecetaSugerida(float cantidadInsumo, boolean estado, List<ArticuloInsumo> insumos,
+
 			SugerenciaChef sugerenciaChef) {
-		this.id = id;
+		super();
 		this.cantidadInsumo = cantidadInsumo;
 		this.estado = estado;
 		this.insumos = insumos;
 		this.sugerenciaChef = sugerenciaChef;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public float getCantidadInsumo() {
