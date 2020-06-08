@@ -1,12 +1,23 @@
 package ebs.back.entity;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistorialVentas extends BaseEntity {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+@Entity
+public class HistorialVentas implements Serializable {
+
+	private Long id;
 	private LocalDate fechaVenta;
 	private float precioVenta;
 	private float costo;
@@ -14,13 +25,12 @@ public class HistorialVentas extends BaseEntity {
 	private List<ArticuloVenta> articulos = new ArrayList<>();
 
 	public HistorialVentas() {
-		super();
+
 	}
 
-	public HistorialVentas(LocalDate fechaVenta, float precioVenta, float costo, double total,
-
+	public HistorialVentas(Long id, LocalDate fechaVenta, float precioVenta, float costo, double total,
 			List<ArticuloVenta> articulos) {
-		super();
+		this.id = id;
 		this.fechaVenta = fechaVenta;
 		this.precioVenta = precioVenta;
 		this.costo = costo;
@@ -28,10 +38,21 @@ public class HistorialVentas extends BaseEntity {
 		this.articulos = articulos;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public LocalDate getFechaVenta() {
 		return fechaVenta;
 	}
 
+	@Temporal(TemporalType.DATE)
 	private Date convertirFecha() {
 		return Date.valueOf(this.fechaVenta);
 	}
@@ -64,6 +85,7 @@ public class HistorialVentas extends BaseEntity {
 		this.total = total;
 	}
 
+	@OneToMany(mappedBy = "ventas")
 	public List<ArticuloVenta> getArticulos() {
 		return articulos;
 	}

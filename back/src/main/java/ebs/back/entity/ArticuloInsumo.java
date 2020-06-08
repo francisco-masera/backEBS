@@ -1,7 +1,19 @@
 package ebs.back.entity;
 
-public class ArticuloInsumo extends BaseEntity {
+import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+@Entity
+public class ArticuloInsumo implements Serializable {
+
+	private Long id;
 	private String unidadMedida;
 	private String denominacion;
 	private boolean esExtra;
@@ -12,12 +24,12 @@ public class ArticuloInsumo extends BaseEntity {
 	private OrdenCompra ordenCompra;
 
 	public ArticuloInsumo() {
-		super();
+
 	}
 
-	public ArticuloInsumo(String unidadMedida, String denominacion, boolean esExtra, RubroInsumo rubro, Receta receta,
-			RecetaSugerida recetaSugerida, Stock stock, OrdenCompra ordenCompra) {
-		super();
+	public ArticuloInsumo(Long id, String unidadMedida, String denominacion, boolean esExtra, RubroInsumo rubro,
+			Receta receta, RecetaSugerida recetaSugerida, Stock stock, OrdenCompra ordenCompra) {
+		this.id = id;
 		this.unidadMedida = unidadMedida;
 		this.denominacion = denominacion;
 		this.esExtra = esExtra;
@@ -26,6 +38,16 @@ public class ArticuloInsumo extends BaseEntity {
 		this.recetaSugerida = recetaSugerida;
 		this.stock = stock;
 		this.ordenCompra = ordenCompra;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getUnidadMedida() {
@@ -52,6 +74,8 @@ public class ArticuloInsumo extends BaseEntity {
 		this.esExtra = esExtra;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "idRubro", nullable = false)
 	public RubroInsumo getRubro() {
 		return rubro;
 	}
@@ -60,6 +84,8 @@ public class ArticuloInsumo extends BaseEntity {
 		this.rubro = rubro;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "idReceta", nullable = false)
 	public Receta getReceta() {
 		return receta;
 	}
@@ -68,6 +94,8 @@ public class ArticuloInsumo extends BaseEntity {
 		this.receta = receta;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "idRecetaSugerida", nullable = false)
 	public RecetaSugerida getRecetaSugerida() {
 		return recetaSugerida;
 	}
@@ -76,6 +104,8 @@ public class ArticuloInsumo extends BaseEntity {
 		this.recetaSugerida = recetaSugerida;
 	}
 
+	@OneToOne
+	@JoinColumn(name = "idStock", nullable = false)
 	public Stock getStock() {
 		return stock;
 	}
@@ -84,6 +114,8 @@ public class ArticuloInsumo extends BaseEntity {
 		this.stock = stock;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "idOrden", nullable = false)
 	public OrdenCompra getOrdenCompra() {
 		return ordenCompra;
 	}

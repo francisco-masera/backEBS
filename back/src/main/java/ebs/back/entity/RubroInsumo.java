@@ -1,29 +1,51 @@
 package ebs.back.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class RubroInsumo extends BaseEntity {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
+@Entity
+public class RubroInsumo implements Serializable {
+
+	private Long id;
 	private String denominacion;
-	private RubroInsumo rubro;
+	private RubroInsumo rubroPadre;
 	private List<RubroInsumo> rubros;
 	private List<ArticuloInsumoVenta> insumosVenta;
 	private List<ArticuloInsumo> insumos;
 
 	public RubroInsumo() {
-		super();
+
 	}
 
-	public RubroInsumo(String denominacion, RubroInsumo rubro, List<RubroInsumo> rubros,
-
+	public RubroInsumo(Long id, String denominacion, RubroInsumo rubroPadre, List<RubroInsumo> rubros,
 			List<ArticuloInsumoVenta> insumosVenta, List<ArticuloInsumo> insumos) {
-		super();
+		this.id = id;
 		this.denominacion = denominacion;
-		this.rubro = rubro;
+		this.rubroPadre = rubroPadre;
 		this.rubros = rubros;
 		this.insumosVenta = insumosVenta;
 		this.insumos = insumos;
 
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idRubro")
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getDenominacion() {
@@ -34,14 +56,17 @@ public class RubroInsumo extends BaseEntity {
 		this.denominacion = denominacion;
 	}
 
-	public RubroInsumo getRubro() {
-		return rubro;
+	@ManyToOne
+	@JoinColumn(name = "rubroPadre")
+	public RubroInsumo getRubroPadre() {
+		return rubroPadre;
 	}
 
-	public void setRubro(RubroInsumo subRubro) {
-		this.rubro = subRubro;
+	public void setRubroPadre(RubroInsumo rubroPadre) {
+		this.rubroPadre = rubroPadre;
 	}
 
+	@OneToMany(mappedBy = "rubroPadre")
 	public List<RubroInsumo> getRubros() {
 		return rubros;
 	}
@@ -50,6 +75,7 @@ public class RubroInsumo extends BaseEntity {
 		this.rubros = rubros;
 	}
 
+	@OneToMany(mappedBy = "rubro")
 	public List<ArticuloInsumoVenta> getInsumosVenta() {
 		return insumosVenta;
 	}
@@ -58,6 +84,7 @@ public class RubroInsumo extends BaseEntity {
 		this.insumosVenta = insumosVenta;
 	}
 
+	@OneToMany(mappedBy = "rubro")
 	public List<ArticuloInsumo> getInsumos() {
 		return insumos;
 	}

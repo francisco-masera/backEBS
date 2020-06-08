@@ -1,23 +1,43 @@
 package ebs.back.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Receta extends BaseEntity {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
+@Entity
+public class Receta implements Serializable {
+
+	private Long id;
 	private float cantidadInsumo;
 	private ArticuloManufacturado manufacturado;
 	private List<ArticuloInsumo> insumos;
 
 	public Receta() {
-		super();
+	
 	}
 
-	public Receta(float cantidadInsumo, ArticuloManufacturado manufacturado, List<ArticuloInsumo> insumos) {
-		super();
-
+	public Receta(Long id, float cantidadInsumo, ArticuloManufacturado manufacturado, List<ArticuloInsumo> insumos) {
+		this.id = id;
 		this.cantidadInsumo = cantidadInsumo;
 		this.manufacturado = manufacturado;
 		this.insumos = insumos;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public float getCantidadInsumo() {
@@ -28,6 +48,8 @@ public class Receta extends BaseEntity {
 		this.cantidadInsumo = cantidadInsumo;
 	}
 
+	@OneToOne
+	@JoinColumn(name = "idManufacturado", nullable = false)
 	public ArticuloManufacturado getManufacturado() {
 		return manufacturado;
 	}
@@ -36,6 +58,7 @@ public class Receta extends BaseEntity {
 		this.manufacturado = manufacturado;
 	}
 
+	@OneToMany(mappedBy = "receta")
 	public List<ArticuloInsumo> getInsumo() {
 		return insumos;
 	}

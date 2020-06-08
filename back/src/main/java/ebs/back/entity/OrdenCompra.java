@@ -1,12 +1,24 @@
 package ebs.back.entity;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-public class OrdenCompra extends BaseEntity {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+@Entity
+public class OrdenCompra implements Serializable {
+
+	private Long id;
 	private long numero;
 	private LocalDateTime fechaHora;
 	private Compra compra;
@@ -14,17 +26,27 @@ public class OrdenCompra extends BaseEntity {
 	private List<ArticuloInsumoVenta> insumosVenta;
 
 	public OrdenCompra() {
-		super();
+
 	}
 
-	public OrdenCompra(long numero, LocalDateTime fechaHora, Compra compra, List<ArticuloInsumo> insumos,
+	public OrdenCompra(Long id, long numero, LocalDateTime fechaHora, Compra compra, List<ArticuloInsumo> insumos,
 			List<ArticuloInsumoVenta> insumosVenta) {
-		super();
+		this.id = id;
 		this.numero = numero;
 		this.fechaHora = fechaHora;
 		this.compra = compra;
 		this.insumos = insumos;
 		this.insumosVenta = insumosVenta;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public long getNumero() {
@@ -43,10 +65,12 @@ public class OrdenCompra extends BaseEntity {
 		this.fechaHora = fechaHora;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date convertirFecha() {
 		return Timestamp.valueOf(this.fechaHora);
 	}
 
+	@OneToOne(mappedBy = "ordenCompra")
 	public Compra getCompra() {
 		return compra;
 	}
@@ -55,6 +79,7 @@ public class OrdenCompra extends BaseEntity {
 		this.compra = compra;
 	}
 
+	@OneToMany(mappedBy = "ordenCompra")
 	public List<ArticuloInsumo> getInsumos() {
 		return insumos;
 	}
@@ -63,6 +88,7 @@ public class OrdenCompra extends BaseEntity {
 		this.insumos = insumos;
 	}
 
+	@OneToMany(mappedBy = "ordenCompra")
 	public List<ArticuloInsumoVenta> getInsumosVenta() {
 		return insumosVenta;
 	}

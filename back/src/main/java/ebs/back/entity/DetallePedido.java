@@ -1,21 +1,42 @@
 package ebs.back.entity;
 
-public class DetallePedido extends BaseEntity {
+import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+@Entity
+public class DetallePedido implements Serializable {
+
+	private Long id;
 	private int cantidad;
 	private ArticuloVenta articulo;
 	private Pedido pedido;
 
 	public DetallePedido() {
-		super();
+
 	}
 
-	public DetallePedido(int cantidad, ArticuloVenta articulo, Pedido pedido) {
-		super();
-
+	public DetallePedido(Long id, int cantidad, ArticuloVenta articulo, Pedido pedido) {
+		this.id = id;
 		this.cantidad = cantidad;
 		this.articulo = articulo;
 		this.pedido = pedido;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public int getCantidad() {
@@ -26,6 +47,8 @@ public class DetallePedido extends BaseEntity {
 		this.cantidad = cantidad;
 	}
 
+	@OneToOne
+	@JoinColumn(name = "idArticulo", nullable = false)
 	public ArticuloVenta getArticulo() {
 		return articulo;
 	}
@@ -34,6 +57,8 @@ public class DetallePedido extends BaseEntity {
 		this.articulo = articulo;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "idPedido", nullable = false)
 	public Pedido getPedido() {
 		return pedido;
 	}

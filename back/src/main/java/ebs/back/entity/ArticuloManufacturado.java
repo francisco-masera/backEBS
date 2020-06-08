@@ -1,5 +1,15 @@
 package ebs.back.entity;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+@Entity
+@DiscriminatorValue("Manufacturado")
 public class ArticuloManufacturado extends ArticuloVenta {
 
 	private int tiempoCocina;
@@ -13,10 +23,11 @@ public class ArticuloManufacturado extends ArticuloVenta {
 		super();
 	}
 
-	public ArticuloManufacturado(int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
-
-			RubroManufacturado rubro, Receta receta) {
+	public ArticuloManufacturado(String denominacion, String descripcion, float precioVenta, String imagen,
+			boolean enVenta, DetallePedido detalle, HistorialVentas ventas, int tiempoCocina, boolean aptoCeliaco,
+			boolean vegano, boolean vegetariano, RubroManufacturado rubro, Receta receta) {
 		super();
+
 		this.tiempoCocina = tiempoCocina;
 		this.aptoCeliaco = aptoCeliaco;
 		this.vegano = vegano;
@@ -57,6 +68,8 @@ public class ArticuloManufacturado extends ArticuloVenta {
 		this.vegetariano = vegetariano;
 	}
 
+	@OneToOne
+	@JoinColumn(name = "idRubro", nullable = false)
 	public RubroManufacturado getRubro() {
 		return rubro;
 	}
@@ -65,6 +78,7 @@ public class ArticuloManufacturado extends ArticuloVenta {
 		this.rubro = rubro;
 	}
 
+	@OneToOne(mappedBy = "manufacturado")
 	public Receta getReceta() {
 		return receta;
 	}

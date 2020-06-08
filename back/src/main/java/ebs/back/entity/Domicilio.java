@@ -1,7 +1,18 @@
 package ebs.back.entity;
 
-public class Domicilio extends BaseEntity {
+import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity
+public class Domicilio implements Serializable {
+
+	private Long id;
 	private String localidad;
 	private String calle;
 	private int numero;
@@ -10,17 +21,28 @@ public class Domicilio extends BaseEntity {
 	private Persona persona;
 
 	public Domicilio() {
-		super();
+
 	}
 
-	public Domicilio(String localidad, String calle, int numero, int piso, String departamento, Persona persona) {
-		super();
+	public Domicilio(Long id, String localidad, String calle, int numero, int piso, String departamento,
+			Persona persona) {
+		this.id = id;
 		this.localidad = localidad;
 		this.calle = calle;
 		this.numero = numero;
 		this.piso = piso;
 		this.departamento = departamento;
 		this.persona = persona;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getLocalidad() {
@@ -63,6 +85,8 @@ public class Domicilio extends BaseEntity {
 		this.departamento = departamento;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "idPersona", nullable = false)
 	public Persona getPersona() {
 		return persona;
 	}

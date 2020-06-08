@@ -1,21 +1,41 @@
 package ebs.back.entity;
 
-public class Compra extends BaseEntity {
+import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+@Entity
+public class Compra implements Serializable {
+
+	private Long id;
 	private float precioUnitario;
 	private float cantidad;
 	private OrdenCompra ordenCompra;
 
 	public Compra() {
-		super();
+
 	}
 
-	public Compra(float precioUnitario, float cantidad, OrdenCompra ordenCompra) {
-		super();
-
+	public Compra(Long id, float precioUnitario, float cantidad, OrdenCompra ordenCompra) {
+		this.id = id;
 		this.precioUnitario = precioUnitario;
 		this.cantidad = cantidad;
 		this.ordenCompra = ordenCompra;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public float getPrecioUnitario() {
@@ -34,6 +54,8 @@ public class Compra extends BaseEntity {
 		this.cantidad = cantidad;
 	}
 
+	@OneToOne
+	@JoinColumn(name = "idOrden", nullable = false)
 	public OrdenCompra getOrdenCompra() {
 		return ordenCompra;
 	}

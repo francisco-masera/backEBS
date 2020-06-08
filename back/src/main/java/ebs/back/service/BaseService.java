@@ -1,22 +1,25 @@
 package ebs.back.service;
 
-import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import ebs.back.entity.BaseEntity;
+public abstract class BaseService<E, R extends JpaRepository<E, Long>> implements IBaseService<E> {
 
-public interface BaseService<T extends BaseEntity> {
+	@Autowired
+	protected R repository;
 
-	public abstract T save(T entity);
-
-	public abstract List<T> findAll();
-
-	public abstract Optional<T> findById(Long id);
-
-	public abstract T update(T entity);
-
-	public abstract void delete(Query q);
-
+	@Override
+	public E findById(Long id) throws Exception {
+		try {
+			Optional<E> varOptional = repository.findById(id);
+			E entity = varOptional.get();
+			return entity;
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException(e.getMessage(), e.getCause());
+		} catch (Exception e) {
+			throw new Exception(e.getMessage(), e.getCause());
+		}
+	}
 }

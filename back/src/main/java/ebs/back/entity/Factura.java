@@ -1,11 +1,24 @@
 package ebs.back.entity;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-public class Factura extends BaseEntity {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+@Entity
+public class Factura implements Serializable {
+
+	private Long id;
 	private LocalDateTime fechaHora;
 	private long numero;
 	private double total;
@@ -13,16 +26,26 @@ public class Factura extends BaseEntity {
 	private Pedido pedido;
 
 	public Factura() {
-		super();
+	
 	}
 
-	public Factura(LocalDateTime fechaHora, long numero, double total, boolean formaPago, Pedido pedido) {
-		super();
+	public Factura(Long id, LocalDateTime fechaHora, long numero, double total, boolean formaPago, Pedido pedido) {
+		this.id = id;
 		this.fechaHora = fechaHora;
 		this.numero = numero;
 		this.total = total;
 		this.formaPago = formaPago;
 		this.pedido = pedido;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public LocalDateTime getFechaHora() {
@@ -33,6 +56,8 @@ public class Factura extends BaseEntity {
 		this.fechaHora = fechaHora;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false)
 	private Date convertirFechaHora() {
 		return Timestamp.valueOf(this.fechaHora);
 	}
@@ -61,6 +86,8 @@ public class Factura extends BaseEntity {
 		this.formaPago = formaPago;
 	}
 
+	@OneToOne
+	@JoinColumn(name = "idPedido", nullable = false)
 	public Pedido getPedido() {
 		return pedido;
 	}

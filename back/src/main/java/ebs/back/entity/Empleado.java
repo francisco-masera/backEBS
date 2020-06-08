@@ -2,6 +2,14 @@ package ebs.back.entity;
 
 import java.util.List;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
+@DiscriminatorValue("Empleado")
 public class Empleado extends Persona {
 
 	private String usuario;
@@ -12,10 +20,9 @@ public class Empleado extends Persona {
 		super();
 	}
 
-	public Empleado(Long id, String nombre, String apellido, int telefono, String email, String foto,
-			List<Domicilio> domicilios, String usuario, String contrasenia, String rol) {
+	public Empleado(String nombre, String apellido, int telefono, String email, String foto, List<Domicilio> domicilios,
+			String usuario, String contrasenia, String rol) {
 		super();
-		this.id = id;
 		this.usuario = usuario;
 		this.contrasenia = contrasenia;
 		this.rol = rol;
@@ -47,6 +54,6 @@ public class Empleado extends Persona {
 
 	@Override
 	protected void agregarDomicilio(Domicilio domicilio) {
-		super.agregarDomicilio(domicilio);
+		this.domicilios.add(domicilio);
 	}
 }

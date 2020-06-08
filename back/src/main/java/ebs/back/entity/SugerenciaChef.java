@@ -1,5 +1,14 @@
 package ebs.back.entity;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+@Entity
+@DiscriminatorValue("Sugerencia")
 public class SugerenciaChef extends ArticuloVenta {
 
 	private int tiempoCocina;
@@ -12,10 +21,10 @@ public class SugerenciaChef extends ArticuloVenta {
 		super();
 	}
 
-	public SugerenciaChef(int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
-			RecetaSugerida recetaSugerida) {
+	public SugerenciaChef(String denominacion, String descripcion, float precioVenta, String imagen, boolean enVenta,
+			DetallePedido detalle, HistorialVentas ventas, int tiempoCocina, boolean aptoCeliaco, boolean vegano,
+			boolean vegetariano, RecetaSugerida recetaSugerida) {
 		super();
-
 		this.tiempoCocina = tiempoCocina;
 		this.aptoCeliaco = aptoCeliaco;
 		this.vegano = vegano;
@@ -55,6 +64,7 @@ public class SugerenciaChef extends ArticuloVenta {
 		this.vegetariano = vegetariano;
 	}
 
+	@OneToOne(mappedBy = "sugerenciaChef")
 	public RecetaSugerida getRecetaSugerida() {
 		return recetaSugerida;
 	}

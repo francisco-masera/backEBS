@@ -1,18 +1,35 @@
 package ebs.back.entity;
 
-public class RubroManufacturado extends BaseEntity {
+import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+@Entity
+public class RubroManufacturado implements Serializable {
+
+	private Long id;
 	private String denominacion;
 	private ArticuloManufacturado manufacturado;
 
 	public RubroManufacturado() {
-		super();
+
 	}
 
-	public RubroManufacturado(String denominacion, ArticuloManufacturado manufacturado) {
-		super();
-		this.denominacion = denominacion;
+	public RubroManufacturado(Long id, String deominacion, ArticuloManufacturado manufacturado) {
+		this.id = id;
+		this.denominacion = deominacion;
 		this.manufacturado = manufacturado;
+	}
+
+	@Id
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getDenominacion() {
@@ -23,6 +40,7 @@ public class RubroManufacturado extends BaseEntity {
 		this.denominacion = deominacion;
 	}
 
+	@OneToOne(mappedBy = "rubro")
 	public ArticuloManufacturado getManufacturado() {
 		return manufacturado;
 	}

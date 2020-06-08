@@ -3,6 +3,15 @@ package ebs.back.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+@Entity
+@DiscriminatorValue("Cliente")
 public class Cliente extends Persona {
 
 	private List<TarjetaDebito> tarjetas;
@@ -12,13 +21,14 @@ public class Cliente extends Persona {
 		super();
 	}
 
-	public Cliente(List<TarjetaDebito> tarjetas, List<Pedido> pedidos) {
+	public Cliente(String nombre, String apellido, int telefono, String email, String foto, List<Domicilio> domicilios,
+			List<TarjetaDebito> tarjetas, List<Pedido> pedidos) {
 		super();
-
 		this.tarjetas = tarjetas;
 		this.pedidos = pedidos;
 	}
 
+	@OneToMany(mappedBy = "cliente")
 	public List<Pedido> getPedidos() {
 		return pedidos;
 	}
@@ -27,6 +37,7 @@ public class Cliente extends Persona {
 		this.pedidos = pedidos;
 	}
 
+	@OneToMany(mappedBy = "cliente")
 	public List<TarjetaDebito> getTarjetas() {
 		return tarjetas;
 	}
@@ -37,7 +48,7 @@ public class Cliente extends Persona {
 
 	@Override
 	protected void agregarDomicilio(Domicilio domicilio) {
-		super.agregarDomicilio(domicilio);
+		this.domicilios.add(domicilio);
 	}
 
 }

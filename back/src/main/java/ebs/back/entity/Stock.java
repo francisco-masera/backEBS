@@ -1,7 +1,17 @@
 package ebs.back.entity;
 
-public class Stock extends BaseEntity {
+import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+@Entity
+public class Stock implements Serializable {
+
+	private Long id;
 	private long actual;
 	private int minimo;
 	private long maximo;
@@ -9,12 +19,12 @@ public class Stock extends BaseEntity {
 	private ArticuloInsumoVenta articuloInsumoVenta;
 
 	public Stock() {
-		super();
+
 	}
 
-	public Stock(long actual, int minimo, long maximo, ArticuloInsumo articuloInsumo,
+	public Stock(Long id, long actual, int minimo, long maximo, ArticuloInsumo articuloInsumo,
 			ArticuloInsumoVenta articuloInsumoVenta) {
-		super();
+		this.id = id;
 		this.actual = actual;
 		this.minimo = minimo;
 		this.maximo = maximo;
@@ -22,8 +32,17 @@ public class Stock extends BaseEntity {
 		this.articuloInsumoVenta = articuloInsumoVenta;
 	}
 
-	public long getActual() {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Long getId() {
+		return id;
+	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getActual() {
 		return actual;
 	}
 
@@ -47,6 +66,7 @@ public class Stock extends BaseEntity {
 		this.maximo = maximo;
 	}
 
+	@OneToOne(mappedBy = "stock")
 	public ArticuloInsumo getArticuloInsumo() {
 		return articuloInsumo;
 	}
@@ -55,6 +75,7 @@ public class Stock extends BaseEntity {
 		this.articuloInsumo = articuloInsumo;
 	}
 
+	@OneToOne(mappedBy = "stock")
 	public ArticuloInsumoVenta getArticuloInsumoVenta() {
 		return articuloInsumoVenta;
 	}
