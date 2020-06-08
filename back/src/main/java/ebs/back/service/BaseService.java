@@ -20,7 +20,7 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 			Pageable pageable = PageRequest.of(page, size);
 			return repository.findAll(pageable).getContent();
 		} catch (Exception e) {
-			throw new Exception(e.getMessage());
+			throw new Exception(e.getMessage(), e.getCause());
 		}
 	}
 
@@ -28,8 +28,18 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 	public E getOne(Long id) throws Exception {
 		try {
 			Optional<E> varOptional = repository.findById(id);
-			E entity = varOptional.get();
-			return entity;
+			return varOptional.get();
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException(e.getMessage(), e.getCause());
+		} catch (Exception e) {
+			throw new Exception(e.getMessage(), e.getCause());
+		}
+	}
+
+	@Override
+	public E save(E entity) throws Exception {
+		try {
+			return repository.save(entity);
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(e.getMessage(), e.getCause());
 		} catch (Exception e) {
