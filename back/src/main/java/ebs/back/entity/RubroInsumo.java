@@ -3,8 +3,10 @@ package ebs.back.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,7 +41,7 @@ public class RubroInsumo implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idRubro")
+	@Column(name = "idRubroInsumo", nullable = false, insertable = false, updatable = false)
 	public Long getId() {
 		return id;
 	}
@@ -48,6 +50,7 @@ public class RubroInsumo implements Serializable {
 		this.id = id;
 	}
 
+	@Column(nullable = false)
 	public String getDenominacion() {
 		return denominacion;
 	}
@@ -57,7 +60,7 @@ public class RubroInsumo implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "rubroPadre")
+	@JoinColumn(name = "rubroPadre", nullable = true)
 	public RubroInsumo getRubroPadre() {
 		return rubroPadre;
 	}
@@ -75,7 +78,7 @@ public class RubroInsumo implements Serializable {
 		this.rubros = rubros;
 	}
 
-	@OneToMany(mappedBy = "rubro")
+	@OneToMany(mappedBy = "rubro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	public List<ArticuloInsumoVenta> getInsumosVenta() {
 		return insumosVenta;
 	}

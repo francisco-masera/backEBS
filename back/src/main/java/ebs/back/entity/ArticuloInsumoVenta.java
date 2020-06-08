@@ -1,10 +1,8 @@
 package ebs.back.entity;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -22,9 +20,7 @@ public class ArticuloInsumoVenta extends ArticuloVenta {
 		super();
 	}
 
-	public ArticuloInsumoVenta(String denominacion, String descripcion, float precioVenta, String imagen,
-			boolean enVenta, DetallePedido detalle, HistorialVentas ventas, String unidadMedida,
-			OrdenCompra ordenCompra, Stock stock, RubroInsumo rubro) {
+	public ArticuloInsumoVenta(String unidadMedida, OrdenCompra ordenCompra, Stock stock, RubroInsumo rubro) {
 		super();
 		this.unidadMedida = unidadMedida;
 		this.ordenCompra = ordenCompra;
@@ -32,6 +28,7 @@ public class ArticuloInsumoVenta extends ArticuloVenta {
 		this.rubro = rubro;
 	}
 
+	@Column(nullable = false)
 	public String getUnidadMedida() {
 		return unidadMedida;
 	}

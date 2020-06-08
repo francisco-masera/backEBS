@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -47,6 +48,7 @@ public class Pedido implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idPedido", nullable = false, insertable = false, updatable = false)
 	public Long getId() {
 		return id;
 	}
@@ -55,6 +57,7 @@ public class Pedido implements Serializable {
 		this.id = id;
 	}
 
+	@Column(nullable = false)
 	public long getNumero() {
 		return numero;
 	}
@@ -63,6 +66,7 @@ public class Pedido implements Serializable {
 		this.numero = numero;
 	}
 
+	@Column(nullable = false)
 	public String getEstado() {
 		return estado;
 	}
@@ -76,6 +80,7 @@ public class Pedido implements Serializable {
 	}
 
 	@Temporal(TemporalType.TIME)
+	@Column(nullable = false, updatable = false)
 	private Time convertirHora() {
 		return Time.valueOf(this.getHora());
 	}
@@ -84,6 +89,7 @@ public class Pedido implements Serializable {
 		this.hora = hora;
 	}
 
+	@Column(nullable = false)
 	public boolean isTipoEntrega() {
 		return tipoEntrega;
 	}
@@ -102,7 +108,7 @@ public class Pedido implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "idCliente", nullable = false)
+	@JoinColumn(name = "idCliente", nullable = false, unique = true, updatable = false)
 	public Cliente getCliente() {
 		return cliente;
 	}

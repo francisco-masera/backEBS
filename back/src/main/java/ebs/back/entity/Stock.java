@@ -2,6 +2,7 @@ package ebs.back.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +16,7 @@ public class Stock implements Serializable {
 	private long actual;
 	private int minimo;
 	private long maximo;
+	private boolean baja;
 	private ArticuloInsumo articuloInsumo;
 	private ArticuloInsumoVenta articuloInsumoVenta;
 
@@ -22,18 +24,20 @@ public class Stock implements Serializable {
 
 	}
 
-	public Stock(Long id, long actual, int minimo, long maximo, ArticuloInsumo articuloInsumo,
+	public Stock(Long id, long actual, int minimo, long maximo, boolean baja, ArticuloInsumo articuloInsumo,
 			ArticuloInsumoVenta articuloInsumoVenta) {
 		this.id = id;
 		this.actual = actual;
 		this.minimo = minimo;
 		this.maximo = maximo;
+		this.baja = baja;
 		this.articuloInsumo = articuloInsumo;
 		this.articuloInsumoVenta = articuloInsumoVenta;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idStock", nullable = false, insertable = false, updatable = false)
 	public Long getId() {
 		return id;
 	}
@@ -42,6 +46,7 @@ public class Stock implements Serializable {
 		this.id = id;
 	}
 
+	@Column(nullable = false)
 	public Long getActual() {
 		return actual;
 	}
@@ -50,6 +55,7 @@ public class Stock implements Serializable {
 		this.actual = actual;
 	}
 
+	@Column(nullable = false)
 	public int getMinimo() {
 		return minimo;
 	}
@@ -58,12 +64,22 @@ public class Stock implements Serializable {
 		this.minimo = minimo;
 	}
 
+	@Column(nullable = false)
 	public long getMaximo() {
 		return maximo;
 	}
 
 	public void setMaximo(long maximo) {
 		this.maximo = maximo;
+	}
+
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	public boolean getBaja() {
+		return baja;
+	}
+
+	public void setBaja(boolean baja) {
+		this.baja = baja;
 	}
 
 	@OneToOne(mappedBy = "stock")

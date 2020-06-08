@@ -26,7 +26,7 @@ public class Factura implements Serializable {
 	private Pedido pedido;
 
 	public Factura() {
-	
+
 	}
 
 	public Factura(Long id, LocalDateTime fechaHora, long numero, double total, boolean formaPago, Pedido pedido) {
@@ -40,6 +40,7 @@ public class Factura implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idFactura", nullable = false, insertable = false, updatable = false)
 	public Long getId() {
 		return id;
 	}
@@ -57,11 +58,12 @@ public class Factura implements Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false)
+	@Column(nullable = false, updatable = false)
 	private Date convertirFechaHora() {
 		return Timestamp.valueOf(this.fechaHora);
 	}
 
+	@Column(nullable = false, unique = true, updatable = false)
 	public long getNumero() {
 		return numero;
 	}
@@ -70,6 +72,7 @@ public class Factura implements Serializable {
 		this.numero = numero;
 	}
 
+	@Column(nullable = false, updatable = false)
 	public double getTotal() {
 		return total;
 	}
@@ -78,6 +81,7 @@ public class Factura implements Serializable {
 		this.total = total;
 	}
 
+	@Column(nullable = false, updatable = false)
 	public boolean isFormaPago() {
 		return formaPago;
 	}
@@ -87,7 +91,7 @@ public class Factura implements Serializable {
 	}
 
 	@OneToOne
-	@JoinColumn(name = "idPedido", nullable = false)
+	@JoinColumn(name = "idPedido", nullable = false, updatable = false)
 	public Pedido getPedido() {
 		return pedido;
 	}

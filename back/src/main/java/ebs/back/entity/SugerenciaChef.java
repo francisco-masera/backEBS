@@ -1,10 +1,8 @@
 package ebs.back.entity;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -21,9 +19,8 @@ public class SugerenciaChef extends ArticuloVenta {
 		super();
 	}
 
-	public SugerenciaChef(String denominacion, String descripcion, float precioVenta, String imagen, boolean enVenta,
-			DetallePedido detalle, HistorialVentas ventas, int tiempoCocina, boolean aptoCeliaco, boolean vegano,
-			boolean vegetariano, RecetaSugerida recetaSugerida) {
+	public SugerenciaChef(int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
+			RecetaSugerida recetaSugerida) {
 		super();
 		this.tiempoCocina = tiempoCocina;
 		this.aptoCeliaco = aptoCeliaco;
@@ -32,6 +29,7 @@ public class SugerenciaChef extends ArticuloVenta {
 		this.recetaSugerida = recetaSugerida;
 	}
 
+	@Column(nullable = false)
 	public int getTiempoCocina() {
 		return tiempoCocina;
 	}
@@ -40,6 +38,7 @@ public class SugerenciaChef extends ArticuloVenta {
 		this.tiempoCocina = tiempoCocina;
 	}
 
+	@Column(nullable = false)
 	public boolean isAptoCeliaco() {
 		return aptoCeliaco;
 	}
@@ -48,6 +47,7 @@ public class SugerenciaChef extends ArticuloVenta {
 		this.aptoCeliaco = aptoCeliaco;
 	}
 
+	@Column(nullable = false)
 	public boolean isVegano() {
 		return vegano;
 	}
@@ -56,6 +56,7 @@ public class SugerenciaChef extends ArticuloVenta {
 		this.vegano = vegano;
 	}
 
+	@Column(nullable = false)
 	public boolean isVegetariano() {
 		return vegetariano;
 	}

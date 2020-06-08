@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,6 +42,7 @@ public class OrdenCompra implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idOrdenCompra", nullable = false, insertable = false, updatable = false)
 	public Long getId() {
 		return id;
 	}
@@ -49,6 +51,7 @@ public class OrdenCompra implements Serializable {
 		this.id = id;
 	}
 
+	@Column(nullable = false, updatable = false)
 	public long getNumero() {
 		return numero;
 	}
@@ -66,6 +69,7 @@ public class OrdenCompra implements Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false, updatable = false)
 	private Date convertirFecha() {
 		return Timestamp.valueOf(this.fechaHora);
 	}

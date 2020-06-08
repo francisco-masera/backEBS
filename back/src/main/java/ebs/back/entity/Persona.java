@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,12 +23,13 @@ public abstract class Persona implements Serializable {
 	protected int telefono;
 	protected String email;
 	protected String foto;
+	protected boolean baja;
 	protected List<Domicilio> domicilios = new ArrayList<>();
 
 	public Persona() {
 	}
 
-	public Persona(Long id, String nombre, String apellido, int telefono, String email, String foto,
+	public Persona(Long id, String nombre, String apellido, int telefono, String email, String foto, boolean baja,
 			List<Domicilio> domicilios) {
 		super();
 		this.id = id;
@@ -36,11 +38,13 @@ public abstract class Persona implements Serializable {
 		this.telefono = telefono;
 		this.email = email;
 		this.foto = foto;
+		this.baja = baja;
 		this.domicilios = domicilios;
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idPersona", nullable = false, insertable = false, updatable = false)
 	public Long getId() {
 		return id;
 	}
@@ -49,6 +53,7 @@ public abstract class Persona implements Serializable {
 		this.id = id;
 	}
 
+	@Column(nullable = false)
 	public String getNombre() {
 		return nombre;
 	}
@@ -57,6 +62,7 @@ public abstract class Persona implements Serializable {
 		this.nombre = nombre;
 	}
 
+	@Column(nullable = false)
 	public String getApellido() {
 		return apellido;
 	}
@@ -65,6 +71,7 @@ public abstract class Persona implements Serializable {
 		this.apellido = apellido;
 	}
 
+	@Column(nullable = false)
 	public int getTelefono() {
 		return telefono;
 	}
@@ -73,6 +80,7 @@ public abstract class Persona implements Serializable {
 		this.telefono = telefono;
 	}
 
+	@Column(nullable = false)
 	public String getEmail() {
 		return email;
 	}
@@ -81,12 +89,22 @@ public abstract class Persona implements Serializable {
 		this.email = email;
 	}
 
+	@Column(nullable = false)
 	public String getFoto() {
 		return foto;
 	}
 
 	public void setFoto(String foto) {
 		this.foto = foto;
+	}
+
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	public boolean getBaja() {
+		return baja;
+	}
+
+	public void setBaja(boolean baja) {
+		this.baja = baja;
 	}
 
 	@OneToMany(mappedBy = "persona")

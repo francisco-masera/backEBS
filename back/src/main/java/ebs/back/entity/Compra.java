@@ -2,6 +2,7 @@ package ebs.back.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,6 +31,7 @@ public class Compra implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idCompra", nullable = false, insertable = false, updatable = false)
 	public Long getId() {
 		return id;
 	}
@@ -38,6 +40,7 @@ public class Compra implements Serializable {
 		this.id = id;
 	}
 
+	@Column(nullable = false, updatable = false)
 	public float getPrecioUnitario() {
 		return precioUnitario;
 	}
@@ -46,6 +49,7 @@ public class Compra implements Serializable {
 		this.precioUnitario = precioUnitario;
 	}
 
+	@Column(nullable = false, updatable = false)
 	public float getCantidad() {
 		return cantidad;
 	}

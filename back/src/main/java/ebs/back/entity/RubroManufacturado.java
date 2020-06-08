@@ -2,7 +2,10 @@ package ebs.back.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
@@ -24,6 +27,8 @@ public class RubroManufacturado implements Serializable {
 	}
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idRubroManufacturado", nullable = false, insertable = false, updatable = false)
 	public Long getId() {
 		return id;
 	}
@@ -32,6 +37,7 @@ public class RubroManufacturado implements Serializable {
 		this.id = id;
 	}
 
+	@Column(nullable = false)
 	public String getDenominacion() {
 		return denominacion;
 	}

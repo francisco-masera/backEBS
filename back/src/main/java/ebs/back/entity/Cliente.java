@@ -5,9 +5,6 @@ import java.util.List;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -21,8 +18,7 @@ public class Cliente extends Persona {
 		super();
 	}
 
-	public Cliente(String nombre, String apellido, int telefono, String email, String foto, List<Domicilio> domicilios,
-			List<TarjetaDebito> tarjetas, List<Pedido> pedidos) {
+	public Cliente(List<TarjetaDebito> tarjetas, List<Pedido> pedidos) {
 		super();
 		this.tarjetas = tarjetas;
 		this.pedidos = pedidos;
@@ -47,7 +43,7 @@ public class Cliente extends Persona {
 	}
 
 	@Override
-	protected void agregarDomicilio(Domicilio domicilio) {
+	public void agregarDomicilio(Domicilio domicilio) {
 		this.domicilios.add(domicilio);
 	}
 

@@ -2,6 +2,7 @@ package ebs.back.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,13 +19,14 @@ public class Domicilio implements Serializable {
 	private int numero;
 	private int piso;
 	private String departamento;
+	private boolean baja;
 	private Persona persona;
 
 	public Domicilio() {
 
 	}
 
-	public Domicilio(Long id, String localidad, String calle, int numero, int piso, String departamento,
+	public Domicilio(Long id, String localidad, String calle, int numero, int piso, boolean baja, String departamento,
 			Persona persona) {
 		this.id = id;
 		this.localidad = localidad;
@@ -32,11 +34,13 @@ public class Domicilio implements Serializable {
 		this.numero = numero;
 		this.piso = piso;
 		this.departamento = departamento;
+		this.baja = baja;
 		this.persona = persona;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idDomicilio", nullable = false, insertable = false, updatable = false)
 	public Long getId() {
 		return id;
 	}
@@ -45,6 +49,7 @@ public class Domicilio implements Serializable {
 		this.id = id;
 	}
 
+	@Column(nullable = false)
 	public String getLocalidad() {
 		return localidad;
 	}
@@ -53,6 +58,7 @@ public class Domicilio implements Serializable {
 		this.localidad = localidad;
 	}
 
+	@Column(nullable = false)
 	public String getCalle() {
 		return calle;
 	}
@@ -61,6 +67,7 @@ public class Domicilio implements Serializable {
 		this.calle = calle;
 	}
 
+	@Column(nullable = false)
 	public int getNumero() {
 		return numero;
 	}
@@ -69,6 +76,7 @@ public class Domicilio implements Serializable {
 		this.numero = numero;
 	}
 
+	@Column(nullable = false)
 	public int getPiso() {
 		return piso;
 	}
@@ -77,6 +85,7 @@ public class Domicilio implements Serializable {
 		this.piso = piso;
 	}
 
+	@Column(nullable = false)
 	public String getDepartamento() {
 		return departamento;
 	}
@@ -85,8 +94,17 @@ public class Domicilio implements Serializable {
 		this.departamento = departamento;
 	}
 
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	public boolean isBaja() {
+		return baja;
+	}
+
+	public void setBaja(boolean baja) {
+		this.baja = baja;
+	}
+
 	@ManyToOne
-	@JoinColumn(name = "idPersona", nullable = false)
+	@JoinColumn(name = "idPersona", nullable = false, unique = true, updatable = false)
 	public Persona getPersona() {
 		return persona;
 	}

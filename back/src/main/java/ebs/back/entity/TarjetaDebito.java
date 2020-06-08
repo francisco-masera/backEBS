@@ -6,6 +6,7 @@ import java.time.MonthDay;
 import java.time.ZoneId;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,22 +23,25 @@ public class TarjetaDebito implements Serializable {
 	private long numero;
 	private LocalDate vecimiento;
 	private String nombreTitular;
+	private boolean baja;
 	private Cliente cliente;
 
 	public TarjetaDebito() {
 	}
 
 	public TarjetaDebito(Long id, long numero, LocalDate vecimiento, MonthDay diaVencimiento, String nombreTitular,
-			Cliente cliente) {
+			boolean baja, Cliente cliente) {
 		this.id = id;
 		this.numero = numero;
 		this.vecimiento = vecimiento;
 		this.nombreTitular = nombreTitular;
+		this.baja = baja;
 		this.cliente = cliente;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idTarjeta", insertable = false, updatable = false, nullable = false)
 	public Long getId() {
 		return id;
 	}
@@ -46,6 +50,7 @@ public class TarjetaDebito implements Serializable {
 		this.id = id;
 	}
 
+	@Column(updatable = false, unique = true, nullable = false)
 	public long getNumero() {
 		return numero;
 	}
@@ -63,16 +68,27 @@ public class TarjetaDebito implements Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
+	@Column(nullable = false, unique = true)
 	private Date convertirFecha() {
 		return Date.from(this.vecimiento.atStartOfDay(ZoneId.systemDefault()).toInstant());
 	}
 
+	@Column(nullable = false)
 	public String getNombreTitular() {
 		return nombreTitular;
 	}
 
 	public void setNombreTitular(String nombreTitular) {
 		this.nombreTitular = nombreTitular;
+	}
+
+	@Column(nullable = false, columnDefinition = "boolean default  false")
+	public boolean getBaja() {
+		return baja;
+	}
+
+	public void setBaja(boolean baja) {
+		this.baja = baja;
 	}
 
 	@ManyToOne

@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,6 +41,7 @@ public class HistorialVentas implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idHistorial", nullable = false, insertable = false, updatable = false)
 	public Long getId() {
 		return id;
 	}
@@ -53,6 +55,7 @@ public class HistorialVentas implements Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
+	@Column(nullable = false, updatable = false)
 	private Date convertirFecha() {
 		return Date.valueOf(this.fechaVenta);
 	}
@@ -61,6 +64,7 @@ public class HistorialVentas implements Serializable {
 		this.fechaVenta = fechaVenta;
 	}
 
+	@Column(nullable = false, updatable = false)
 	public float getPrecioVenta() {
 		return precioVenta;
 	}
@@ -69,6 +73,7 @@ public class HistorialVentas implements Serializable {
 		this.precioVenta = precioVenta;
 	}
 
+	@Column(nullable = false, updatable = false)
 	public float getCosto() {
 		return costo;
 	}
@@ -77,6 +82,7 @@ public class HistorialVentas implements Serializable {
 		this.costo = costo;
 	}
 
+	@Column(nullable = false, updatable = false)
 	public double getTotal() {
 		return total;
 	}

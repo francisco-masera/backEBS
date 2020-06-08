@@ -2,6 +2,7 @@ package ebs.back.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +23,7 @@ public abstract class ArticuloVenta implements Serializable {
 	protected float precioVenta;
 	protected String imagen;
 	protected boolean enVenta;
+	protected boolean baja;
 	protected DetallePedido detalle;
 	protected HistorialVentas ventas;
 
@@ -29,19 +31,21 @@ public abstract class ArticuloVenta implements Serializable {
 	}
 
 	public ArticuloVenta(Long id, String denominacion, String descripcion, float precioVenta, String imagen,
-			boolean enVenta, DetallePedido detalle, HistorialVentas ventas) {
+			boolean enVenta, boolean baja, DetallePedido detalle, HistorialVentas ventas) {
 		this.id = id;
 		this.denominacion = denominacion;
 		this.descripcion = descripcion;
 		this.precioVenta = precioVenta;
 		this.imagen = imagen;
 		this.enVenta = enVenta;
+		this.baja = baja;
 		this.detalle = detalle;
 		this.ventas = ventas;
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idArticuloVenta", nullable = false, insertable = false, updatable = false)
 	public Long getId() {
 		return id;
 	}
@@ -50,6 +54,7 @@ public abstract class ArticuloVenta implements Serializable {
 		this.id = id;
 	}
 
+	@Column(nullable = false)
 	public String getDenominacion() {
 		return denominacion;
 	}
@@ -58,6 +63,7 @@ public abstract class ArticuloVenta implements Serializable {
 		this.denominacion = denominacion;
 	}
 
+	@Column(nullable = false)
 	public String getDescripcion() {
 		return descripcion;
 	}
@@ -66,6 +72,7 @@ public abstract class ArticuloVenta implements Serializable {
 		this.descripcion = descripcion;
 	}
 
+	@Column(nullable = false)
 	public float getPrecioVenta() {
 		return precioVenta;
 	}
@@ -74,6 +81,7 @@ public abstract class ArticuloVenta implements Serializable {
 		this.precioVenta = precioVenta;
 	}
 
+	@Column(nullable = false)
 	public String getImagen() {
 		return imagen;
 	}
@@ -82,12 +90,22 @@ public abstract class ArticuloVenta implements Serializable {
 		this.imagen = imagen;
 	}
 
+	@Column(nullable = false)
 	public boolean isEnVenta() {
 		return enVenta;
 	}
 
 	public void setEnVenta(boolean enVenta) {
 		this.enVenta = enVenta;
+	}
+
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	public boolean getBaja() {
+		return baja;
+	}
+
+	public void setBaja(boolean baja) {
+		this.baja = baja;
 	}
 
 	@OneToOne(mappedBy = "articulo")
@@ -99,8 +117,8 @@ public abstract class ArticuloVenta implements Serializable {
 		this.detalle = detalle;
 	}
 
-	@ManyToOne()
-	@JoinColumn(name = "idHistorial")
+	@ManyToOne
+	@JoinColumn(name = "idHistorial", nullable = false, updatable = false)
 	public HistorialVentas getVentas() {
 		return ventas;
 	}

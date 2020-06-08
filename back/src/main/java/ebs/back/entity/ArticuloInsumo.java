@@ -2,6 +2,7 @@ package ebs.back.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,6 +18,7 @@ public class ArticuloInsumo implements Serializable {
 	private String unidadMedida;
 	private String denominacion;
 	private boolean esExtra;
+	private boolean baja;
 	private RubroInsumo rubro;
 	private Receta receta;
 	private RecetaSugerida recetaSugerida;
@@ -27,12 +29,13 @@ public class ArticuloInsumo implements Serializable {
 
 	}
 
-	public ArticuloInsumo(Long id, String unidadMedida, String denominacion, boolean esExtra, RubroInsumo rubro,
-			Receta receta, RecetaSugerida recetaSugerida, Stock stock, OrdenCompra ordenCompra) {
+	public ArticuloInsumo(Long id, String unidadMedida, String denominacion, boolean esExtra, boolean baja,
+			RubroInsumo rubro, Receta receta, RecetaSugerida recetaSugerida, Stock stock, OrdenCompra ordenCompra) {
 		this.id = id;
 		this.unidadMedida = unidadMedida;
 		this.denominacion = denominacion;
 		this.esExtra = esExtra;
+		this.baja = baja;
 		this.rubro = rubro;
 		this.receta = receta;
 		this.recetaSugerida = recetaSugerida;
@@ -42,6 +45,7 @@ public class ArticuloInsumo implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idArticuloInsumo", nullable = false, insertable = false, updatable = false)
 	public Long getId() {
 		return id;
 	}
@@ -50,6 +54,7 @@ public class ArticuloInsumo implements Serializable {
 		this.id = id;
 	}
 
+	@Column(nullable = false)
 	public String getUnidadMedida() {
 		return unidadMedida;
 	}
@@ -58,6 +63,7 @@ public class ArticuloInsumo implements Serializable {
 		this.unidadMedida = unidadMedida;
 	}
 
+	@Column(nullable = false)
 	public String getDenominacion() {
 		return denominacion;
 	}
@@ -66,6 +72,7 @@ public class ArticuloInsumo implements Serializable {
 		this.denominacion = denominacion;
 	}
 
+	@Column(nullable = false)
 	public boolean isEsExtra() {
 		return esExtra;
 	}
@@ -74,8 +81,17 @@ public class ArticuloInsumo implements Serializable {
 		this.esExtra = esExtra;
 	}
 
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	public boolean getBaja() {
+		return baja;
+	}
+
+	public void setBaja(boolean baja) {
+		this.baja = baja;
+	}
+
 	@ManyToOne
-	@JoinColumn(name = "idRubro", nullable = false)
+	@JoinColumn(name = "idRubro", nullable = false, unique = true)
 	public RubroInsumo getRubro() {
 		return rubro;
 	}
