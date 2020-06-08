@@ -52,9 +52,10 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 	@Override
 	public E update(E entity, Long id) throws Exception {
 		try {
-			E aux = repository.getOne(id);
-			aux = repository.save(entity);
-			return aux;
+			Optional<E> entityOptional = repository.findById(id);
+			E auxE = entityOptional.get();
+			auxE = repository.save(entity);
+			return auxE;
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(e.getMessage(), e.getCause());
 		} catch (EntityNotFoundException e) {

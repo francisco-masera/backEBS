@@ -49,7 +49,7 @@ public class BaseController<E, S extends IBaseService<E>> {
 		try {
 			return ResponseEntity.status(HttpStatus.CREATED).body(service.save(entity));
 		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.setErrorMessage(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.setErrorMessage(e));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.setErrorMessage(e));
 		}
@@ -57,11 +57,11 @@ public class BaseController<E, S extends IBaseService<E>> {
 
 	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> put(@RequestBody E personaForm, @PathVariable Long id) {
+	public ResponseEntity<?> update(@RequestBody E entity, @PathVariable Long id) {
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(service.update(personaForm, id));
+			return ResponseEntity.status(HttpStatus.OK).body(service.update(entity, id));
 		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.setErrorMessage(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.setErrorMessage(e));
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
