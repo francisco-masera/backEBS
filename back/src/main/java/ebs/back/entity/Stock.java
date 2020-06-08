@@ -16,7 +16,6 @@ public class Stock implements Serializable {
 	private long actual;
 	private int minimo;
 	private long maximo;
-	private boolean baja;
 	private ArticuloInsumo articuloInsumo;
 	private ArticuloInsumoVenta articuloInsumoVenta;
 
@@ -24,13 +23,13 @@ public class Stock implements Serializable {
 
 	}
 
-	public Stock(Long id, long actual, int minimo, long maximo, boolean baja, ArticuloInsumo articuloInsumo,
+	public Stock(Long id, long actual, int minimo, long maximo, ArticuloInsumo articuloInsumo,
 			ArticuloInsumoVenta articuloInsumoVenta) {
 		this.id = id;
 		this.actual = actual;
 		this.minimo = minimo;
 		this.maximo = maximo;
-		this.baja = baja;
+
 		this.articuloInsumo = articuloInsumo;
 		this.articuloInsumoVenta = articuloInsumoVenta;
 	}
@@ -71,15 +70,6 @@ public class Stock implements Serializable {
 
 	public void setMaximo(long maximo) {
 		this.maximo = maximo;
-	}
-
-	@Column(nullable = false, columnDefinition = "boolean default false")
-	public boolean getBaja() {
-		return baja;
-	}
-
-	public void setBaja(boolean baja) {
-		this.baja = baja;
 	}
 
 	@OneToOne(mappedBy = "stock")
