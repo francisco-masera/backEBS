@@ -1,11 +1,11 @@
 package ebs.back.entity;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
-@DiscriminatorValue("Empleado")
+@PrimaryKeyJoinColumn(name = "idPersona")
 public class Empleado extends Persona {
 
 	private String usuario;

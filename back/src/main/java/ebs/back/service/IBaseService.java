@@ -14,7 +14,6 @@ public interface IBaseService<E> {
 
 	public abstract E update(E entity, Long id) throws Exception;
 
-	public abstract void delete(Query q) throws Exception;
+	public abstract boolean delete(Query q, Long id) throws Exception;
 
-	public int countPages(int size) throws Exception;
 }

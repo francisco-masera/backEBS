@@ -3,12 +3,12 @@ package ebs.back.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
-@DiscriminatorValue("Cliente")
+@PrimaryKeyJoinColumn(name = "idPersona")
 public class Cliente extends Persona {
 
 	private List<TarjetaDebito> tarjetas;

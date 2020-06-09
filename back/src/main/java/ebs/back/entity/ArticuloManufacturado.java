@@ -1,13 +1,13 @@
 package ebs.back.entity;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
-@DiscriminatorValue("Manufacturado")
+@PrimaryKeyJoinColumn(name = "idArticulo")
 public class ArticuloManufacturado extends ArticuloVenta {
 
 	private int tiempoCocina;
@@ -30,6 +30,10 @@ public class ArticuloManufacturado extends ArticuloVenta {
 		this.vegetariano = vegetariano;
 		this.rubro = rubro;
 		this.receta = receta;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Column(nullable = false)

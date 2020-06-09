@@ -1,11 +1,16 @@
 package ebs.back.controller;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,64 +20,95 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import ebs.back.service.IBaseService;
 
+
 public class BaseController<E, S extends IBaseService<E>> {
 
 	@Autowired
 	protected S service;
 
 	@GetMapping("/")
-	@Transactional
 	public ResponseEntity<?> getAll(@RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "size", defaultValue = "10") int size) {
+
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(service.getAll(page, size));
+
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.setErrorMessage(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
 		}
 	}
 
 	@GetMapping("/{id}")
-	@Transactional
 	public ResponseEntity<?> getOne(@PathVariable Long id) {
+
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(service.getOne(id));
+
 		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.setErrorMessage(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.setErrorMessage(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
 		}
 	}
 
 	@PostMapping("/")
-	@Transactional
 	public ResponseEntity<?> save(@RequestBody E entity) {
+
 		try {
 			return ResponseEntity.status(HttpStatus.CREATED).body(service.save(entity));
+
 		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.setErrorMessage(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.setErrorMessage(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
 		}
 	}
 
 	@PutMapping("/{id}")
-	@Transactional
 	public ResponseEntity<?> update(@RequestBody E entity, @PathVariable Long id) {
+
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(service.update(entity, id));
+
 		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.setErrorMessage(e));
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+
 		} catch (EntityNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.setErrorMessage(e));
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
 		}
 	}
 
-	private String setErrorMessage(Exception e) {
-		return e.getCause() != null
-				? "{\"Error en la solicitud\": \"" + e.getMessage() + "\". Causa raíz\":\"" + e.getCause() + "\"}"
-				: "{\"Error en la solicitud\": \"" + e.getMessage() + "\"}";
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> delete(@PathVariable Long id, String tableName) {
+
+		try {
+			EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("Delete");
+			EntityManager em = entityManagerFactory.createEntityManager();
+			em.getTransaction().begin();
+			Query query = em.createQuery("UPDATE " + tableName + " SET baja = 1 WHERE id = " + id);
+			return ResponseEntity.status(HttpStatus.OK).body(service.delete(query, id));
+
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+		}
 	}
+
 }

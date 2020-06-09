@@ -13,8 +13,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({ @Type(value = ArticuloInsumoVenta.class), @Type(value = ArticuloManufacturado.class),
+		@Type(value = SugerenciaChef.class), })
 public abstract class ArticuloVenta implements Serializable {
 
 	protected Long id;
@@ -22,7 +30,6 @@ public abstract class ArticuloVenta implements Serializable {
 	protected String descripcion;
 	protected float precioVenta;
 	protected String imagen;
-	protected boolean enVenta;
 	protected boolean baja;
 	protected DetallePedido detalle;
 	protected HistorialVentas ventas;
@@ -31,13 +38,12 @@ public abstract class ArticuloVenta implements Serializable {
 	}
 
 	public ArticuloVenta(Long id, String denominacion, String descripcion, float precioVenta, String imagen,
-			boolean enVenta, boolean baja, DetallePedido detalle, HistorialVentas ventas) {
+			boolean baja, DetallePedido detalle, HistorialVentas ventas) {
 		this.id = id;
 		this.denominacion = denominacion;
 		this.descripcion = descripcion;
 		this.precioVenta = precioVenta;
 		this.imagen = imagen;
-		this.enVenta = enVenta;
 		this.baja = baja;
 		this.detalle = detalle;
 		this.ventas = ventas;
@@ -88,15 +94,6 @@ public abstract class ArticuloVenta implements Serializable {
 
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
-	}
-
-	@Column(nullable = false)
-	public boolean isEnVenta() {
-		return enVenta;
-	}
-
-	public void setEnVenta(boolean enVenta) {
-		this.enVenta = enVenta;
 	}
 
 	@Column(nullable = false, columnDefinition = "boolean default false")

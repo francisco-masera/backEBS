@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -16,13 +17,12 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 	protected R repository;
 
 	@Override
-
 	public List<E> getAll(int page, int size) throws Exception {
 		try {
 			Pageable pageable = PageRequest.of(page, size);
 			return repository.findAll(pageable).getContent();
 		} catch (Exception e) {
-			throw new Exception(e.getMessage(), e.getCause());
+			throw new Exception(e.getMessage());
 		}
 	}
 
@@ -32,9 +32,9 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 			Optional<E> varOptional = repository.findById(id);
 			return varOptional.get();
 		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException(e.getMessage(), e.getCause());
+			throw new IllegalArgumentException(e.getMessage());
 		} catch (Exception e) {
-			throw new Exception(e.getMessage(), e.getCause());
+			throw new Exception(e.getMessage());
 		}
 	}
 
@@ -43,9 +43,9 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 		try {
 			return repository.save(entity);
 		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException(e.getMessage(), e.getCause());
+			throw new IllegalArgumentException(e.getMessage());
 		} catch (Exception e) {
-			throw new Exception(e.getMessage(), e.getCause());
+			throw new Exception(e.getMessage());
 		}
 	}
 
@@ -57,11 +57,25 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 			auxE = repository.save(entity);
 			return auxE;
 		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException(e.getMessage(), e.getCause());
+			throw new IllegalArgumentException(e.getMessage());
 		} catch (EntityNotFoundException e) {
 			throw new EntityNotFoundException(e.getMessage());
 		} catch (Exception e) {
-			throw new Exception(e.getMessage(), e.getCause());
+			throw new Exception(e.getMessage());
 		}
+	}
+
+	@Override
+	public boolean delete(Query q, Long id) throws Exception {
+		try {
+			if (repository.existsById(id)) {
+				q.executeUpdate();
+			}
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException(e.getMessage());
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		return !repository.existsById(id);
 	}
 }

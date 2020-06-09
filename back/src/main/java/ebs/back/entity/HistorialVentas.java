@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class HistorialVentas implements Serializable {
 
@@ -92,6 +94,7 @@ public class HistorialVentas implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "ventas")
+	@JsonIgnore
 	public List<ArticuloVenta> getArticulos() {
 		return articulos;
 	}

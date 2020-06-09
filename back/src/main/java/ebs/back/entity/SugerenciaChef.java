@@ -1,12 +1,12 @@
 package ebs.back.entity;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
-@DiscriminatorValue("Sugerencia")
+@PrimaryKeyJoinColumn(name = "idArticulo")
 public class SugerenciaChef extends ArticuloVenta {
 
 	private int tiempoCocina;

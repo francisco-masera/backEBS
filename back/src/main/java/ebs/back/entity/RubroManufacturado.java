@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class RubroManufacturado implements Serializable {
 
@@ -20,9 +22,9 @@ public class RubroManufacturado implements Serializable {
 
 	}
 
-	public RubroManufacturado(Long id, String deominacion, ArticuloManufacturado manufacturado) {
+	public RubroManufacturado(Long id, String denominacion, ArticuloManufacturado manufacturado) {
 		this.id = id;
-		this.denominacion = deominacion;
+		this.denominacion = denominacion;
 		this.manufacturado = manufacturado;
 	}
 
@@ -47,6 +49,7 @@ public class RubroManufacturado implements Serializable {
 	}
 
 	@OneToOne(mappedBy = "rubro")
+	@JsonIgnore
 	public ArticuloManufacturado getManufacturado() {
 		return manufacturado;
 	}
