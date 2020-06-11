@@ -7,7 +7,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
-@PrimaryKeyJoinColumn(name = "idArticulo")
+@PrimaryKeyJoinColumn(name = "idArticuloManufacturado")
 public class ArticuloManufacturado extends InformacionArticuloVenta {
 
 	private int tiempoCocina;

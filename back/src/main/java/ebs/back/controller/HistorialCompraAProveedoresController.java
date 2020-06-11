@@ -11,7 +11,7 @@ import ebs.back.service.HistorialCompraAProveedoresService;
 @RestController
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
 		RequestMethod.DELETE })
-@RequestMapping(path = "buensabor/historialCompra")
+@RequestMapping(path = "buensabor/compras")
 public class HistorialCompraAProveedoresController
 		extends BaseController<HistorialCompraAProveedores, HistorialCompraAProveedoresService> {
 
