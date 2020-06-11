@@ -47,7 +47,7 @@ public class Insumo implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false, updatable = false)
+	@Column(name = "idInsumo")
 	public Long getIdInsumo() {
 		return idInsumo;
 	}
@@ -141,7 +141,7 @@ public class Insumo implements Serializable {
 		this.recetaSugerida = recetaSugerida;
 	}
 
-	@OneToOne(mappedBy = "insumos")
+	@OneToOne(mappedBy = "insumo")
 	public HistorialCompraAProveedores getHistorialCompra() {
 		return historialCompra;
 	}

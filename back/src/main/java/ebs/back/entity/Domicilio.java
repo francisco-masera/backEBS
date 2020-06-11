@@ -40,7 +40,7 @@ public class Domicilio implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idDomicilio", nullable = false, insertable = false, updatable = false)
+	@Column(name = "idDomicilio")
 	public Long getId() {
 		return id;
 	}

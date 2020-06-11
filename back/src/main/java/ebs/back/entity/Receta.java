@@ -36,7 +36,7 @@ public class Receta implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idReceta", nullable = false, insertable = false, updatable = false)
+	@Column(name = "idReceta")
 	public Long getId() {
 		return id;
 	}

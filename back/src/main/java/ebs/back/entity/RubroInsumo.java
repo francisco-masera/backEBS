@@ -31,7 +31,7 @@ public class RubroInsumo implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idRubroInsumo", nullable = false, insertable = false, updatable = false)
+	@Column(name = "idRubroInsumo")
 	public Long getId() {
 		return id;
 	}
@@ -49,7 +49,7 @@ public class RubroInsumo implements Serializable {
 		this.denominacion = denominacion;
 	}
 
-	@OneToMany(mappedBy = "rubro")
+	@OneToMany(mappedBy = "rubroInsumo")
 	public List<Insumo> getInsumos() {
 		return insumos;
 	}

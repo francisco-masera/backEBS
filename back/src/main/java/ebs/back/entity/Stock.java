@@ -32,7 +32,7 @@ public class Stock implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idStock", nullable = false, insertable = false, updatable = false)
+	@Column(name = "idStock")
 	public Long getId() {
 		return id;
 	}
@@ -73,7 +73,7 @@ public class Stock implements Serializable {
 		return insumo;
 	}
 
-	public void setArticuloInsumo(Insumo insumo) {
+	public void setInsumo(Insumo insumo) {
 		this.insumo = insumo;
 	}
 

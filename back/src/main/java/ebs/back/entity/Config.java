@@ -27,7 +27,7 @@ public class Config implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idConfig", nullable = false, insertable = false, updatable = false)
+	@Column(name = "idConfig")
 	public Long getId() {
 		return id;
 	}

@@ -23,24 +23,24 @@ public class HistorialCompraAProveedores implements Serializable {
 	private float precioUnitario;
 	private float cantidad;
 	private LocalDateTime fechaCompra;
-	private List<Insumo> insumos;
+	private Insumo insumo;
 
 	public HistorialCompraAProveedores() {
 
 	}
 
 	public HistorialCompraAProveedores(Long id, float precioUnitario, float cantidad, LocalDateTime fechaCompra,
-			List<Insumo> insumos) {
+			Insumo insumo) {
 		this.id = id;
 		this.precioUnitario = precioUnitario;
 		this.cantidad = cantidad;
 		this.fechaCompra = fechaCompra;
-		this.insumos = insumos;
+		this.insumo = insumo;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idCompra", nullable = false, insertable = false, updatable = false)
+	@Column(name = "idCompra")
 	public Long getId() {
 		return id;
 	}
@@ -76,13 +76,13 @@ public class HistorialCompraAProveedores implements Serializable {
 	}
 
 	@OneToOne
-	@JoinColumn(name = "idInsumo", nullable = false, updatable = false)
-	public List<Insumo> getInsumos() {
-		return insumos;
+	@JoinColumn(name = "idInsumo", nullable = false)
+	public Insumo getInsumo() {
+		return insumo;
 	}
 
-	public void setInsumos(List<Insumo> insumos) {
-		this.insumos = insumos;
+	public void setInsumo(Insumo insumo) {
+		this.insumo = insumo;
 	}
 
 	public void calcularTotal() {

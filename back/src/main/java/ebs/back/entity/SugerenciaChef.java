@@ -41,6 +41,7 @@ public class SugerenciaChef implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idSugerencia")
 	public Long getId() {
 		return id;
 	}

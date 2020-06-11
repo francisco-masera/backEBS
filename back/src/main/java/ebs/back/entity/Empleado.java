@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
-@PrimaryKeyJoinColumn(name = "idPersona")
+@PrimaryKeyJoinColumn(name = "idEmpleado")
 public class Empleado extends Persona {
 
 	private String rol;

@@ -41,7 +41,7 @@ public class TarjetaDebito implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idTarjeta", insertable = false, updatable = false, nullable = false)
+	@Column(name = "idTarjeta")
 	public Long getId() {
 		return id;
 	}

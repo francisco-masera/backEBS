@@ -30,7 +30,7 @@ public class RubroManufacturado implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idRubroManufacturado", nullable = false, insertable = false, updatable = false)
+	@Column(name = "idRubroManufacturado")
 	public Long getId() {
 		return id;
 	}

@@ -43,7 +43,7 @@ public class Factura implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idFactura", nullable = false, insertable = false, updatable = false)
+	@Column(name = "idFactura")
 	public Long getId() {
 		return id;
 	}

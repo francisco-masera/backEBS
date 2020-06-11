@@ -46,7 +46,7 @@ public abstract class InformacionArticuloVenta implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idArticuloVenta", nullable = false, insertable = false, updatable = false)
+	@Column(name = "idArticuloVenta")
 	public Long getId() {
 		return id;
 	}

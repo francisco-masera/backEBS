@@ -48,7 +48,7 @@ public class Pedido implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idPedido", nullable = false, insertable = false, updatable = false)
+	@Column(name = "idPedido")
 	public Long getId() {
 		return id;
 	}

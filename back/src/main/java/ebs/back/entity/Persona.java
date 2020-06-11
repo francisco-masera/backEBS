@@ -48,7 +48,7 @@ public abstract class Persona implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idPersona", nullable = false, insertable = false, updatable = false)
+	@Column(name = "idPersona")
 	public Long getId() {
 		return id;
 	}

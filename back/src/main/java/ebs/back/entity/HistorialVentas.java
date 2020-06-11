@@ -42,7 +42,7 @@ public class HistorialVentas implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idHistorial", nullable = false, insertable = false, updatable = false)
+	@Column(name = "idHistorial")
 	public Long getId() {
 		return id;
 	}
