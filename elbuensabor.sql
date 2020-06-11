@@ -1,4 +1,4 @@
-CREATE DATABASE  IF NOT EXISTS `elbuensabor` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE  IF NOT EXISTS `elbuensabor` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `elbuensabor`;
 -- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
 --
@@ -18,62 +18,6 @@ USE `elbuensabor`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `articuloinsumo`
---
-
-DROP TABLE IF EXISTS `articuloinsumo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `articuloinsumo` (
-  `idArticuloInsumo` bigint NOT NULL AUTO_INCREMENT,
-  `baja` tinyint(1) NOT NULL DEFAULT '0',
-  `denominacion` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `esExtra` bit(1) NOT NULL,
-  `unidadMedida` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `idOrden` bigint NOT NULL,
-  `idReceta` bigint NOT NULL,
-  `idRecetaSugerida` bigint NOT NULL,
-  `idRubro` bigint NOT NULL,
-  `idStock` bigint NOT NULL,
-  PRIMARY KEY (`idArticuloInsumo`),
-  UNIQUE KEY `UK_dixx250sev33i662dg0jqkkeq` (`idRubro`),
-  KEY `FK6ngdwgmkp0p0jpcf9jjk7eqvu` (`idOrden`),
-  KEY `FKmtgs0xq1uckxj3cad1vels70f` (`idReceta`),
-  KEY `FKnj5mthww6mim3mkfllhd1whmn` (`idRecetaSugerida`),
-  KEY `FKdur7lkwnfjp5ppgk2dxhy2trj` (`idStock`),
-  CONSTRAINT `FK6ngdwgmkp0p0jpcf9jjk7eqvu` FOREIGN KEY (`idOrden`) REFERENCES `ordencompra` (`idOrdenCompra`),
-  CONSTRAINT `FKdur7lkwnfjp5ppgk2dxhy2trj` FOREIGN KEY (`idStock`) REFERENCES `stock` (`idStock`),
-  CONSTRAINT `FKmtgs0xq1uckxj3cad1vels70f` FOREIGN KEY (`idReceta`) REFERENCES `receta` (`idReceta`),
-  CONSTRAINT `FKnj5mthww6mim3mkfllhd1whmn` FOREIGN KEY (`idRecetaSugerida`) REFERENCES `recetasugerida` (`idSugerencia`),
-  CONSTRAINT `FKs1o7k890mmk2ebwrf8y99ncdk` FOREIGN KEY (`idRubro`) REFERENCES `rubroinsumo` (`idRubroInsumo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `articuloinsumoventa`
---
-
-DROP TABLE IF EXISTS `articuloinsumoventa`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `articuloinsumoventa` (
-  `unidadMedida` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `idArticulo` bigint NOT NULL,
-  `idOrden` bigint NOT NULL,
-  `idRubro` bigint NOT NULL,
-  `idStock` bigint NOT NULL,
-  PRIMARY KEY (`idArticulo`),
-  KEY `FKf5qc310xt7afddxendyvx47vr` (`idOrden`),
-  KEY `FK4g8apoiflxqx8xdow9hsfg3jq` (`idRubro`),
-  KEY `FKesfurrpvuwwmd3dj7ee9rq1mg` (`idStock`),
-  CONSTRAINT `FK41994p2aoy2vewakpvj2h30fo` FOREIGN KEY (`idArticulo`) REFERENCES `articuloventa` (`idArticuloVenta`),
-  CONSTRAINT `FK4g8apoiflxqx8xdow9hsfg3jq` FOREIGN KEY (`idRubro`) REFERENCES `rubroinsumo` (`idRubroInsumo`),
-  CONSTRAINT `FKesfurrpvuwwmd3dj7ee9rq1mg` FOREIGN KEY (`idStock`) REFERENCES `stock` (`idStock`),
-  CONSTRAINT `FKf5qc310xt7afddxendyvx47vr` FOREIGN KEY (`idOrden`) REFERENCES `ordencompra` (`idOrdenCompra`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `articulomanufacturado`
 --
 
@@ -82,37 +26,18 @@ DROP TABLE IF EXISTS `articulomanufacturado`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `articulomanufacturado` (
   `aptoCeliaco` bit(1) NOT NULL,
+  `baja` bit(1) NOT NULL,
+  `denominacion` varchar(255) NOT NULL,
   `tiempoCocina` int NOT NULL,
   `vegano` bit(1) NOT NULL,
   `vegetariano` bit(1) NOT NULL,
-  `idArticulo` bigint NOT NULL,
+  `idArticuloManufacturado` bigint NOT NULL,
   `idRubro` bigint NOT NULL,
-  PRIMARY KEY (`idArticulo`),
+  PRIMARY KEY (`idArticuloManufacturado`),
   KEY `FKmleihlxvcplpjv5e3wtmnepuy` (`idRubro`),
   CONSTRAINT `FKmleihlxvcplpjv5e3wtmnepuy` FOREIGN KEY (`idRubro`) REFERENCES `rubromanufacturado` (`idRubroManufacturado`),
-  CONSTRAINT `FKwq00hqjrhsywb1pmthi8559t` FOREIGN KEY (`idArticulo`) REFERENCES `articuloventa` (`idArticuloVenta`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `articuloventa`
---
-
-DROP TABLE IF EXISTS `articuloventa`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `articuloventa` (
-  `idArticuloVenta` bigint NOT NULL AUTO_INCREMENT,
-  `baja` tinyint(1) NOT NULL DEFAULT '0',
-  `denominacion` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `descripcion` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `imagen` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `precioVenta` float NOT NULL,
-  `idHistorial` bigint NOT NULL,
-  PRIMARY KEY (`idArticuloVenta`),
-  KEY `FK2ntchlwtjfwu965vtqyq4jhnw` (`idHistorial`),
-  CONSTRAINT `FK2ntchlwtjfwu965vtqyq4jhnw` FOREIGN KEY (`idHistorial`) REFERENCES `historialventas` (`idHistorial`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  CONSTRAINT `FKtimme61neajt7a5i0lgf4rk20` FOREIGN KEY (`idArticuloManufacturado`) REFERENCES `informacionarticuloventa` (`idArticuloVenta`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,28 +48,10 @@ DROP TABLE IF EXISTS `cliente`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cliente` (
-  `idPersona` bigint NOT NULL,
-  PRIMARY KEY (`idPersona`),
-  CONSTRAINT `FKf1o3sjwom8eonggxy45geovk2` FOREIGN KEY (`idPersona`) REFERENCES `persona` (`idPersona`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `compra`
---
-
-DROP TABLE IF EXISTS `compra`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `compra` (
-  `idCompra` bigint NOT NULL AUTO_INCREMENT,
-  `cantidad` float NOT NULL,
-  `precioUnitario` float NOT NULL,
-  `idOrden` bigint NOT NULL,
-  PRIMARY KEY (`idCompra`),
-  KEY `FKkt9twtkdc5o6nwwgfcxwwbobe` (`idOrden`),
-  CONSTRAINT `FKkt9twtkdc5o6nwwgfcxwwbobe` FOREIGN KEY (`idOrden`) REFERENCES `ordencompra` (`idOrdenCompra`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `idCliente` bigint NOT NULL,
+  PRIMARY KEY (`idCliente`),
+  CONSTRAINT `FKidh5cjaj6rwvd7ffi3f8xyeve` FOREIGN KEY (`idCliente`) REFERENCES `persona` (`idPersona`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,9 +64,9 @@ DROP TABLE IF EXISTS `config`;
 CREATE TABLE `config` (
   `idConfig` bigint NOT NULL AUTO_INCREMENT,
   `cantidadCocineros` int NOT NULL,
-  `emailEmpresa` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `emailEmpresa` varchar(255) NOT NULL,
   PRIMARY KEY (`idConfig`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -176,10 +83,10 @@ CREATE TABLE `detallepedido` (
   `idPedido` bigint NOT NULL,
   PRIMARY KEY (`idDetalle`),
   UNIQUE KEY `UK_l7herh1mff4m0y418om20097n` (`idPedido`),
-  KEY `FKe15gkayxekm9nnocgq2q5n8i` (`idArticulo`),
+  KEY `FKgblnghlb028vohg62ha0fb5xd` (`idArticulo`),
   CONSTRAINT `FKcu5cmqwe950m98ffijdd759wr` FOREIGN KEY (`idPedido`) REFERENCES `pedido` (`idPedido`),
-  CONSTRAINT `FKe15gkayxekm9nnocgq2q5n8i` FOREIGN KEY (`idArticulo`) REFERENCES `articuloventa` (`idArticuloVenta`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  CONSTRAINT `FKgblnghlb028vohg62ha0fb5xd` FOREIGN KEY (`idArticulo`) REFERENCES `informacionarticuloventa` (`idArticuloVenta`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,16 +99,16 @@ DROP TABLE IF EXISTS `domicilio`;
 CREATE TABLE `domicilio` (
   `idDomicilio` bigint NOT NULL AUTO_INCREMENT,
   `baja` tinyint(1) NOT NULL DEFAULT '0',
-  `calle` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `departamento` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `localidad` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `calle` varchar(255) NOT NULL,
+  `departamento` varchar(255) NOT NULL,
+  `localidad` varchar(255) NOT NULL,
   `numero` int NOT NULL,
   `piso` int NOT NULL,
   `idPersona` bigint NOT NULL,
   PRIMARY KEY (`idDomicilio`),
   UNIQUE KEY `UK_jlk5doq3tgd010o2jup0vhn8c` (`idPersona`),
   CONSTRAINT `FKqskjqmjbcu4wcn120ovey9hm3` FOREIGN KEY (`idPersona`) REFERENCES `persona` (`idPersona`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -212,14 +119,11 @@ DROP TABLE IF EXISTS `empleado`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `empleado` (
-  `contrasenia` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `rol` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `usuario` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `idPersona` bigint NOT NULL,
-  PRIMARY KEY (`idPersona`),
-  UNIQUE KEY `UK_ibcn21urofhpvgf0j5er3sn21` (`contrasenia`),
-  CONSTRAINT `FKbo0fbx2es8v3xj4igldj598bc` FOREIGN KEY (`idPersona`) REFERENCES `persona` (`idPersona`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `rol` varchar(255) NOT NULL,
+  `idEmpleado` bigint NOT NULL,
+  PRIMARY KEY (`idEmpleado`),
+  CONSTRAINT `FKpnt4sbao6fyenlefl82l95v5r` FOREIGN KEY (`idEmpleado`) REFERENCES `persona` (`idPersona`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -234,13 +138,33 @@ CREATE TABLE `factura` (
   `fechaHora` datetime DEFAULT NULL,
   `formaPago` bit(1) NOT NULL,
   `numero` bigint NOT NULL,
+  `porcentajeDescuento` float NOT NULL,
   `total` double NOT NULL,
   `idPedido` bigint NOT NULL,
   PRIMARY KEY (`idFactura`),
   UNIQUE KEY `UK_c1jtshpjhg01detpak886jv5i` (`numero`),
   KEY `FKly6sa5ad8ua8p5pyyc1rxirq1` (`idPedido`),
   CONSTRAINT `FKly6sa5ad8ua8p5pyyc1rxirq1` FOREIGN KEY (`idPedido`) REFERENCES `pedido` (`idPedido`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `historialcompraaproveedores`
+--
+
+DROP TABLE IF EXISTS `historialcompraaproveedores`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `historialcompraaproveedores` (
+  `idCompra` bigint NOT NULL AUTO_INCREMENT,
+  `cantidad` float NOT NULL,
+  `fechaCompra` datetime DEFAULT NULL,
+  `precioUnitario` float NOT NULL,
+  `idInsumo` bigint NOT NULL,
+  PRIMARY KEY (`idCompra`),
+  KEY `FK1gmxti380q4ukilmuts8d4u33` (`idInsumo`),
+  CONSTRAINT `FK1gmxti380q4ukilmuts8d4u33` FOREIGN KEY (`idInsumo`) REFERENCES `insumo` (`idInsumo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -255,24 +179,74 @@ CREATE TABLE `historialventas` (
   `costo` float NOT NULL,
   `fechaVenta` date DEFAULT NULL,
   `precioVenta` float NOT NULL,
-  `total` double NOT NULL,
   PRIMARY KEY (`idHistorial`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `ordencompra`
+-- Table structure for table `informacionarticuloventa`
 --
 
-DROP TABLE IF EXISTS `ordencompra`;
+DROP TABLE IF EXISTS `informacionarticuloventa`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `ordencompra` (
-  `idOrdenCompra` bigint NOT NULL AUTO_INCREMENT,
-  `fechaHora` datetime DEFAULT NULL,
-  `numero` bigint NOT NULL,
-  PRIMARY KEY (`idOrdenCompra`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+CREATE TABLE `informacionarticuloventa` (
+  `idArticuloVenta` bigint NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(255) NOT NULL,
+  `imagen` varchar(255) NOT NULL,
+  `precioVenta` float NOT NULL,
+  `idHistorial` bigint NOT NULL,
+  PRIMARY KEY (`idArticuloVenta`),
+  KEY `FK7s4bib8q9rwn1eo2jw3culmm3` (`idHistorial`),
+  CONSTRAINT `FK7s4bib8q9rwn1eo2jw3culmm3` FOREIGN KEY (`idHistorial`) REFERENCES `historialventas` (`idHistorial`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `informacionarticuloventa_insumo`
+--
+
+DROP TABLE IF EXISTS `informacionarticuloventa_insumo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `informacionarticuloventa_insumo` (
+  `idInsumoVenta` bigint NOT NULL,
+  `idInsumo` bigint NOT NULL,
+  PRIMARY KEY (`idInsumoVenta`),
+  KEY `FKgpo776a8ag8iapsyjk8y9aiom` (`idInsumo`),
+  CONSTRAINT `FK59f0r37j795t0er9ru7e8ot3s` FOREIGN KEY (`idInsumoVenta`) REFERENCES `informacionarticuloventa` (`idArticuloVenta`),
+  CONSTRAINT `FKgpo776a8ag8iapsyjk8y9aiom` FOREIGN KEY (`idInsumo`) REFERENCES `insumo` (`idInsumo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `insumo`
+--
+
+DROP TABLE IF EXISTS `insumo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `insumo` (
+  `idInsumo` bigint NOT NULL AUTO_INCREMENT,
+  `baja` tinyint(1) NOT NULL DEFAULT '0',
+  `denominacion` varchar(255) NOT NULL,
+  `esExtra` bit(1) NOT NULL,
+  `esInsumo` bit(1) NOT NULL,
+  `unidadMedida` varchar(255) NOT NULL,
+  `idReceta` bigint NOT NULL,
+  `idRecetaSugerida` bigint NOT NULL,
+  `idRubro` bigint NOT NULL,
+  `idStock` bigint NOT NULL,
+  PRIMARY KEY (`idInsumo`),
+  KEY `FKtg72cihx6atk6t3xy37d9b87h` (`idReceta`),
+  KEY `FKpclot6toughlu69kt6fes03a3` (`idRecetaSugerida`),
+  KEY `FKaul117ixxf3b3im6dmxaxsnts` (`idRubro`),
+  KEY `FKhin7lpolmf7r2u3cx3wsvt1k5` (`idStock`),
+  CONSTRAINT `FKaul117ixxf3b3im6dmxaxsnts` FOREIGN KEY (`idRubro`) REFERENCES `rubroinsumo` (`idRubroInsumo`),
+  CONSTRAINT `FKhin7lpolmf7r2u3cx3wsvt1k5` FOREIGN KEY (`idStock`) REFERENCES `stock` (`idStock`),
+  CONSTRAINT `FKpclot6toughlu69kt6fes03a3` FOREIGN KEY (`idRecetaSugerida`) REFERENCES `recetasugerida` (`idSugerencia`),
+  CONSTRAINT `FKtg72cihx6atk6t3xy37d9b87h` FOREIGN KEY (`idReceta`) REFERENCES `receta` (`idReceta`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -284,15 +258,15 @@ DROP TABLE IF EXISTS `pedido`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pedido` (
   `idPedido` bigint NOT NULL AUTO_INCREMENT,
-  `estado` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `estado` varchar(255) NOT NULL,
   `hora` time DEFAULT NULL,
   `numero` bigint NOT NULL,
   `tipoEntrega` bit(1) NOT NULL,
   `idCliente` bigint NOT NULL,
   PRIMARY KEY (`idPedido`),
   UNIQUE KEY `UK_q9xfythglxw2839yg5w89r8w2` (`idCliente`),
-  CONSTRAINT `FKaxpy7jnkxyiemmhwpryyksqmd` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idPersona`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  CONSTRAINT `FKaxpy7jnkxyiemmhwpryyksqmd` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idCliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -304,14 +278,16 @@ DROP TABLE IF EXISTS `persona`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `persona` (
   `idPersona` bigint NOT NULL AUTO_INCREMENT,
-  `apellido` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `apellido` varchar(255) NOT NULL,
   `baja` tinyint(1) NOT NULL DEFAULT '0',
-  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `foto` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `contrasenia` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `foto` varchar(255) NOT NULL,
+  `nombre` varchar(255) NOT NULL,
   `telefono` int NOT NULL,
+  `usuario` varchar(255) NOT NULL,
   PRIMARY KEY (`idPersona`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -328,8 +304,8 @@ CREATE TABLE `receta` (
   `idManufacturado` bigint NOT NULL,
   PRIMARY KEY (`idReceta`),
   KEY `FKlk4tqorrqitu489uoj0kdkggf` (`idManufacturado`),
-  CONSTRAINT `FKlk4tqorrqitu489uoj0kdkggf` FOREIGN KEY (`idManufacturado`) REFERENCES `articulomanufacturado` (`idArticulo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  CONSTRAINT `FKlk4tqorrqitu489uoj0kdkggf` FOREIGN KEY (`idManufacturado`) REFERENCES `articulomanufacturado` (`idArticuloManufacturado`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -342,9 +318,8 @@ DROP TABLE IF EXISTS `recetasugerida`;
 CREATE TABLE `recetasugerida` (
   `idSugerencia` bigint NOT NULL AUTO_INCREMENT,
   `cantidadInsumo` float NOT NULL,
-  `estado` bit(1) NOT NULL,
   PRIMARY KEY (`idSugerencia`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -356,12 +331,9 @@ DROP TABLE IF EXISTS `rubroinsumo`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rubroinsumo` (
   `idRubroInsumo` bigint NOT NULL AUTO_INCREMENT,
-  `denominacion` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `rubroPadre` bigint DEFAULT NULL,
-  PRIMARY KEY (`idRubroInsumo`),
-  KEY `FKfs4bgn4in17blfq4tl2b1nd1e` (`rubroPadre`),
-  CONSTRAINT `FKfs4bgn4in17blfq4tl2b1nd1e` FOREIGN KEY (`rubroPadre`) REFERENCES `rubroinsumo` (`idRubroInsumo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `denominacion` varchar(255) NOT NULL,
+  PRIMARY KEY (`idRubroInsumo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -373,9 +345,9 @@ DROP TABLE IF EXISTS `rubromanufacturado`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rubromanufacturado` (
   `idRubroManufacturado` bigint NOT NULL AUTO_INCREMENT,
-  `denominacion` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `denominacion` varchar(255) NOT NULL,
   PRIMARY KEY (`idRubroManufacturado`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -391,7 +363,7 @@ CREATE TABLE `stock` (
   `maximo` bigint NOT NULL,
   `minimo` int NOT NULL,
   PRIMARY KEY (`idStock`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -402,14 +374,16 @@ DROP TABLE IF EXISTS `sugerenciachef`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sugerenciachef` (
+  `idSugerencia` bigint NOT NULL AUTO_INCREMENT,
   `aptoCeliaco` bit(1) NOT NULL,
+  `denominacion` varchar(255) NOT NULL,
+  `descripcion` varchar(255) NOT NULL,
+  `foto` varchar(255) NOT NULL,
   `tiempoCocina` int NOT NULL,
   `vegano` bit(1) NOT NULL,
   `vegetariano` bit(1) NOT NULL,
-  `idArticulo` bigint NOT NULL,
-  PRIMARY KEY (`idArticulo`),
-  CONSTRAINT `FKbrj6dq7b8rwrfa4g1fkaqw90p` FOREIGN KEY (`idArticulo`) REFERENCES `articuloventa` (`idArticuloVenta`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  PRIMARY KEY (`idSugerencia`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -422,15 +396,15 @@ DROP TABLE IF EXISTS `tarjetadebito`;
 CREATE TABLE `tarjetadebito` (
   `idTarjeta` bigint NOT NULL AUTO_INCREMENT,
   `baja` tinyint(1) NOT NULL DEFAULT '0',
-  `nombreTitular` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `nombreTitular` varchar(255) NOT NULL,
   `numero` bigint NOT NULL,
   `vecimiento` date DEFAULT NULL,
   `idCliente` bigint NOT NULL,
   PRIMARY KEY (`idTarjeta`),
   UNIQUE KEY `UK_4mvihldyb4ogi4uqtdyvgwaht` (`numero`),
   KEY `FK5wsu9jc73rxhb2msbco5dc86n` (`idCliente`),
-  CONSTRAINT `FK5wsu9jc73rxhb2msbco5dc86n` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idPersona`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  CONSTRAINT `FK5wsu9jc73rxhb2msbco5dc86n` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idCliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -442,4 +416,4 @@ CREATE TABLE `tarjetadebito` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-09 11:06:50
+-- Dump completed on 2020-06-11 11:36:47
