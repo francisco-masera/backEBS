@@ -21,6 +21,7 @@ public class Factura implements Serializable {
 	private Long id;
 	private LocalDateTime fechaHora;
 	private long numero;
+	private float porcentajeDescuento;
 	private double total;
 	private boolean formaPago;
 	private Pedido pedido;
@@ -29,10 +30,12 @@ public class Factura implements Serializable {
 
 	}
 
-	public Factura(Long id, LocalDateTime fechaHora, long numero, double total, boolean formaPago, Pedido pedido) {
+	public Factura(Long id, LocalDateTime fechaHora, long numero, float porcentajeDescuento, double total,
+			boolean formaPago, Pedido pedido) {
 		this.id = id;
 		this.fechaHora = fechaHora;
 		this.numero = numero;
+		this.porcentajeDescuento = porcentajeDescuento;
 		this.total = total;
 		this.formaPago = formaPago;
 		this.pedido = pedido;
@@ -57,12 +60,6 @@ public class Factura implements Serializable {
 		this.fechaHora = fechaHora;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false, updatable = false)
-	private Date convertirFechaHora() {
-		return Timestamp.valueOf(this.fechaHora);
-	}
-
 	@Column(nullable = false, unique = true, updatable = false)
 	public long getNumero() {
 		return numero;
@@ -70,6 +67,15 @@ public class Factura implements Serializable {
 
 	public void setNumero(long numero) {
 		this.numero = numero;
+	}
+
+	@Column(nullable = false, updatable = false)
+	public float getPorcentajeDescuento() {
+		return porcentajeDescuento;
+	}
+
+	public void setPorcentajeDescuento(float porcentajeDescuento) {
+		this.porcentajeDescuento = porcentajeDescuento;
 	}
 
 	@Column(nullable = false, updatable = false)
@@ -106,6 +112,12 @@ public class Factura implements Serializable {
 
 	public void calcularTotal() {
 
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false, updatable = false)
+	private Date convertirFechaHora() {
+		return Timestamp.valueOf(this.fechaHora);
 	}
 
 }

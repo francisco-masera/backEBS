@@ -67,12 +67,6 @@ public class TarjetaDebito implements Serializable {
 		this.vecimiento = vecimiento;
 	}
 
-	@Temporal(TemporalType.DATE)
-	@Column(nullable = false, unique = true)
-	private Date convertirFecha() {
-		return Date.from(this.vecimiento.atStartOfDay(ZoneId.systemDefault()).toInstant());
-	}
-
 	@Column(nullable = false)
 	public String getNombreTitular() {
 		return nombreTitular;
@@ -103,6 +97,12 @@ public class TarjetaDebito implements Serializable {
 
 	public boolean tarjetaVencida() {
 		return false;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(nullable = false, unique = true)
+	private Date convertirFecha() {
+		return Date.from(this.vecimiento.atStartOfDay(ZoneId.systemDefault()).toInstant());
 	}
 
 }

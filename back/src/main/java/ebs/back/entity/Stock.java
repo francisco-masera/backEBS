@@ -16,22 +16,18 @@ public class Stock implements Serializable {
 	private long actual;
 	private int minimo;
 	private long maximo;
-	private ArticuloInsumo articuloInsumo;
-	private ArticuloInsumoVenta articuloInsumoVenta;
+	private Insumo insumo;
 
 	public Stock() {
 
 	}
 
-	public Stock(Long id, long actual, int minimo, long maximo, ArticuloInsumo articuloInsumo,
-			ArticuloInsumoVenta articuloInsumoVenta) {
+	public Stock(Long id, long actual, int minimo, long maximo, Insumo insumo) {
 		this.id = id;
 		this.actual = actual;
 		this.minimo = minimo;
 		this.maximo = maximo;
-
-		this.articuloInsumo = articuloInsumo;
-		this.articuloInsumoVenta = articuloInsumoVenta;
+		this.insumo = insumo;
 	}
 
 	@Id
@@ -73,44 +69,23 @@ public class Stock implements Serializable {
 	}
 
 	@OneToOne(mappedBy = "stock")
-	public ArticuloInsumo getArticuloInsumo() {
-		return articuloInsumo;
+	public Insumo getInsumo() {
+		return insumo;
 	}
 
-	public void setArticuloInsumo(ArticuloInsumo articuloInsumo) {
-		this.articuloInsumo = articuloInsumo;
+	public void setArticuloInsumo(Insumo insumo) {
+		this.insumo = insumo;
 	}
 
-	@OneToOne(mappedBy = "stock")
-	public ArticuloInsumoVenta getArticuloInsumoVenta() {
-		return articuloInsumoVenta;
-	}
-
-	public void setArticuloInsumoVenta(ArticuloInsumoVenta articuloInsumoVenta) {
-		this.articuloInsumoVenta = articuloInsumoVenta;
-	}
-
-	public boolean stockBajo(ArticuloInsumoVenta articulo) {
+	public boolean stockBajo(Insumo insumo) {
 		return false;
 	}
 
-	public boolean stockBajo(ArticuloInsumo articulo) {
+	public boolean stockAlto(Insumo insumo) {
 		return false;
 	}
 
-	public boolean stockAlto(ArticuloInsumoVenta articulo) {
-		return false;
-	}
-
-	public boolean stockAlto(ArticuloInsumo articulo) {
-		return false;
-	}
-
-	public void pedirStock(ArticuloInsumoVenta articulo) {
-
-	}
-
-	public void pedirStock(ArticuloInsumo articulo) {
+	public void pedirStock(Insumo insumo) {
 
 	}
 

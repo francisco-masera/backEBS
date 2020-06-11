@@ -16,14 +16,14 @@ public class DetallePedido implements Serializable {
 
 	private Long id;
 	private int cantidad;
-	private ArticuloVenta articulo;
+	private InformacionArticuloVenta articulo;
 	private Pedido pedido;
 
 	public DetallePedido() {
 
 	}
 
-	public DetallePedido(Long id, int cantidad, ArticuloVenta articulo, Pedido pedido) {
+	public DetallePedido(Long id, int cantidad, InformacionArticuloVenta articulo, Pedido pedido) {
 		this.id = id;
 		this.cantidad = cantidad;
 		this.articulo = articulo;
@@ -52,12 +52,12 @@ public class DetallePedido implements Serializable {
 
 	@OneToOne
 	@JoinColumn(name = "idArticulo", nullable = false)
-	public ArticuloVenta getArticulo() {
+	public InformacionArticuloVenta getArticulo() {
 		return articulo;
 	}
 
 	@Column(nullable = false)
-	public void setArticulo(ArticuloVenta articulo) {
+	public void setArticulo(InformacionArticuloVenta articulo) {
 		this.articulo = articulo;
 	}
 

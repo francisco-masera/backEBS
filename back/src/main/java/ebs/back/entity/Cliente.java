@@ -12,7 +12,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 public class Cliente extends Persona {
 
 	private List<TarjetaDebito> tarjetas;
-	private List<Pedido> pedidos = new ArrayList<>();
+	private List<Pedido> pedidos;
 
 	public Cliente() {
 		super();

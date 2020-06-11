@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -21,30 +20,26 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({ @Type(value = ArticuloInsumoVenta.class), @Type(value = ArticuloManufacturado.class),
+@JsonSubTypes({ @Type(value = Insumo.class), @Type(value = ArticuloManufacturado.class),
 		@Type(value = SugerenciaChef.class), })
-public abstract class ArticuloVenta implements Serializable {
+public abstract class InformacionArticuloVenta implements Serializable {
 
 	protected Long id;
-	protected String denominacion;
 	protected String descripcion;
 	protected float precioVenta;
 	protected String imagen;
-	protected boolean baja;
 	protected DetallePedido detalle;
 	protected HistorialVentas ventas;
 
-	public ArticuloVenta() {
+	public InformacionArticuloVenta() {
 	}
 
-	public ArticuloVenta(Long id, String denominacion, String descripcion, float precioVenta, String imagen,
-			boolean baja, DetallePedido detalle, HistorialVentas ventas) {
+	public InformacionArticuloVenta(Long id, String descripcion, float precioVenta, String imagen,
+			DetallePedido detalle, HistorialVentas ventas) {
 		this.id = id;
-		this.denominacion = denominacion;
 		this.descripcion = descripcion;
 		this.precioVenta = precioVenta;
 		this.imagen = imagen;
-		this.baja = baja;
 		this.detalle = detalle;
 		this.ventas = ventas;
 	}
@@ -58,15 +53,6 @@ public abstract class ArticuloVenta implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	@Column(nullable = false)
-	public String getDenominacion() {
-		return denominacion;
-	}
-
-	public void setDenominacion(String denominacion) {
-		this.denominacion = denominacion;
 	}
 
 	@Column(nullable = false)
@@ -94,15 +80,6 @@ public abstract class ArticuloVenta implements Serializable {
 
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
-	}
-
-	@Column(nullable = false, columnDefinition = "boolean default false")
-	public boolean getBaja() {
-		return baja;
-	}
-
-	public void setBaja(boolean baja) {
-		this.baja = baja;
 	}
 
 	@OneToOne(mappedBy = "articulo")

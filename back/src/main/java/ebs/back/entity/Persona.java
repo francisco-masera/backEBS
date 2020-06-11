@@ -23,14 +23,16 @@ public abstract class Persona implements Serializable {
 	protected int telefono;
 	protected String email;
 	protected String foto;
+	protected String usuario;
+	protected String contrasenia;
 	protected boolean baja;
-	protected List<Domicilio> domicilios = new ArrayList<>();
+	protected List<Domicilio> domicilios;
 
 	public Persona() {
 	}
 
-	public Persona(Long id, String nombre, String apellido, int telefono, String email, String foto, boolean baja,
-			List<Domicilio> domicilios) {
+	public Persona(Long id, String nombre, String apellido, int telefono, String email, String foto, String usuario,
+			String contrasenia, boolean baja, List<Domicilio> domicilios) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -38,6 +40,8 @@ public abstract class Persona implements Serializable {
 		this.telefono = telefono;
 		this.email = email;
 		this.foto = foto;
+		this.usuario = usuario;
+		this.contrasenia = contrasenia;
 		this.baja = baja;
 		this.domicilios = domicilios;
 	}
@@ -96,6 +100,24 @@ public abstract class Persona implements Serializable {
 
 	public void setFoto(String foto) {
 		this.foto = foto;
+	}
+
+	@Column(nullable = false)
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
+	}
+
+	@Column(nullable = false)
+	public String getContrasenia() {
+		return contrasenia;
+	}
+
+	public void setContrasenia(String contrasenia) {
+		this.contrasenia = contrasenia;
 	}
 
 	@Column(nullable = false, columnDefinition = "boolean default false")

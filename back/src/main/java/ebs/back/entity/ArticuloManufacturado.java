@@ -8,12 +8,14 @@ import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "idArticulo")
-public class ArticuloManufacturado extends ArticuloVenta {
+public class ArticuloManufacturado extends InformacionArticuloVenta {
 
 	private int tiempoCocina;
 	private boolean aptoCeliaco;
 	private boolean vegano;
 	private boolean vegetariano;
+	private String denominacion;
+	private boolean baja;
 	private RubroManufacturado rubro;
 	private Receta receta;
 
@@ -22,18 +24,16 @@ public class ArticuloManufacturado extends ArticuloVenta {
 	}
 
 	public ArticuloManufacturado(int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
-			RubroManufacturado rubro, Receta receta) {
+			String denominacion, boolean baja, RubroManufacturado rubro, Receta receta) {
 		super();
 		this.tiempoCocina = tiempoCocina;
 		this.aptoCeliaco = aptoCeliaco;
 		this.vegano = vegano;
 		this.vegetariano = vegetariano;
+		this.denominacion = denominacion;
+		this.baja = baja;
 		this.rubro = rubro;
 		this.receta = receta;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	@Column(nullable = false)
@@ -70,6 +70,23 @@ public class ArticuloManufacturado extends ArticuloVenta {
 
 	public void setVegetariano(boolean vegetariano) {
 		this.vegetariano = vegetariano;
+	}
+
+	@Column(nullable = false)
+	public String getDenominacion() {
+		return denominacion;
+	}
+
+	public void setDenominacion(String denominacion) {
+		this.denominacion = denominacion;
+	}
+
+	public boolean isBaja() {
+		return baja;
+	}
+
+	public void setBaja(boolean baja) {
+		this.baja = baja;
 	}
 
 	@OneToOne

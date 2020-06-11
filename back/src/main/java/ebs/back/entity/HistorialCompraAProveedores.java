@@ -1,6 +1,10 @@
 package ebs.back.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,24 +13,29 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
-public class Compra implements Serializable {
+public class HistorialCompraAProveedores implements Serializable {
 
 	private Long id;
 	private float precioUnitario;
 	private float cantidad;
-	private OrdenCompra ordenCompra;
+	private LocalDateTime fechaCompra;
+	private List<Insumo> insumos;
 
-	public Compra() {
+	public HistorialCompraAProveedores() {
 
 	}
 
-	public Compra(Long id, float precioUnitario, float cantidad, OrdenCompra ordenCompra) {
+	public HistorialCompraAProveedores(Long id, float precioUnitario, float cantidad, LocalDateTime fechaCompra,
+			List<Insumo> insumos) {
 		this.id = id;
 		this.precioUnitario = precioUnitario;
 		this.cantidad = cantidad;
-		this.ordenCompra = ordenCompra;
+		this.fechaCompra = fechaCompra;
+		this.insumos = insumos;
 	}
 
 	@Id
@@ -58,25 +67,35 @@ public class Compra implements Serializable {
 		this.cantidad = cantidad;
 	}
 
-	@OneToOne
-	@JoinColumn(name = "idOrden", nullable = false)
-	public OrdenCompra getOrdenCompra() {
-		return ordenCompra;
+	public LocalDateTime getFechaCompra() {
+		return fechaCompra;
 	}
 
-	public void setOrdenCompra(OrdenCompra ordenCompra) {
-		this.ordenCompra = ordenCompra;
+	public void setFechaCompra(LocalDateTime fechaCompra) {
+		this.fechaCompra = fechaCompra;
+	}
+
+	@OneToOne
+	@JoinColumn(name = "idInsumo", nullable = false, updatable = false)
+	public List<Insumo> getInsumos() {
+		return insumos;
+	}
+
+	public void setInsumos(List<Insumo> insumos) {
+		this.insumos = insumos;
 	}
 
 	public void calcularTotal() {
 
 	}
 
-	public void comprarArticulo(ArticuloInsumo articulo) {
+	public void comprarArticulo(Insumo insumo) {
 
 	}
 
-	public void comprarArticulo(ArticuloInsumoVenta articulo) {
-
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false, updatable = false)
+	private Date convertirFecha() {
+		return Timestamp.valueOf(this.fechaCompra);
 	}
 }

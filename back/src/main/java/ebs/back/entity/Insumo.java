@@ -12,46 +12,48 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
-public class ArticuloInsumo implements Serializable {
+public class Insumo implements Serializable {
 
-	private Long id;
+	private Long idInsumo;
 	private String unidadMedida;
 	private String denominacion;
 	private boolean esExtra;
 	private boolean baja;
-	private RubroInsumo rubro;
+	private boolean esInsumo;
+	private Stock stock = new Stock();
+	private RubroInsumo rubroInsumo;
 	private Receta receta;
 	private RecetaSugerida recetaSugerida;
-	private Stock stock;
-	private OrdenCompra ordenCompra;
+	private HistorialCompraAProveedores historialCompra;
 
-	public ArticuloInsumo() {
-
+	public Insumo() {
 	}
 
-	public ArticuloInsumo(Long id, String unidadMedida, String denominacion, boolean esExtra, boolean baja,
-			RubroInsumo rubro, Receta receta, RecetaSugerida recetaSugerida, Stock stock, OrdenCompra ordenCompra) {
-		this.id = id;
+	public Insumo(Long idInsumo, String unidadMedida, String denominacion, boolean esExtra, boolean baja,
+			boolean esInsumo, Stock stock, RubroInsumo rubroInsumo, Receta receta, RecetaSugerida recetaSugerida,
+			HistorialCompraAProveedores historialCompra) {
+		this.idInsumo = idInsumo;
 		this.unidadMedida = unidadMedida;
 		this.denominacion = denominacion;
 		this.esExtra = esExtra;
 		this.baja = baja;
-		this.rubro = rubro;
+		this.esInsumo = esInsumo;
+		this.stock = stock;
+		this.rubroInsumo = rubroInsumo;
 		this.receta = receta;
 		this.recetaSugerida = recetaSugerida;
-		this.stock = stock;
-		this.ordenCompra = ordenCompra;
+		this.historialCompra = historialCompra;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idArticuloInsumo", nullable = false, insertable = false, updatable = false)
-	public Long getId() {
-		return id;
+	@Column(nullable = false, updatable = false)
+	public Long getIdInsumo() {
+		return idInsumo;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setIdInsumo(Long idInsumo) {
+		this.idInsumo = idInsumo;
 	}
 
 	@Column(nullable = false)
@@ -82,7 +84,7 @@ public class ArticuloInsumo implements Serializable {
 	}
 
 	@Column(nullable = false, columnDefinition = "boolean default false")
-	public boolean getBaja() {
+	public boolean isBaja() {
 		return baja;
 	}
 
@@ -90,14 +92,33 @@ public class ArticuloInsumo implements Serializable {
 		this.baja = baja;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "idRubro", nullable = false, unique = true)
-	public RubroInsumo getRubro() {
-		return rubro;
+	@Column(nullable = false)
+	public boolean isEsInsumo() {
+		return esInsumo;
 	}
 
-	public void setRubro(RubroInsumo rubro) {
-		this.rubro = rubro;
+	public void setEsInsumo(boolean esInsumo) {
+		this.esInsumo = esInsumo;
+	}
+
+	@OneToOne
+	@JoinColumn(name = "idStock", nullable = false)
+	public Stock getStock() {
+		return stock;
+	}
+
+	public void setStock(Stock stock) {
+		this.stock = stock;
+	}
+
+	@OneToOne
+	@JoinColumn(name = "idRubro", nullable = false)
+	public RubroInsumo getRubroInsumo() {
+		return rubroInsumo;
+	}
+
+	public void setRubroInsumo(RubroInsumo rubroInsumo) {
+		this.rubroInsumo = rubroInsumo;
 	}
 
 	@ManyToOne
@@ -120,24 +141,13 @@ public class ArticuloInsumo implements Serializable {
 		this.recetaSugerida = recetaSugerida;
 	}
 
-	@OneToOne
-	@JoinColumn(name = "idStock", nullable = false)
-	public Stock getStock() {
-		return stock;
+	@OneToOne(mappedBy = "insumos")
+	public HistorialCompraAProveedores getHistorialCompra() {
+		return historialCompra;
 	}
 
-	public void setStock(Stock stock) {
-		this.stock = stock;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "idOrden", nullable = false)
-	public OrdenCompra getOrdenCompra() {
-		return ordenCompra;
-	}
-
-	public void setOrdenCompra(OrdenCompra ordenCompra) {
-		this.ordenCompra = ordenCompra;
+	public void setHistorialCompra(HistorialCompraAProveedores historialCompra) {
+		this.historialCompra = historialCompra;
 	}
 
 }

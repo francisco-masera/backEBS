@@ -24,20 +24,19 @@ public class HistorialVentas implements Serializable {
 	private LocalDate fechaVenta;
 	private float precioVenta;
 	private float costo;
-	private double total;
-	private List<ArticuloVenta> articulos = new ArrayList<>();
+	private List<InformacionArticuloVenta> articulos;
 
 	public HistorialVentas() {
 
 	}
 
-	public HistorialVentas(Long id, LocalDate fechaVenta, float precioVenta, float costo, double total,
-			List<ArticuloVenta> articulos) {
+	public HistorialVentas(Long id, LocalDate fechaVenta, float precioVenta, float costo,
+			List<InformacionArticuloVenta> articulos) {
 		this.id = id;
 		this.fechaVenta = fechaVenta;
 		this.precioVenta = precioVenta;
 		this.costo = costo;
-		this.total = total;
+
 		this.articulos = articulos;
 	}
 
@@ -54,12 +53,6 @@ public class HistorialVentas implements Serializable {
 
 	public LocalDate getFechaVenta() {
 		return fechaVenta;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(nullable = false, updatable = false)
-	private Date convertirFecha() {
-		return Date.valueOf(this.fechaVenta);
 	}
 
 	public void setFechaVenta(LocalDate fechaVenta) {
@@ -84,22 +77,13 @@ public class HistorialVentas implements Serializable {
 		this.costo = costo;
 	}
 
-	@Column(nullable = false, updatable = false)
-	public double getTotal() {
-		return total;
-	}
-
-	public void setTotal(double total) {
-		this.total = total;
-	}
-
 	@OneToMany(mappedBy = "ventas")
 	@JsonIgnore
-	public List<ArticuloVenta> getArticulos() {
+	public List<InformacionArticuloVenta> getArticulos() {
 		return articulos;
 	}
 
-	public void setArticulos(List<ArticuloVenta> articulos) {
+	public void setArticulos(List<InformacionArticuloVenta> articulos) {
 		this.articulos = articulos;
 	}
 
@@ -107,11 +91,13 @@ public class HistorialVentas implements Serializable {
 
 	}
 
-	public void agregarArticulo(ArticuloManufacturado articulo) {
+	public void agregarArticulo(InformacionArticuloVenta articulo) {
 
 	}
 
-	public void agregarArticulo(ArticuloInsumoVenta agregarArticulo) {
-
+	@Temporal(TemporalType.DATE)
+	@Column(nullable = false, updatable = false)
+	private Date convertirFecha() {
+		return Date.valueOf(this.fechaVenta);
 	}
 }

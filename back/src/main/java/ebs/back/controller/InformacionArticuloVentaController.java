@@ -5,13 +5,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import ebs.back.entity.ArticuloInsumo;
-import ebs.back.service.ArticuloInsumoService;
+import ebs.back.entity.InformacionArticuloVenta;
+import ebs.back.service.InformacionArticuloVentaService;
 
 @RestController
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
 		RequestMethod.DELETE })
-@RequestMapping(path = "buensabor/articuloInsumo")
-public class ArticuloInsumoController extends BaseController<ArticuloInsumo, ArticuloInsumoService> {
+@RequestMapping(path = "buensabor/informacionArticulo")
+public class InformacionArticuloVentaController
+		extends BaseController<InformacionArticuloVenta, InformacionArticuloVentaService> {
 
 }

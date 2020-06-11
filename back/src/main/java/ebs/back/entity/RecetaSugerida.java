@@ -18,19 +18,17 @@ public class RecetaSugerida implements Serializable {
 
 	private Long id;
 	private float cantidadInsumo;
-	private boolean estado;
-	private List<ArticuloInsumo> insumos = new ArrayList<>();
+	private List<Insumo> insumos;
 	private SugerenciaChef sugerenciaChef;
 
 	public RecetaSugerida() {
 
 	}
 
-	public RecetaSugerida(Long id, float cantidadInsumo, boolean estado, List<ArticuloInsumo> insumos,
+	public RecetaSugerida(Long id, float cantidadInsumo, boolean estado, List<Insumo> insumos,
 			SugerenciaChef sugerenciaChef) {
 		this.id = id;
 		this.cantidadInsumo = cantidadInsumo;
-		this.estado = estado;
 		this.insumos = insumos;
 		this.sugerenciaChef = sugerenciaChef;
 	}
@@ -55,21 +53,12 @@ public class RecetaSugerida implements Serializable {
 		this.cantidadInsumo = cantidadInsumo;
 	}
 
-	@Column(nullable = false)
-	public boolean isEstado() {
-		return estado;
-	}
-
-	public void setEstado(boolean estado) {
-		this.estado = estado;
-	}
-
 	@OneToMany(mappedBy = "recetaSugerida")
-	public List<ArticuloInsumo> getInsumos() {
+	public List<Insumo> getInsumos() {
 		return insumos;
 	}
 
-	public void setInsumos(List<ArticuloInsumo> insumos) {
+	public void setInsumos(List<Insumo> insumos) {
 		this.insumos = insumos;
 	}
 

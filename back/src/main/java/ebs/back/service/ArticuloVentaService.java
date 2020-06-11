@@ -2,10 +2,10 @@ package ebs.back.service;
 
 import org.springframework.stereotype.Service;
 
-import ebs.back.entity.ArticuloVenta;
+import ebs.back.entity.InformacionArticuloVenta;
 import ebs.back.repository.ArticuloVentaRepository;
 
 @Service
-public class ArticuloVentaService extends BaseService<ArticuloVenta, ArticuloVentaRepository> {
+public class ArticuloVentaService extends BaseService<InformacionArticuloVenta, ArticuloVentaRepository> {
 
 }

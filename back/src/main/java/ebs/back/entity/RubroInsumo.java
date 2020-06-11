@@ -1,17 +1,14 @@
 package ebs.back.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -19,22 +16,15 @@ public class RubroInsumo implements Serializable {
 
 	private Long id;
 	private String denominacion;
-	private RubroInsumo rubroPadre;
-	private List<RubroInsumo> rubros;
-	private List<ArticuloInsumoVenta> insumosVenta;
-	private List<ArticuloInsumo> insumos;
+	private List<Insumo> insumos = new ArrayList<>();
 
 	public RubroInsumo() {
 
 	}
 
-	public RubroInsumo(Long id, String denominacion, RubroInsumo rubroPadre, List<RubroInsumo> rubros,
-			List<ArticuloInsumoVenta> insumosVenta, List<ArticuloInsumo> insumos) {
+	public RubroInsumo(Long id, String denominacion, List<Insumo> insumos) {
 		this.id = id;
 		this.denominacion = denominacion;
-		this.rubroPadre = rubroPadre;
-		this.rubros = rubros;
-		this.insumosVenta = insumosVenta;
 		this.insumos = insumos;
 
 	}
@@ -59,48 +49,17 @@ public class RubroInsumo implements Serializable {
 		this.denominacion = denominacion;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "rubroPadre", nullable = true)
-	public RubroInsumo getRubroPadre() {
-		return rubroPadre;
-	}
-
-	public void setRubroPadre(RubroInsumo rubroPadre) {
-		this.rubroPadre = rubroPadre;
-	}
-
-	@OneToMany(mappedBy = "rubroPadre")
-	public List<RubroInsumo> getRubros() {
-		return rubros;
-	}
-
-	public void setRubros(List<RubroInsumo> rubros) {
-		this.rubros = rubros;
-	}
-
-	@OneToMany(mappedBy = "rubro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	public List<ArticuloInsumoVenta> getInsumosVenta() {
-		return insumosVenta;
-	}
-
-	public void setInsumosVenta(List<ArticuloInsumoVenta> insumosVenta) {
-		this.insumosVenta = insumosVenta;
-	}
-
 	@OneToMany(mappedBy = "rubro")
-	public List<ArticuloInsumo> getInsumos() {
+	public List<Insumo> getInsumos() {
 		return insumos;
 	}
 
-	public void setInsumos(List<ArticuloInsumo> insumos) {
+	public void setInsumos(List<Insumo> insumos) {
 		this.insumos = insumos;
 	}
 
-	public void agregarArticulo(ArticuloInsumo articulo) {
+	public void agregarArticulo(Insumo articulo) {
 
 	}
 
-	public void agregarArticulo(ArticuloInsumoVenta articulo) {
-
-	}
 }

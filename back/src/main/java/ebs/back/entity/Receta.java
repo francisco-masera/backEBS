@@ -19,14 +19,14 @@ public class Receta implements Serializable {
 	private float cantidadInsumo;
 	private boolean baja;
 	private ArticuloManufacturado manufacturado;
-	private List<ArticuloInsumo> insumos;
+	private List<Insumo> insumos;
 
 	public Receta() {
 
 	}
 
 	public Receta(Long id, float cantidadInsumo, boolean baja, ArticuloManufacturado manufacturado,
-			List<ArticuloInsumo> insumos) {
+			List<Insumo> insumos) {
 		this.id = id;
 		this.cantidadInsumo = cantidadInsumo;
 		this.baja = baja;
@@ -74,11 +74,11 @@ public class Receta implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "receta")
-	public List<ArticuloInsumo> getInsumo() {
+	public List<Insumo> getInsumo() {
 		return insumos;
 	}
 
-	public void setInsumo(List<ArticuloInsumo> insumo) {
+	public void setInsumo(List<Insumo> insumo) {
 		this.insumos = insumo;
 	}
 

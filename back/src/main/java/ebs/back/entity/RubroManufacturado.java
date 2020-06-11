@@ -1,31 +1,31 @@
 package ebs.back.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.OneToMany;
 
 @Entity
 public class RubroManufacturado implements Serializable {
 
 	private Long id;
 	private String denominacion;
-	private ArticuloManufacturado manufacturado;
+	private List<ArticuloManufacturado> manufacturados = new ArrayList<>();
 
 	public RubroManufacturado() {
 
 	}
 
-	public RubroManufacturado(Long id, String denominacion, ArticuloManufacturado manufacturado) {
+	public RubroManufacturado(Long id, String denominacion, List<ArticuloManufacturado> manufacturados) {
 		this.id = id;
 		this.denominacion = denominacion;
-		this.manufacturado = manufacturado;
+		this.manufacturados = manufacturados;
 	}
 
 	@Id
@@ -48,14 +48,14 @@ public class RubroManufacturado implements Serializable {
 		this.denominacion = deominacion;
 	}
 
-	@OneToOne(mappedBy = "rubro")
-	@JsonIgnore
-	public ArticuloManufacturado getManufacturado() {
-		return manufacturado;
+	@OneToMany(mappedBy = "rubro")
+	// @JsonIgnore
+	public List<ArticuloManufacturado> getManufacturados() {
+		return manufacturados;
 	}
 
-	public void setManufacturado(ArticuloManufacturado manufacturado) {
-		this.manufacturado = manufacturado;
+	public void setManufacturados(List<ArticuloManufacturado> manufacturados) {
+		this.manufacturados = manufacturados;
 	}
 
 }

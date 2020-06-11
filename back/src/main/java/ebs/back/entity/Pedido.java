@@ -79,12 +79,6 @@ public class Pedido implements Serializable {
 		return hora;
 	}
 
-	@Temporal(TemporalType.TIME)
-	@Column(nullable = false, updatable = false)
-	private Time convertirHora() {
-		return Time.valueOf(this.getHora());
-	}
-
 	public void setHora(LocalTime hora) {
 		this.hora = hora;
 	}
@@ -136,6 +130,12 @@ public class Pedido implements Serializable {
 
 	public void cambiarEstado(String estado) {
 
+	}
+
+	@Temporal(TemporalType.TIME)
+	@Column(nullable = false, updatable = false)
+	private Time convertirHora() {
+		return Time.valueOf(this.getHora());
 	}
 
 }
