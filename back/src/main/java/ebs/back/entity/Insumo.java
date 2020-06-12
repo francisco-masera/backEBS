@@ -1,6 +1,7 @@
 package ebs.back.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -22,16 +24,16 @@ public class Insumo implements Serializable {
 	private boolean esInsumo;
 	private Stock stock = new Stock();
 	private RubroInsumo rubroInsumo;
-	private Receta receta;
-	private RecetaSugerida recetaSugerida;
+	private List<Receta> recetas;
+	private List<RecetaSugerida> recetasSugeridas;
 	private HistorialCompraAProveedores historialCompra;
 
 	public Insumo() {
 	}
 
 	public Insumo(Long idInsumo, String unidadMedida, String denominacion, boolean esExtra, boolean baja,
-			boolean esInsumo, Stock stock, RubroInsumo rubroInsumo, Receta receta, RecetaSugerida recetaSugerida,
-			HistorialCompraAProveedores historialCompra) {
+			boolean esInsumo, Stock stock, RubroInsumo rubroInsumo, List<Receta> recetas,
+			List<RecetaSugerida> recetasSugeridas, HistorialCompraAProveedores historialCompra) {
 		this.idInsumo = idInsumo;
 		this.unidadMedida = unidadMedida;
 		this.denominacion = denominacion;
@@ -40,8 +42,8 @@ public class Insumo implements Serializable {
 		this.esInsumo = esInsumo;
 		this.stock = stock;
 		this.rubroInsumo = rubroInsumo;
-		this.receta = receta;
-		this.recetaSugerida = recetaSugerida;
+		this.recetas = recetas;
+		this.recetasSugeridas = recetasSugeridas;
 		this.historialCompra = historialCompra;
 	}
 
@@ -121,24 +123,22 @@ public class Insumo implements Serializable {
 		this.rubroInsumo = rubroInsumo;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "idReceta", nullable = false)
-	public Receta getReceta() {
-		return receta;
+	@OneToMany(mappedBy = "insumo")
+	public List<Receta> getRecetas() {
+		return recetas;
 	}
 
-	public void setReceta(Receta receta) {
-		this.receta = receta;
+	public void setRecetas(List<Receta> recetas) {
+		this.recetas = recetas;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "idRecetaSugerida", nullable = false)
-	public RecetaSugerida getRecetaSugerida() {
-		return recetaSugerida;
+	@OneToMany(mappedBy = "insumo")
+	public List<RecetaSugerida> getRecetasSugeridas() {
+		return recetasSugeridas;
 	}
 
-	public void setRecetaSugerida(RecetaSugerida recetaSugerida) {
-		this.recetaSugerida = recetaSugerida;
+	public void setRecetasSugeridas(List<RecetaSugerida> recetasSugeridas) {
+		this.recetasSugeridas = recetasSugeridas;
 	}
 
 	@OneToOne(mappedBy = "insumo")

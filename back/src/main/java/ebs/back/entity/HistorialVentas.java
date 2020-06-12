@@ -3,19 +3,17 @@ package ebs.back.entity;
 import java.io.Serializable;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class HistorialVentas implements Serializable {
@@ -24,20 +22,20 @@ public class HistorialVentas implements Serializable {
 	private LocalDate fechaVenta;
 	private float precioVenta;
 	private float costo;
-	private List<InformacionArticuloVenta> articulos;
+	private InformacionArticuloVenta articulo;
 
 	public HistorialVentas() {
 
 	}
 
 	public HistorialVentas(Long id, LocalDate fechaVenta, float precioVenta, float costo,
-			List<InformacionArticuloVenta> articulos) {
+			InformacionArticuloVenta articulo) {
 		this.id = id;
 		this.fechaVenta = fechaVenta;
 		this.precioVenta = precioVenta;
 		this.costo = costo;
 
-		this.articulos = articulos;
+		this.articulo = articulo;
 	}
 
 	@Id
@@ -77,14 +75,14 @@ public class HistorialVentas implements Serializable {
 		this.costo = costo;
 	}
 
-	@OneToMany(mappedBy = "ventas")
-	@JsonIgnore
-	public List<InformacionArticuloVenta> getArticulos() {
-		return articulos;
+	@ManyToOne
+	@JoinColumn(name = "idArticulo", nullable = false)
+	public InformacionArticuloVenta getArticulo() {
+		return articulo;
 	}
 
-	public void setArticulos(List<InformacionArticuloVenta> articulos) {
-		this.articulos = articulos;
+	public void setArticulo(InformacionArticuloVenta articulo) {
+		this.articulo = articulo;
 	}
 
 	public void calcularTotal() {

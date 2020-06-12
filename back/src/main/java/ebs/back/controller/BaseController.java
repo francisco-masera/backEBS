@@ -9,7 +9,6 @@ import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ebs.back.service.IBaseService;
-
 
 public class BaseController<E, S extends IBaseService<E>> {
 
@@ -91,8 +89,8 @@ public class BaseController<E, S extends IBaseService<E>> {
 		}
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@PathVariable Long id, String tableName) {
+	@DeleteMapping("/{id, tableName}")
+	public ResponseEntity<?> delete(@PathVariable Long id, @PathVariable String tableName) {
 
 		try {
 			EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("Delete");

@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -19,7 +20,7 @@ public class SugerenciaChef implements Serializable {
 	private boolean vegetariano;
 	private String denominacion;
 	private String descripcion;
-	private String foto;
+	private String imagen;
 	private RecetaSugerida recetaSugerida;
 
 	public SugerenciaChef() {
@@ -27,7 +28,7 @@ public class SugerenciaChef implements Serializable {
 	}
 
 	public SugerenciaChef(Long id, int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
-			String denominacion, String descripcion, String foto, RecetaSugerida recetaSugerida) {
+			String denominacion, String descripcion, String imagen, RecetaSugerida recetaSugerida) {
 		this.id = id;
 		this.tiempoCocina = tiempoCocina;
 		this.aptoCeliaco = aptoCeliaco;
@@ -35,7 +36,7 @@ public class SugerenciaChef implements Serializable {
 		this.vegetariano = vegetariano;
 		this.denominacion = denominacion;
 		this.descripcion = descripcion;
-		this.foto = foto;
+		this.imagen = imagen;
 		this.recetaSugerida = recetaSugerida;
 	}
 
@@ -105,12 +106,12 @@ public class SugerenciaChef implements Serializable {
 	}
 
 	@Column(nullable = false)
-	public String getFoto() {
-		return foto;
+	public String getImagen() {
+		return imagen;
 	}
 
-	public void setFoto(String foto) {
-		this.foto = foto;
+	public void setImagen(String imagen) {
+		this.imagen = imagen;
 	}
 
 	@OneToOne(mappedBy = "sugerenciaChef")

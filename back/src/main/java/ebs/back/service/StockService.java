@@ -1,9 +1,5 @@
 package ebs.back.service;
 
-import java.util.List;
-
-import javax.persistence.Query;
-
 import org.springframework.stereotype.Service;
 
 import ebs.back.entity.Stock;

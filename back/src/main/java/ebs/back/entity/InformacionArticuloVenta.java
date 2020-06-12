@@ -1,6 +1,7 @@
 package ebs.back.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,8 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -28,13 +28,13 @@ public abstract class InformacionArticuloVenta implements Serializable {
 	protected float precioVenta;
 	protected String imagen;
 	protected DetallePedido detalle;
-	protected HistorialVentas ventas;
+	protected List<HistorialVentas> ventas;
 
 	public InformacionArticuloVenta() {
 	}
 
 	public InformacionArticuloVenta(Long id, String descripcion, float precioVenta, String imagen,
-			DetallePedido detalle, HistorialVentas ventas) {
+			DetallePedido detalle, List<HistorialVentas> ventas) {
 		this.id = id;
 		this.descripcion = descripcion;
 		this.precioVenta = precioVenta;
@@ -90,13 +90,12 @@ public abstract class InformacionArticuloVenta implements Serializable {
 		this.detalle = detalle;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "idHistorial", nullable = false, updatable = false)
-	public HistorialVentas getVentas() {
+	@OneToMany(mappedBy = "articulo")
+	public List<HistorialVentas> getVentas() {
 		return ventas;
 	}
 
-	public void setVentas(HistorialVentas ventas) {
+	public void setVentas(List<HistorialVentas> ventas) {
 		this.ventas = ventas;
 	}
 

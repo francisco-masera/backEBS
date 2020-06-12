@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -18,18 +19,17 @@ public class RecetaSugerida implements Serializable {
 
 	private Long id;
 	private float cantidadInsumo;
-	private List<Insumo> insumos;
+	private Insumo insumo;
 	private SugerenciaChef sugerenciaChef;
 
 	public RecetaSugerida() {
 
 	}
 
-	public RecetaSugerida(Long id, float cantidadInsumo, boolean estado, List<Insumo> insumos,
-			SugerenciaChef sugerenciaChef) {
+	public RecetaSugerida(Long id, float cantidadInsumo, boolean estado, Insumo insumo, SugerenciaChef sugerenciaChef) {
 		this.id = id;
 		this.cantidadInsumo = cantidadInsumo;
-		this.insumos = insumos;
+		this.insumo = insumo;
 		this.sugerenciaChef = sugerenciaChef;
 	}
 
@@ -53,17 +53,18 @@ public class RecetaSugerida implements Serializable {
 		this.cantidadInsumo = cantidadInsumo;
 	}
 
-	@OneToMany(mappedBy = "recetaSugerida")
-	public List<Insumo> getInsumos() {
-		return insumos;
+	@ManyToOne
+	@JoinColumn(name = "idInsumo", nullable = false)
+	public Insumo getInsumo() {
+		return insumo;
 	}
 
-	public void setInsumos(List<Insumo> insumos) {
-		this.insumos = insumos;
+	public void setInsumo(Insumo insumo) {
+		this.insumo = insumo;
 	}
 
 	@OneToOne
-	@JoinColumn(name = "idSugerencia", nullable = false)
+	@JoinColumn(name = "idRecetaSugerida", nullable = false)
 	public SugerenciaChef getSugerenciaChef() {
 		return sugerenciaChef;
 	}

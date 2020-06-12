@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -19,19 +20,19 @@ public class Receta implements Serializable {
 	private float cantidadInsumo;
 	private boolean baja;
 	private ArticuloManufacturado manufacturado;
-	private List<Insumo> insumos;
+	private Insumo insumo;
 
 	public Receta() {
 
 	}
 
 	public Receta(Long id, float cantidadInsumo, boolean baja, ArticuloManufacturado manufacturado,
-			List<Insumo> insumos) {
+			Insumo insumo) {
 		this.id = id;
 		this.cantidadInsumo = cantidadInsumo;
 		this.baja = baja;
 		this.manufacturado = manufacturado;
-		this.insumos = insumos;
+		this.insumo = insumo;
 	}
 
 	@Id
@@ -73,13 +74,14 @@ public class Receta implements Serializable {
 		this.manufacturado = manufacturado;
 	}
 
-	@OneToMany(mappedBy = "receta")
-	public List<Insumo> getInsumo() {
-		return insumos;
+	@ManyToOne
+	@JoinColumn(name = "idInsumo", nullable = false)
+	public Insumo getInsumo() {
+		return insumo;
 	}
 
-	public void setInsumo(List<Insumo> insumo) {
-		this.insumos = insumo;
+	public void setInsumo(Insumo insumo) {
+		this.insumo = insumo;
 	}
 
 }

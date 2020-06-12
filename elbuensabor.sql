@@ -41,6 +41,15 @@ CREATE TABLE `articulomanufacturado` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `articulomanufacturado`
+--
+
+LOCK TABLES `articulomanufacturado` WRITE;
+/*!40000 ALTER TABLE `articulomanufacturado` DISABLE KEYS */;
+/*!40000 ALTER TABLE `articulomanufacturado` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `cliente`
 --
 
@@ -53,6 +62,15 @@ CREATE TABLE `cliente` (
   CONSTRAINT `FKidh5cjaj6rwvd7ffi3f8xyeve` FOREIGN KEY (`idCliente`) REFERENCES `persona` (`idPersona`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cliente`
+--
+
+LOCK TABLES `cliente` WRITE;
+/*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `config`
@@ -68,6 +86,15 @@ CREATE TABLE `config` (
   PRIMARY KEY (`idConfig`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `config`
+--
+
+LOCK TABLES `config` WRITE;
+/*!40000 ALTER TABLE `config` DISABLE KEYS */;
+/*!40000 ALTER TABLE `config` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `detallepedido`
@@ -88,6 +115,15 @@ CREATE TABLE `detallepedido` (
   CONSTRAINT `FKgblnghlb028vohg62ha0fb5xd` FOREIGN KEY (`idArticulo`) REFERENCES `informacionarticuloventa` (`idArticuloVenta`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `detallepedido`
+--
+
+LOCK TABLES `detallepedido` WRITE;
+/*!40000 ALTER TABLE `detallepedido` DISABLE KEYS */;
+/*!40000 ALTER TABLE `detallepedido` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `domicilio`
@@ -112,6 +148,15 @@ CREATE TABLE `domicilio` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `domicilio`
+--
+
+LOCK TABLES `domicilio` WRITE;
+/*!40000 ALTER TABLE `domicilio` DISABLE KEYS */;
+/*!40000 ALTER TABLE `domicilio` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `empleado`
 --
 
@@ -125,6 +170,15 @@ CREATE TABLE `empleado` (
   CONSTRAINT `FKpnt4sbao6fyenlefl82l95v5r` FOREIGN KEY (`idEmpleado`) REFERENCES `persona` (`idPersona`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `empleado`
+--
+
+LOCK TABLES `empleado` WRITE;
+/*!40000 ALTER TABLE `empleado` DISABLE KEYS */;
+/*!40000 ALTER TABLE `empleado` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `factura`
@@ -149,6 +203,15 @@ CREATE TABLE `factura` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `factura`
+--
+
+LOCK TABLES `factura` WRITE;
+/*!40000 ALTER TABLE `factura` DISABLE KEYS */;
+/*!40000 ALTER TABLE `factura` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `historialcompraaproveedores`
 --
 
@@ -168,6 +231,15 @@ CREATE TABLE `historialcompraaproveedores` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `historialcompraaproveedores`
+--
+
+LOCK TABLES `historialcompraaproveedores` WRITE;
+/*!40000 ALTER TABLE `historialcompraaproveedores` DISABLE KEYS */;
+/*!40000 ALTER TABLE `historialcompraaproveedores` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `historialventas`
 --
 
@@ -179,9 +251,21 @@ CREATE TABLE `historialventas` (
   `costo` float NOT NULL,
   `fechaVenta` date DEFAULT NULL,
   `precioVenta` float NOT NULL,
-  PRIMARY KEY (`idHistorial`)
+  `idArticulo` bigint NOT NULL,
+  PRIMARY KEY (`idHistorial`),
+  KEY `FKiqpk8sh4anogq7cbvmnmvswxi` (`idArticulo`),
+  CONSTRAINT `FKiqpk8sh4anogq7cbvmnmvswxi` FOREIGN KEY (`idArticulo`) REFERENCES `informacionarticuloventa` (`idArticuloVenta`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `historialventas`
+--
+
+LOCK TABLES `historialventas` WRITE;
+/*!40000 ALTER TABLE `historialventas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `historialventas` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `informacionarticuloventa`
@@ -195,12 +279,18 @@ CREATE TABLE `informacionarticuloventa` (
   `descripcion` varchar(255) NOT NULL,
   `imagen` varchar(255) NOT NULL,
   `precioVenta` float NOT NULL,
-  `idHistorial` bigint NOT NULL,
-  PRIMARY KEY (`idArticuloVenta`),
-  KEY `FK7s4bib8q9rwn1eo2jw3culmm3` (`idHistorial`),
-  CONSTRAINT `FK7s4bib8q9rwn1eo2jw3culmm3` FOREIGN KEY (`idHistorial`) REFERENCES `historialventas` (`idHistorial`)
+  PRIMARY KEY (`idArticuloVenta`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `informacionarticuloventa`
+--
+
+LOCK TABLES `informacionarticuloventa` WRITE;
+/*!40000 ALTER TABLE `informacionarticuloventa` DISABLE KEYS */;
+/*!40000 ALTER TABLE `informacionarticuloventa` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `informacionarticuloventa_insumo`
@@ -220,6 +310,15 @@ CREATE TABLE `informacionarticuloventa_insumo` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `informacionarticuloventa_insumo`
+--
+
+LOCK TABLES `informacionarticuloventa_insumo` WRITE;
+/*!40000 ALTER TABLE `informacionarticuloventa_insumo` DISABLE KEYS */;
+/*!40000 ALTER TABLE `informacionarticuloventa_insumo` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `insumo`
 --
 
@@ -233,21 +332,24 @@ CREATE TABLE `insumo` (
   `esExtra` bit(1) NOT NULL,
   `esInsumo` bit(1) NOT NULL,
   `unidadMedida` varchar(255) NOT NULL,
-  `idReceta` bigint NOT NULL,
-  `idRecetaSugerida` bigint NOT NULL,
   `idRubro` bigint NOT NULL,
   `idStock` bigint NOT NULL,
   PRIMARY KEY (`idInsumo`),
-  KEY `FKtg72cihx6atk6t3xy37d9b87h` (`idReceta`),
-  KEY `FKpclot6toughlu69kt6fes03a3` (`idRecetaSugerida`),
   KEY `FKaul117ixxf3b3im6dmxaxsnts` (`idRubro`),
   KEY `FKhin7lpolmf7r2u3cx3wsvt1k5` (`idStock`),
   CONSTRAINT `FKaul117ixxf3b3im6dmxaxsnts` FOREIGN KEY (`idRubro`) REFERENCES `rubroinsumo` (`idRubroInsumo`),
-  CONSTRAINT `FKhin7lpolmf7r2u3cx3wsvt1k5` FOREIGN KEY (`idStock`) REFERENCES `stock` (`idStock`),
-  CONSTRAINT `FKpclot6toughlu69kt6fes03a3` FOREIGN KEY (`idRecetaSugerida`) REFERENCES `recetasugerida` (`idSugerencia`),
-  CONSTRAINT `FKtg72cihx6atk6t3xy37d9b87h` FOREIGN KEY (`idReceta`) REFERENCES `receta` (`idReceta`)
+  CONSTRAINT `FKhin7lpolmf7r2u3cx3wsvt1k5` FOREIGN KEY (`idStock`) REFERENCES `stock` (`idStock`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `insumo`
+--
+
+LOCK TABLES `insumo` WRITE;
+/*!40000 ALTER TABLE `insumo` DISABLE KEYS */;
+/*!40000 ALTER TABLE `insumo` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `pedido`
@@ -268,6 +370,15 @@ CREATE TABLE `pedido` (
   CONSTRAINT `FKaxpy7jnkxyiemmhwpryyksqmd` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idCliente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pedido`
+--
+
+LOCK TABLES `pedido` WRITE;
+/*!40000 ALTER TABLE `pedido` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pedido` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `persona`
@@ -291,6 +402,15 @@ CREATE TABLE `persona` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `persona`
+--
+
+LOCK TABLES `persona` WRITE;
+/*!40000 ALTER TABLE `persona` DISABLE KEYS */;
+/*!40000 ALTER TABLE `persona` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `receta`
 --
 
@@ -301,12 +421,24 @@ CREATE TABLE `receta` (
   `idReceta` bigint NOT NULL AUTO_INCREMENT,
   `baja` tinyint(1) NOT NULL DEFAULT '0',
   `cantidadInsumo` float NOT NULL,
+  `idInsumo` bigint NOT NULL,
   `idManufacturado` bigint NOT NULL,
   PRIMARY KEY (`idReceta`),
+  KEY `FKp05k0p75y456y0nfrpaxwl8yy` (`idInsumo`),
   KEY `FKlk4tqorrqitu489uoj0kdkggf` (`idManufacturado`),
-  CONSTRAINT `FKlk4tqorrqitu489uoj0kdkggf` FOREIGN KEY (`idManufacturado`) REFERENCES `articulomanufacturado` (`idArticuloManufacturado`)
+  CONSTRAINT `FKlk4tqorrqitu489uoj0kdkggf` FOREIGN KEY (`idManufacturado`) REFERENCES `articulomanufacturado` (`idArticuloManufacturado`),
+  CONSTRAINT `FKp05k0p75y456y0nfrpaxwl8yy` FOREIGN KEY (`idInsumo`) REFERENCES `insumo` (`idInsumo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `receta`
+--
+
+LOCK TABLES `receta` WRITE;
+/*!40000 ALTER TABLE `receta` DISABLE KEYS */;
+/*!40000 ALTER TABLE `receta` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `recetasugerida`
@@ -318,9 +450,24 @@ DROP TABLE IF EXISTS `recetasugerida`;
 CREATE TABLE `recetasugerida` (
   `idSugerencia` bigint NOT NULL AUTO_INCREMENT,
   `cantidadInsumo` float NOT NULL,
-  PRIMARY KEY (`idSugerencia`)
+  `idInsumo` bigint NOT NULL,
+  `idRecetaSugerida` bigint NOT NULL,
+  PRIMARY KEY (`idSugerencia`),
+  KEY `FK4octeds5a27vbbsimmljsi966` (`idInsumo`),
+  KEY `FKc2jjkpcdeds5f54dc1vovk5rj` (`idRecetaSugerida`),
+  CONSTRAINT `FK4octeds5a27vbbsimmljsi966` FOREIGN KEY (`idInsumo`) REFERENCES `insumo` (`idInsumo`),
+  CONSTRAINT `FKc2jjkpcdeds5f54dc1vovk5rj` FOREIGN KEY (`idRecetaSugerida`) REFERENCES `sugerenciachef` (`idSugerencia`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `recetasugerida`
+--
+
+LOCK TABLES `recetasugerida` WRITE;
+/*!40000 ALTER TABLE `recetasugerida` DISABLE KEYS */;
+/*!40000 ALTER TABLE `recetasugerida` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `rubroinsumo`
@@ -337,6 +484,15 @@ CREATE TABLE `rubroinsumo` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `rubroinsumo`
+--
+
+LOCK TABLES `rubroinsumo` WRITE;
+/*!40000 ALTER TABLE `rubroinsumo` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rubroinsumo` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `rubromanufacturado`
 --
 
@@ -349,6 +505,15 @@ CREATE TABLE `rubromanufacturado` (
   PRIMARY KEY (`idRubroManufacturado`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rubromanufacturado`
+--
+
+LOCK TABLES `rubromanufacturado` WRITE;
+/*!40000 ALTER TABLE `rubromanufacturado` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rubromanufacturado` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `stock`
@@ -367,6 +532,15 @@ CREATE TABLE `stock` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `stock`
+--
+
+LOCK TABLES `stock` WRITE;
+/*!40000 ALTER TABLE `stock` DISABLE KEYS */;
+/*!40000 ALTER TABLE `stock` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `sugerenciachef`
 --
 
@@ -378,13 +552,22 @@ CREATE TABLE `sugerenciachef` (
   `aptoCeliaco` bit(1) NOT NULL,
   `denominacion` varchar(255) NOT NULL,
   `descripcion` varchar(255) NOT NULL,
-  `foto` varchar(255) NOT NULL,
+  `imagen` varchar(255) NOT NULL,
   `tiempoCocina` int NOT NULL,
   `vegano` bit(1) NOT NULL,
   `vegetariano` bit(1) NOT NULL,
   PRIMARY KEY (`idSugerencia`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sugerenciachef`
+--
+
+LOCK TABLES `sugerenciachef` WRITE;
+/*!40000 ALTER TABLE `sugerenciachef` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sugerenciachef` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `tarjetadebito`
@@ -406,6 +589,15 @@ CREATE TABLE `tarjetadebito` (
   CONSTRAINT `FK5wsu9jc73rxhb2msbco5dc86n` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idCliente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tarjetadebito`
+--
+
+LOCK TABLES `tarjetadebito` WRITE;
+/*!40000 ALTER TABLE `tarjetadebito` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarjetadebito` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -416,4 +608,4 @@ CREATE TABLE `tarjetadebito` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-11 11:36:47
+-- Dump completed on 2020-06-12 15:39:30
