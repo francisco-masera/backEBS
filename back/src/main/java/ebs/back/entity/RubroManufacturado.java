@@ -16,15 +16,17 @@ public class RubroManufacturado implements Serializable {
 
 	private Long id;
 	private String denominacion;
+	private boolean baja;
 	private List<ArticuloManufacturado> manufacturados = new ArrayList<>();
 
 	public RubroManufacturado() {
 
 	}
 
-	public RubroManufacturado(Long id, String denominacion, List<ArticuloManufacturado> manufacturados) {
+	public RubroManufacturado(Long id, String denominacion, boolean baja, List<ArticuloManufacturado> manufacturados) {
 		this.id = id;
 		this.denominacion = denominacion;
+		this.baja = baja;
 		this.manufacturados = manufacturados;
 	}
 
@@ -46,6 +48,15 @@ public class RubroManufacturado implements Serializable {
 
 	public void setDenominacion(String deominacion) {
 		this.denominacion = deominacion;
+	}
+
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	public boolean isBaja() {
+		return baja;
+	}
+
+	public void setBaja(boolean baja) {
+		this.baja = baja;
 	}
 
 	@OneToMany(mappedBy = "rubro")

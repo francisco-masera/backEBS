@@ -81,6 +81,7 @@ public class ArticuloManufacturado extends InformacionArticuloVenta {
 		this.denominacion = denominacion;
 	}
 
+	@Column(nullable = false, columnDefinition = "boolean default false")
 	public boolean isBaja() {
 		return baja;
 	}

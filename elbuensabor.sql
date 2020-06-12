@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS `articulomanufacturado`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `articulomanufacturado` (
   `aptoCeliaco` bit(1) NOT NULL,
-  `baja` bit(1) NOT NULL,
+  `baja` tinyint(1) NOT NULL DEFAULT '0',
   `denominacion` varchar(255) NOT NULL,
   `tiempoCocina` int NOT NULL,
   `vegano` bit(1) NOT NULL,
@@ -501,6 +501,7 @@ DROP TABLE IF EXISTS `rubromanufacturado`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rubromanufacturado` (
   `idRubroManufacturado` bigint NOT NULL AUTO_INCREMENT,
+  `baja` tinyint(1) NOT NULL DEFAULT '0',
   `denominacion` varchar(255) NOT NULL,
   PRIMARY KEY (`idRubroManufacturado`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -608,4 +609,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-12 15:39:30
+-- Dump completed on 2020-06-12 15:46:31
