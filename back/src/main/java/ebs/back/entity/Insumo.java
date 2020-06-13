@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Insumo implements Serializable {
 
@@ -124,6 +126,7 @@ public class Insumo implements Serializable {
 		this.rubroInsumo = rubroInsumo;
 	}
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "insumo", cascade = CascadeType.PERSIST)
 	public List<Receta> getRecetas() {
 		return recetas;
@@ -133,6 +136,7 @@ public class Insumo implements Serializable {
 		this.recetas = recetas;
 	}
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "insumo", cascade = CascadeType.PERSIST)
 	public List<RecetaSugerida> getRecetasSugeridas() {
 		return recetasSugeridas;
@@ -142,6 +146,7 @@ public class Insumo implements Serializable {
 		this.recetasSugeridas = recetasSugeridas;
 	}
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "insumo", cascade = CascadeType.PERSIST)
 	public List<HistorialCompraAProveedores> getHistorialCompras() {
 		return historialCompras;

@@ -10,6 +10,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @PrimaryKeyJoinColumn(name = "idArticuloManufacturado")
 public class ArticuloManufacturado extends InformacionArticuloVenta {
@@ -103,7 +105,8 @@ public class ArticuloManufacturado extends InformacionArticuloVenta {
 	public void setRubro(RubroManufacturado rubro) {
 		this.rubro = rubro;
 	}
-
+	
+	@JsonIgnore
 	@OneToMany(mappedBy = "manufacturado", cascade = CascadeType.PERSIST)
 	public List<Receta> getRecetas() {
 		return recetas;

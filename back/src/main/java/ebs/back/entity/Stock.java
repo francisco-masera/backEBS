@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Stock implements Serializable {
 
@@ -68,6 +70,7 @@ public class Stock implements Serializable {
 		this.maximo = maximo;
 	}
 
+	@JsonIgnore
 	@OneToOne(mappedBy = "stock")
 	public Insumo getInsumo() {
 		return insumo;

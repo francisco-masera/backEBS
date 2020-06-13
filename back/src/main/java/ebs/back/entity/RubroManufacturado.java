@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class RubroManufacturado implements Serializable {
 
@@ -60,6 +62,7 @@ public class RubroManufacturado implements Serializable {
 		this.baja = baja;
 	}
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "rubro", cascade = CascadeType.PERSIST)
 	public List<ArticuloManufacturado> getManufacturados() {
 		return manufacturados;

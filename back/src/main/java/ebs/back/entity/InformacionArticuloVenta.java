@@ -14,6 +14,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -82,6 +83,7 @@ public abstract class InformacionArticuloVenta implements Serializable {
 		this.imagen = imagen;
 	}
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "articulo", cascade = CascadeType.PERSIST)
 	public List<DetallePedido> getDetalles() {
 		return detalles;
@@ -91,6 +93,7 @@ public abstract class InformacionArticuloVenta implements Serializable {
 		this.detalles = detalles;
 	}
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "articulo", cascade = CascadeType.PERSIST)
 	public List<HistorialVentas> getHistorialPrecios() {
 		return historialPrecios;

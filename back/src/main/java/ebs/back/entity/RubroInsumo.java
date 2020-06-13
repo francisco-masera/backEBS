@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class RubroInsumo implements Serializable {
 
@@ -50,6 +52,7 @@ public class RubroInsumo implements Serializable {
 		this.denominacion = denominacion;
 	}
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "rubroInsumo", cascade = CascadeType.PERSIST)
 	public List<Insumo> getInsumos() {
 		return insumos;
