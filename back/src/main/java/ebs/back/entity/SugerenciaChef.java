@@ -1,14 +1,15 @@
 package ebs.back.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class SugerenciaChef implements Serializable {
@@ -21,14 +22,14 @@ public class SugerenciaChef implements Serializable {
 	private String denominacion;
 	private String descripcion;
 	private String imagen;
-	private RecetaSugerida recetaSugerida;
+	private List<RecetaSugerida> recetasSugeridas;
 
 	public SugerenciaChef() {
 
 	}
 
 	public SugerenciaChef(Long id, int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
-			String denominacion, String descripcion, String imagen, RecetaSugerida recetaSugerida) {
+			String denominacion, String descripcion, String imagen, List<RecetaSugerida> recetasSugeridas) {
 		this.id = id;
 		this.tiempoCocina = tiempoCocina;
 		this.aptoCeliaco = aptoCeliaco;
@@ -37,7 +38,7 @@ public class SugerenciaChef implements Serializable {
 		this.denominacion = denominacion;
 		this.descripcion = descripcion;
 		this.imagen = imagen;
-		this.recetaSugerida = recetaSugerida;
+		this.recetasSugeridas = recetasSugeridas;
 	}
 
 	@Id
@@ -114,13 +115,13 @@ public class SugerenciaChef implements Serializable {
 		this.imagen = imagen;
 	}
 
-	@OneToOne(mappedBy = "sugerenciaChef")
-	public RecetaSugerida getRecetaSugerida() {
-		return recetaSugerida;
+	@OneToMany(mappedBy = "sugerenciaChef", cascade = CascadeType.PERSIST)
+	public List<RecetaSugerida> getRecetasSugeridas() {
+		return recetasSugeridas;
 	}
 
-	public void setRecetaSugerida(RecetaSugerida recetaSugerida) {
-		this.recetaSugerida = recetaSugerida;
+	public void setRecetasSugeridas(List<RecetaSugerida> recetasSugeridas) {
+		this.recetasSugeridas = recetasSugeridas;
 	}
 
 }

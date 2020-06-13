@@ -3,6 +3,7 @@ package ebs.back.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,20 +28,20 @@ public abstract class InformacionArticuloVenta implements Serializable {
 	protected String descripcion;
 	protected float precioVenta;
 	protected String imagen;
-	protected DetallePedido detalle;
-	protected List<HistorialVentas> ventas;
+	protected List<DetallePedido> detalles;
+	protected List<HistorialVentas> historialPrecios;
 
 	public InformacionArticuloVenta() {
 	}
 
 	public InformacionArticuloVenta(Long id, String descripcion, float precioVenta, String imagen,
-			DetallePedido detalle, List<HistorialVentas> ventas) {
+			List<DetallePedido> detalles, List<HistorialVentas> historialPrecios) {
 		this.id = id;
 		this.descripcion = descripcion;
 		this.precioVenta = precioVenta;
 		this.imagen = imagen;
-		this.detalle = detalle;
-		this.ventas = ventas;
+		this.detalles = detalles;
+		this.historialPrecios = historialPrecios;
 	}
 
 	@Id
@@ -81,22 +82,22 @@ public abstract class InformacionArticuloVenta implements Serializable {
 		this.imagen = imagen;
 	}
 
-	@OneToOne(mappedBy = "articulo")
-	public DetallePedido getDetalle() {
-		return detalle;
+	@OneToMany(mappedBy = "articulo", cascade = CascadeType.PERSIST)
+	public List<DetallePedido> getDetalles() {
+		return detalles;
 	}
 
-	public void setDetalle(DetallePedido detalle) {
-		this.detalle = detalle;
+	public void setDetalles(List<DetallePedido> detalles) {
+		this.detalles = detalles;
 	}
 
-	@OneToMany(mappedBy = "articulo")
-	public List<HistorialVentas> getVentas() {
-		return ventas;
+	@OneToMany(mappedBy = "articulo", cascade = CascadeType.PERSIST)
+	public List<HistorialVentas> getHistorialPrecios() {
+		return historialPrecios;
 	}
 
-	public void setVentas(List<HistorialVentas> ventas) {
-		this.ventas = ventas;
+	public void setHistorialPrecios(List<HistorialVentas> historialPrecios) {
+		this.historialPrecios = historialPrecios;
 	}
 
 }

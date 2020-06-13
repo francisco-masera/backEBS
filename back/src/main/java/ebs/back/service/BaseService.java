@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -66,10 +65,10 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 	}
 
 	@Override
-	public boolean delete(Query q, Long id) throws Exception {
+	public boolean delete(E entity, Long id) throws Exception {
 		try {
 			if (repository.existsById(id)) {
-				q.executeUpdate();
+				this.update(entity, id);
 			}
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(e.getMessage());

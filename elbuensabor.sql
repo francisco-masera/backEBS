@@ -142,7 +142,7 @@ CREATE TABLE `domicilio` (
   `piso` int NOT NULL,
   `idPersona` bigint NOT NULL,
   PRIMARY KEY (`idDomicilio`),
-  UNIQUE KEY `UK_jlk5doq3tgd010o2jup0vhn8c` (`idPersona`),
+  KEY `FKqskjqmjbcu4wcn120ovey9hm3` (`idPersona`),
   CONSTRAINT `FKqskjqmjbcu4wcn120ovey9hm3` FOREIGN KEY (`idPersona`) REFERENCES `persona` (`idPersona`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -609,4 +609,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-12 15:46:31
+-- Dump completed on 2020-06-12 21:53:59

@@ -63,7 +63,7 @@ public class RecetaSugerida implements Serializable {
 		this.insumo = insumo;
 	}
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "idRecetaSugerida", nullable = false)
 	public SugerenciaChef getSugerenciaChef() {
 		return sugerenciaChef;

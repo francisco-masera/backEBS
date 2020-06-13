@@ -26,8 +26,7 @@ public class Receta implements Serializable {
 
 	}
 
-	public Receta(Long id, float cantidadInsumo, boolean baja, ArticuloManufacturado manufacturado,
-			Insumo insumo) {
+	public Receta(Long id, float cantidadInsumo, boolean baja, ArticuloManufacturado manufacturado, Insumo insumo) {
 		this.id = id;
 		this.cantidadInsumo = cantidadInsumo;
 		this.baja = baja;
@@ -64,7 +63,7 @@ public class Receta implements Serializable {
 		this.baja = baja;
 	}
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "idManufacturado", nullable = false)
 	public ArticuloManufacturado getManufacturado() {
 		return manufacturado;

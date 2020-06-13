@@ -1,5 +1,6 @@
 package ebs.back.controller;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
@@ -89,16 +90,10 @@ public class BaseController<E, S extends IBaseService<E>> {
 		}
 	}
 
-	@DeleteMapping("/{id, tableName}")
-	public ResponseEntity<?> delete(@PathVariable Long id, @PathVariable String tableName) {
-
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> delete(@RequestBody E entity, @PathVariable Long id) {
 		try {
-			EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("Delete");
-			EntityManager em = entityManagerFactory.createEntityManager();
-			em.getTransaction().begin();
-			Query query = em.createQuery("UPDATE " + tableName + " SET baja = 1 WHERE id = " + id);
-			return ResponseEntity.status(HttpStatus.OK).body(service.delete(query, id));
-
+			return this.update(entity, id);
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");

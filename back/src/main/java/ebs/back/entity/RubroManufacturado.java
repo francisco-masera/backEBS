@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -59,8 +60,7 @@ public class RubroManufacturado implements Serializable {
 		this.baja = baja;
 	}
 
-	@OneToMany(mappedBy = "rubro")
-	// @JsonIgnore
+	@OneToMany(mappedBy = "rubro", cascade = CascadeType.PERSIST)
 	public List<ArticuloManufacturado> getManufacturados() {
 		return manufacturados;
 	}

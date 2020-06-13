@@ -104,7 +104,7 @@ public class Domicilio implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "idPersona", nullable = false, unique = true, updatable = false)
+	@JoinColumn(name = "idPersona", nullable = false)
 	public Persona getPersona() {
 		return persona;
 	}

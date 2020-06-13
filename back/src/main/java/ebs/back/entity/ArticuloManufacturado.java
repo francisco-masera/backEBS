@@ -1,9 +1,13 @@
 package ebs.back.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
@@ -17,14 +21,14 @@ public class ArticuloManufacturado extends InformacionArticuloVenta {
 	private String denominacion;
 	private boolean baja;
 	private RubroManufacturado rubro;
-	private Receta receta;
+	private List<Receta> recetas;
 
 	public ArticuloManufacturado() {
 		super();
 	}
 
 	public ArticuloManufacturado(int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
-			String denominacion, boolean baja, RubroManufacturado rubro, Receta receta) {
+			String denominacion, boolean baja, RubroManufacturado rubro, List<Receta> recetas) {
 		super();
 		this.tiempoCocina = tiempoCocina;
 		this.aptoCeliaco = aptoCeliaco;
@@ -33,7 +37,7 @@ public class ArticuloManufacturado extends InformacionArticuloVenta {
 		this.denominacion = denominacion;
 		this.baja = baja;
 		this.rubro = rubro;
-		this.receta = receta;
+		this.recetas = recetas;
 	}
 
 	@Column(nullable = false)
@@ -90,7 +94,7 @@ public class ArticuloManufacturado extends InformacionArticuloVenta {
 		this.baja = baja;
 	}
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "idRubro", nullable = false)
 	public RubroManufacturado getRubro() {
 		return rubro;
@@ -100,13 +104,13 @@ public class ArticuloManufacturado extends InformacionArticuloVenta {
 		this.rubro = rubro;
 	}
 
-	@OneToOne(mappedBy = "manufacturado")
-	public Receta getReceta() {
-		return receta;
+	@OneToMany(mappedBy = "manufacturado", cascade = CascadeType.PERSIST)
+	public List<Receta> getRecetas() {
+		return recetas;
 	}
 
-	public void setReceta(Receta receta) {
-		this.receta = receta;
+	public void setRecetas(List<Receta> recetas) {
+		this.recetas = recetas;
 	}
 
 }

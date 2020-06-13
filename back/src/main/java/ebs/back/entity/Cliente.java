@@ -2,6 +2,7 @@ package ebs.back.entity;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -23,7 +24,7 @@ public class Cliente extends Persona {
 		this.pedidos = pedidos;
 	}
 
-	@OneToMany(mappedBy = "cliente")
+	@OneToMany(mappedBy = "cliente", cascade = CascadeType.PERSIST)
 	public List<Pedido> getPedidos() {
 		return pedidos;
 	}
@@ -32,7 +33,7 @@ public class Cliente extends Persona {
 		this.pedidos = pedidos;
 	}
 
-	@OneToMany(mappedBy = "cliente")
+	@OneToMany(mappedBy = "cliente", cascade = CascadeType.PERSIST)
 	public List<TarjetaDebito> getTarjetas() {
 		return tarjetas;
 	}

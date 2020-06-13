@@ -3,6 +3,7 @@ package ebs.back.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,14 +27,14 @@ public class Insumo implements Serializable {
 	private RubroInsumo rubroInsumo;
 	private List<Receta> recetas;
 	private List<RecetaSugerida> recetasSugeridas;
-	private HistorialCompraAProveedores historialCompra;
+	private List<HistorialCompraAProveedores> historialCompras;
 
 	public Insumo() {
 	}
 
 	public Insumo(Long idInsumo, String unidadMedida, String denominacion, boolean esExtra, boolean baja,
 			boolean esInsumo, Stock stock, RubroInsumo rubroInsumo, List<Receta> recetas,
-			List<RecetaSugerida> recetasSugeridas, HistorialCompraAProveedores historialCompra) {
+			List<RecetaSugerida> recetasSugeridas, List<HistorialCompraAProveedores> historialCompras) {
 		this.idInsumo = idInsumo;
 		this.unidadMedida = unidadMedida;
 		this.denominacion = denominacion;
@@ -44,7 +45,7 @@ public class Insumo implements Serializable {
 		this.rubroInsumo = rubroInsumo;
 		this.recetas = recetas;
 		this.recetasSugeridas = recetasSugeridas;
-		this.historialCompra = historialCompra;
+		this.historialCompras = historialCompras;
 	}
 
 	@Id
@@ -113,7 +114,7 @@ public class Insumo implements Serializable {
 		this.stock = stock;
 	}
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "idRubro", nullable = false)
 	public RubroInsumo getRubroInsumo() {
 		return rubroInsumo;
@@ -123,7 +124,7 @@ public class Insumo implements Serializable {
 		this.rubroInsumo = rubroInsumo;
 	}
 
-	@OneToMany(mappedBy = "insumo")
+	@OneToMany(mappedBy = "insumo", cascade = CascadeType.PERSIST)
 	public List<Receta> getRecetas() {
 		return recetas;
 	}
@@ -132,7 +133,7 @@ public class Insumo implements Serializable {
 		this.recetas = recetas;
 	}
 
-	@OneToMany(mappedBy = "insumo")
+	@OneToMany(mappedBy = "insumo", cascade = CascadeType.PERSIST)
 	public List<RecetaSugerida> getRecetasSugeridas() {
 		return recetasSugeridas;
 	}
@@ -141,13 +142,13 @@ public class Insumo implements Serializable {
 		this.recetasSugeridas = recetasSugeridas;
 	}
 
-	@OneToOne(mappedBy = "insumo")
-	public HistorialCompraAProveedores getHistorialCompra() {
-		return historialCompra;
+	@OneToMany(mappedBy = "insumo", cascade = CascadeType.PERSIST)
+	public List<HistorialCompraAProveedores> getHistorialCompras() {
+		return historialCompras;
 	}
 
-	public void setHistorialCompra(HistorialCompraAProveedores historialCompra) {
-		this.historialCompra = historialCompra;
+	public void setHistorialCompras(List<HistorialCompraAProveedores> historialCompras) {
+		this.historialCompras = historialCompras;
 	}
 
 }

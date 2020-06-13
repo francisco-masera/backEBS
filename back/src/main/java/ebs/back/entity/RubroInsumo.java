@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -49,7 +50,7 @@ public class RubroInsumo implements Serializable {
 		this.denominacion = denominacion;
 	}
 
-	@OneToMany(mappedBy = "rubroInsumo")
+	@OneToMany(mappedBy = "rubroInsumo", cascade = CascadeType.PERSIST)
 	public List<Insumo> getInsumos() {
 		return insumos;
 	}
