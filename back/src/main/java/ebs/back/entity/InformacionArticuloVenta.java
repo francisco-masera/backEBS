@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({ @Type(value = ArticuloManufacturado.class), @Type(value = InformacionArticuloVenta_Insumo.class) })
+@JsonSubTypes({ @Type(value = ArticuloManufacturado.class), @Type(value = InformacionInsumoVenta.class) })
 public abstract class InformacionArticuloVenta implements Serializable {
 
 	protected Long id;

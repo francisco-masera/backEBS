@@ -7,15 +7,15 @@ import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "idInsumoVenta")
-public class InformacionArticuloVenta_Insumo extends InformacionArticuloVenta {
+public class InformacionInsumoVenta extends InformacionArticuloVenta {
 
 	private Insumo insumo;
 
-	public InformacionArticuloVenta_Insumo() {
+	public InformacionInsumoVenta() {
 		super();
 	}
 
-	public InformacionArticuloVenta_Insumo(Insumo insumo) {
+	public InformacionInsumoVenta(Insumo insumo) {
 		super();
 		this.insumo = insumo;
 	}

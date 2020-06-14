@@ -20,6 +20,7 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 		try {
 			Pageable pageable = PageRequest.of(page, size);
 			return repository.findAll(pageable).getContent();
+		
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
@@ -30,8 +31,10 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 		try {
 			Optional<E> varOptional = repository.findById(id);
 			return varOptional.get();
+		
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(e.getMessage());
+		
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
@@ -41,8 +44,10 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 	public E save(E entity) throws Exception {
 		try {
 			return repository.save(entity);
+		
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(e.getMessage());
+		
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
@@ -55,10 +60,13 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 			E auxE = entityOptional.get();
 			auxE = repository.save(entity);
 			return auxE;
+		
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(e.getMessage());
+		
 		} catch (EntityNotFoundException e) {
 			throw new EntityNotFoundException(e.getMessage());
+		
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
@@ -70,8 +78,10 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 			if (repository.existsById(id)) {
 				this.update(entity, id);
 			}
+		
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(e.getMessage());
+		
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}

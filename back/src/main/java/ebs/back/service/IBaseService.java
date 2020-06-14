@@ -2,8 +2,6 @@ package ebs.back.service;
 
 import java.util.List;
 
-import javax.persistence.Query;
-
 public interface IBaseService<E> {
 
 	public abstract E save(E entity) throws Exception;
