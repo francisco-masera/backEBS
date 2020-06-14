@@ -4,9 +4,11 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 
 @Entity
 @PrimaryKeyJoinColumn(name = "idInsumoVenta")
+@Table(name = "informacionarticuloventa_insumo")
 public class InformacionInsumoVenta extends InformacionArticuloVenta {
 
 	private Insumo insumo;
