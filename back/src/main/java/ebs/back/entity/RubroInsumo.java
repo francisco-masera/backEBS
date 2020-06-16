@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class RubroInsumo implements Serializable {
 
-	private Float id;
+	private String id;
 	private String denominacion;
 	private List<Insumo> insumos = new ArrayList<>();
 
@@ -25,7 +25,7 @@ public class RubroInsumo implements Serializable {
 
 	}
 
-	public RubroInsumo(Float id, String denominacion, List<Insumo> insumos) {
+	public RubroInsumo(String id, String denominacion, List<Insumo> insumos) {
 		this.id = id;
 		this.denominacion = denominacion;
 		this.insumos = insumos;
@@ -35,11 +35,11 @@ public class RubroInsumo implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idRubroInsumo")
-	public Float getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Float id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
