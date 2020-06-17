@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class SugerenciaChef implements Serializable {
 
@@ -115,6 +117,7 @@ public class SugerenciaChef implements Serializable {
 		this.imagen = imagen;
 	}
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "sugerenciaChef", cascade = CascadeType.PERSIST)
 	public List<RecetaSugerida> getRecetasSugeridas() {
 		return recetasSugeridas;

@@ -49,6 +49,7 @@ public class BaseController<E, S extends IBaseService<E>> {
 		}
 	}
 
+	
 	@PostMapping("/")
 	public ResponseEntity<?> save(@RequestBody E entity) {
 
@@ -86,9 +87,9 @@ public class BaseController<E, S extends IBaseService<E>> {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@RequestBody E entity, @PathVariable Long id) {
+	public ResponseEntity<?> delete(@PathVariable Long id) {
 		try {
-			return this.update(entity, id);
+			return ResponseEntity.status(HttpStatus.OK).body(service.delete(id));
 		
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)

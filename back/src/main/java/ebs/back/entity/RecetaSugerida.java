@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class RecetaSugerida implements Serializable {
 
@@ -63,6 +65,7 @@ public class RecetaSugerida implements Serializable {
 		this.insumo = insumo;
 	}
 
+	
 	@ManyToOne
 	@JoinColumn(name = "idRecetaSugerida", nullable = false)
 	public SugerenciaChef getSugerenciaChef() {

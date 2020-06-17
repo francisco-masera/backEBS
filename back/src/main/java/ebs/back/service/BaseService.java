@@ -73,10 +73,10 @@ public abstract class BaseService<E, R extends JpaRepository<E, Long>> implement
 	}
 
 	@Override
-	public boolean delete(E entity, Long id) throws Exception {
+	public boolean delete(Long id) throws Exception {
 		try {
 			if (repository.existsById(id)) {
-				this.update(entity, id);
+				repository.deleteById(id);
 			}
 		
 		} catch (IllegalArgumentException e) {
