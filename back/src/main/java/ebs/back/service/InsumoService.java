@@ -22,7 +22,7 @@ public class InsumoService extends BaseService<Insumo, InsumoRepository> {
 				entity.setBaja(true);
 				entity = repository.save(entity);
 			}
-			if(!entity.isBaja()) {
+			if(entity.isBaja()) {
 				return true;
 			}else {
 				return false;
