@@ -40,7 +40,7 @@ public class ArticuloManufacturadoController
 	 * 
 	 * @param idManufacturado
 	 * @return True: Si un Manufacturado puede elaborarse, teniendo en cuenta si hay
-	 *         stock suficiente de sus insumos
+	 * stock suficiente de sus insumos
 	 */
 	@GetMapping("/stockManufacturado/{id}")
 	public boolean hayStockManufacturado(@PathVariable Long id) {

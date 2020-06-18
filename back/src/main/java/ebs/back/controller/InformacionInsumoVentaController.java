@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import ebs.back.entity.InformacionInsumoVenta;
 import ebs.back.entity.Insumo;
 import ebs.back.entity.RubroInsumo;
@@ -27,18 +26,27 @@ import ebs.back.service.InformacionInsumoVentaService;
 @RequestMapping(path = "buensabor/insumoVenta")
 public class InformacionInsumoVentaController
 		extends BaseController<InformacionInsumoVenta, InformacionInsumoVentaService> {
-	
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
+	/**
+	 * 
+	 * @param idInsumo
+	 * @return Todos los insumos de venta directa
+	 */
 	@GetMapping("/insumo/{idInsumo}")
 	public List<InformacionInsumoVenta> getInsumoVenta(@PathVariable Long idInsumo) {
 
-		
-		List<InformacionInsumoVenta>resultList =  this.jdbcTemplate.query(
-				"SELECT * FROM informacionarticuloventa_insumo inner join insumo on informacionarticuloventa_insumo.idInsumo=insumo.idInsumo inner join informacionarticuloventa on informacionarticuloventa_insumo.idInsumoVenta=informacionarticuloventa.idArticuloVenta inner join stock on insumo.idStock = stock.idStock inner join rubroinsumo on insumo.idRubro = rubroinsumo.idRubroInsumo where insumo.idInsumo="+ idInsumo,
-						
-				new RowMapper<InformacionInsumoVenta>() {				
+		List<InformacionInsumoVenta> resultList = this.jdbcTemplate.query(
+				"SELECT * FROM informacionarticuloventa_insumo "
+						+ "INNER JOIN insumo ON informacionarticuloventa_insumo.idInsumo = insumo.idInsumo "
+						+ "INNER JOIN informacionarticuloventa ON informacionarticuloventa_insumo.idInsumoVenta = informacionarticuloventa.idArticuloVenta "
+						+ "INNER JOIN stock ON insumo.idStock = stock.idStock "
+						+ "INNER JOIN rubroinsumo ON insumo.idRubro = rubroinsumo.idRubroInsumo "
+						+ "WHERE insumo.idInsumo=" + idInsumo,
+
+				new RowMapper<InformacionInsumoVenta>() {
 
 					@Override
 					public InformacionInsumoVenta mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -48,22 +56,22 @@ public class InformacionInsumoVentaController
 						insumoVenta.setImagen(rs.getString(13));
 						insumoVenta.setPrecioVenta(rs.getFloat(14));
 						Insumo insu = new Insumo();
-							insu.setIdInsumo(rs.getLong(2));
-							insu.setBaja(rs.getBoolean(4));
-							insu.setDenominacion(rs.getString(5));
-							insu.setEsExtra(rs.getBoolean(6));
-							insu.setEsInsumo(rs.getBoolean(7));
-							insu.setUnidadMedida(rs.getString(8));
-							Stock stock = new Stock();
-								stock.setId(rs.getLong(10));
-								stock.setActual(rs.getLong(16));
-								stock.setMaximo(rs.getLong(17));
-								stock.setMinimo(rs.getInt(18));
-							insu.setStock(stock);
-							RubroInsumo rubro = new RubroInsumo();
-								rubro.setId(rs.getLong(9));
-								rubro.setDenominacion(rs.getString(20));
-								insu.setRubroInsumo(rubro);
+						insu.setIdInsumo(rs.getLong(2));
+						insu.setBaja(rs.getBoolean(4));
+						insu.setDenominacion(rs.getString(5));
+						insu.setEsExtra(rs.getBoolean(6));
+						insu.setEsInsumo(rs.getBoolean(7));
+						insu.setUnidadMedida(rs.getString(8));
+						Stock stock = new Stock();
+						stock.setId(rs.getLong(10));
+						stock.setActual(rs.getLong(16));
+						stock.setMaximo(rs.getLong(17));
+						stock.setMinimo(rs.getInt(18));
+						insu.setStock(stock);
+						RubroInsumo rubro = new RubroInsumo();
+						rubro.setId(rs.getLong(9));
+						rubro.setDenominacion(rs.getString(20));
+						insu.setRubroInsumo(rubro);
 						insumoVenta.setInsumo(insu);
 						return insumoVenta;
 					}

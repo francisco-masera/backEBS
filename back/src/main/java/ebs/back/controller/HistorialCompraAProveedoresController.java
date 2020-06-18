@@ -31,8 +31,14 @@ public class HistorialCompraAProveedoresController
 	@Autowired
 	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
+	/**
+	 * 
+	 * @param idInsumo
+	 * @return El historial de compras a proveedores de un determinado insumo,
+	 * según la fecha más actual
+	 */
 	@GetMapping("/historial/{idInsumo}")
-	public List<HistorialCompraAProveedores> getHistorialInsumo(@PathVariable Long idInsumo) {
+	public List<HistorialCompraAProveedores> getHistorialInsumoFechaActual(@PathVariable Long idInsumo) {
 
 		List<HistorialCompraAProveedores> historial = this.jdbcTemplate.query(
 				"SELECT * FROM historialcompraaproveedores WHERE idInsumo = " + idInsumo
@@ -54,8 +60,14 @@ public class HistorialCompraAProveedoresController
 		return historial;
 	}
 
+	
+	/**
+	 * 
+	 * @param idInsumo
+	 * @return El historial completo de compras de un determinado insumo
+	 */
 	@GetMapping("/historialCompras/{idInsumo}")
-	public List<HistorialCompraAProveedores> getHistorialInsu(@PathVariable Long idInsumo) {
+	public List<HistorialCompraAProveedores> getHistorialInsumo(@PathVariable Long idInsumo) {
 
 		List<HistorialCompraAProveedores> historial = this.jdbcTemplate.query(
 				"SELECT * FROM historialcompraaproveedores WHERE idInsumo=" + idInsumo,
