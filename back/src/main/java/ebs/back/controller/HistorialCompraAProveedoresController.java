@@ -53,5 +53,28 @@ public class HistorialCompraAProveedoresController
 				});
 		return historial;
 	}
+	
+	@GetMapping("/historialCompras/{idInsumo}")
+	public List<HistorialCompraAProveedores> getHistorialInsu(@PathVariable Long idInsumo) {
+
+		
+		List<HistorialCompraAProveedores> historial = this.jdbcTemplate.query(
+				"SELECT * FROM historialcompraaproveedores WHERE idInsumo=" + idInsumo,
+				new RowMapper<HistorialCompraAProveedores>() {
+					@Override
+					public HistorialCompraAProveedores mapRow(ResultSet rs, int rowNum) throws SQLException {
+						HistorialCompraAProveedores compra = new HistorialCompraAProveedores();
+						compra.setId(rs.getLong(1));
+						compra.setCantidad(rs.getFloat(2));
+						Date date = rs.getDate(3);						
+						LocalDateTime localDateTime1 = (date.toLocalDate()).atStartOfDay();
+						
+						compra.setFechaCompra(localDateTime1);
+						compra.setPrecioUnitario(rs.getFloat(4));
+						return compra;
+					}
+				});
+		return historial;
+	}
 
 }
