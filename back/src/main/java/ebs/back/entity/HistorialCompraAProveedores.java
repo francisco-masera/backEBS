@@ -2,9 +2,11 @@ package ebs.back.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -102,8 +104,10 @@ public class HistorialCompraAProveedores implements Serializable {
 	}
 	  
 	public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
-	    return dateToConvert.toInstant()
-	      .atZone(ZoneId.systemDefault())
-	      .toLocalDateTime();
+		
+		Instant instant = dateToConvert.toInstant();
+		ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault());
+		LocalDateTime date = zdt.toLocalDateTime();
+	    return date;
 	}
 }

@@ -3,6 +3,8 @@ package ebs.back.controller;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,10 +31,10 @@ public class HistorialCompraAProveedoresController
 	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
 	
 	@GetMapping("/historial/{idInsumo}")
-	public HistorialCompraAProveedores getHistorialInsumo(@PathVariable Long idInsumo) {
+	public List<HistorialCompraAProveedores> getHistorialInsumo(@PathVariable Long idInsumo) {
 
-		HistorialCompraAProveedores historial = new HistorialCompraAProveedores();
-		historial = (HistorialCompraAProveedores) this.jdbcTemplate.query(
+		
+		List<HistorialCompraAProveedores> historial = this.jdbcTemplate.query(
 				"SELECT * FROM historialcompraaproveedores WHERE idInsumo = " + idInsumo
 						+ " AND fechaCompra = (SELECT MAX(fechaCompra) FROM historialcompraaproveedores)",
 				new RowMapper<HistorialCompraAProveedores>() {
@@ -41,9 +43,10 @@ public class HistorialCompraAProveedoresController
 						HistorialCompraAProveedores historial = new HistorialCompraAProveedores();
 						historial.setId(rs.getLong(1));
 						historial.setCantidad(rs.getFloat(2));
-						Date date = rs.getDate(3);
+						Date date = rs.getDate(3);						
+						LocalDateTime localDateTime1 = (date.toLocalDate()).atStartOfDay();
 						
-						historial.setFechaCompra(historial.convertToLocalDateTimeViaInstant(date));
+						historial.setFechaCompra(localDateTime1);
 						historial.setPrecioUnitario(rs.getFloat(4));
 						return historial;
 					}
