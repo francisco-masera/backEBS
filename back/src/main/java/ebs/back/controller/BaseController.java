@@ -29,7 +29,7 @@ public class BaseController<E, S extends IBaseService<E>> {
 
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+					.body("{\"Error inesperado\": \"" + e.getMessage() + "\"}");
 		}
 	}
 
@@ -45,7 +45,7 @@ public class BaseController<E, S extends IBaseService<E>> {
 
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+					.body("{\"Error inesperado\": \"" + e.getMessage() + "\"}");
 		}
 	}
 
@@ -61,7 +61,7 @@ public class BaseController<E, S extends IBaseService<E>> {
 
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+					.body("{\"Error inesperado\": \"" + e.getMessage() + "\"}");
 		}
 	}
 
@@ -81,7 +81,7 @@ public class BaseController<E, S extends IBaseService<E>> {
 
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+					.body("{\"Error inesperado\": \"" + e.getMessage() + "\"}");
 		}
 	}
 
@@ -96,7 +96,7 @@ public class BaseController<E, S extends IBaseService<E>> {
 
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+					.body("{\"Error inesperado\": \"" + e.getMessage() + "\"}");
 		}
 	}
 
