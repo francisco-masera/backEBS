@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,17 +87,13 @@ public class HistorialCompraAProveedoresController
 		return historial;
 	}
 
+	/**
+	 * 
+	 * @return Lista de precios unitarios de compra de insumos a proveedores
+	 */
 	@GetMapping("/preciosUnitariosActuales")
-	public HashMap<Long, Float> getPreciosUnitariosActuales() {
-		return this.jdbcTemplate.query(
-				"SELECT idInsumo, precioUnitario FROM historialcompraaproveedores "
-						+ " WHERE fechaCompra = (SELECT MAX(fechaCompra) FROM historialcompraaproveedores)",
-				new Object[] {}, (ResultSet rs) -> {
-					HashMap<Long, Float> results = new HashMap<>();
-					while (rs.next()) {
-						results.put(rs.getLong("idInsumo"), rs.getFloat("precioUnitario"));
-					}
-					return results;
-				});
+	public List<Float> getPreciosUnitariosActuales() {
+		return this.jdbcTemplate.queryForList("SELECT precioUnitario FROM historialcompraaproveedores "
+						+ " WHERE fechaCompra = (SELECT MAX(fechaCompra) FROM historialcompraaproveedores)", Float.class);
 	}
 }
