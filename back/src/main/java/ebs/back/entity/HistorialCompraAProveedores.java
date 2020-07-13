@@ -3,7 +3,6 @@ package ebs.back.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -16,7 +15,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -102,12 +100,12 @@ public class HistorialCompraAProveedores implements Serializable {
 	private Date convertirFecha() {
 		return Timestamp.valueOf(this.fechaCompra);
 	}
-	  
+
 	public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
-		
+
 		Instant instant = dateToConvert.toInstant();
 		ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault());
 		LocalDateTime date = zdt.toLocalDateTime();
-	    return date;
+		return date;
 	}
 }
