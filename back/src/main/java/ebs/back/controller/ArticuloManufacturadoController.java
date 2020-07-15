@@ -40,14 +40,15 @@ public class ArticuloManufacturadoController
 	 * 
 	 * @param idManufacturado
 	 * @return True: Si un Manufacturado puede elaborarse, teniendo en cuenta si hay
-	 * stock suficiente de sus insumos
+	 *         stock suficiente de sus insumos
 	 */
+	/*
 	@GetMapping("/stockManufacturado/{id}")
-	public boolean hayStockManufacturado(@PathVariable Long id) {
+	public boolean hayStockManufacturado(@PathVariable Long idManufacturado) {
 
 		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 		mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
-		Object response = this.getOne(id).getBody();
+		Object response = this.getOne(idManufacturado).getBody();
 
 		String responseJson = "";
 		try {
@@ -64,20 +65,22 @@ public class ArticuloManufacturadoController
 			e.printStackTrace();
 		}
 
-		manufacturadoWrapper.setRecetas(this.getRecetasXManufacturado(id));
+		manufacturadoWrapper.setRecetas(this.getRecetasXManufacturado(idManufacturado));
 		return this.verificarStock(manufacturadoWrapper);
 	}
+	*/
 
 	/**
 	 * 
-	 * @param idManufacturado
-	 * @return Todas las recetas de un Manufacturado, con sus Insumos
+	 * @param id
+	 * @return Todas las recetas de un Manufacturado,
 	 */
-	public List<Receta> getRecetasXManufacturado(Long idManufacturado) {
-		List<Receta> resultList = this.jdbcTemplate.query(
-				"SELECT r.idReceta, r.cantidadInsumo, i.idInsumo, s.actual "
+	@GetMapping("/recetasManufacturado/{id}")
+	public List<Receta> getRecetasXManufacturado(@PathVariable Long id) {
+		List<Receta> recetas = this.jdbcTemplate.query(
+				"SELECT r.idReceta, r.cantidadInsumo, i.idInsumo, i.denominacion, i.unidadMedida, s.actual "
 						+ "FROM stock s INNER JOIN insumo i ON s.idStock = i.idStock INNER JOIN receta r "
-						+ "ON i.idInsumo = r.idInsumo WHERE r.idManufacturado = " + idManufacturado,
+						+ "ON i.idInsumo = r.idInsumo WHERE r.idManufacturado = " + id,
 
 				new RowMapper<Receta>() {
 					@Override
@@ -88,27 +91,30 @@ public class ArticuloManufacturadoController
 
 						Insumo insumo = new Insumo();
 						insumo.setIdInsumo(rs.getLong("i.idInsumo"));
-
+						insumo.setDenominacion(rs.getString("i.denominacion"));
+						insumo.setUnidadMedida(rs.getString("i.unidadMedida"));
+						
 						Stock stock = new Stock();
-						stock.setActual(rs.getLong("actual"));
+						stock.setActual(rs.getLong("s.actual"));
 						insumo.setStock(stock);
 						receta.setInsumo(insumo);
 						return receta;
 					}
 				});
 
-		return resultList;
+		return recetas;
 	}
-
+	
+	
 	/**
 	 * 
 	 * @param manufacturado
-	 * @return True: Si Todos los insumos del manufacturado tienen stock necesario
+	 * @return True: Si todos los insumos del manufacturado tienen stock necesario
 	 *         para fabricarlo
 	 */
-	public boolean verificarStock(ArticuloManufacturadoWrapper manufacturado) {
+	/*public boolean verificarStock(ArticuloManufacturadoWrapper manufacturado) {
 		return manufacturado.getRecetas().stream()
 				.allMatch(r -> r.getCantidadInsumo() <= r.getInsumo().getStock().getActual());
 	}
-
+*/
 }
