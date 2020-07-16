@@ -48,7 +48,7 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
 	}
 
 	@GetMapping("/idStock/{id}")
-	private Long getIdStock(@PathVariable Long id) {
+	public Long getIdStock(@PathVariable Long id) {
 		return this.jdbcTemplate.queryForObject("SELECT idStock FROM insumo WHERE idInsumo = " + id, Long.class);
 	}
 

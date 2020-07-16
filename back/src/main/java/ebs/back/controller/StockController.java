@@ -1,6 +1,15 @@
 package ebs.back.controller;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,5 +22,43 @@ import ebs.back.service.StockService;
 		RequestMethod.DELETE })
 @RequestMapping(path = "buensabor/stock")
 public class StockController extends BaseController<Stock, StockService> {
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
+
+	@GetMapping("/estadoStock/{id}")
+	private int getEstadoStock(@PathVariable Long id) throws SQLException {
+		try {
+			Stock stock = this.jdbcTemplate.queryForObject(
+					"SELECT actual, maximo, minimo FROM stock s INNER JOIN insumo i ON s.idStock = i.idStock WHERE s.idStock = "
+							+ id,
+					new RowMapper<Stock>() {
+						public Stock mapRow(ResultSet rs, int rownumber) throws SQLException {
+							Stock stock = new Stock();
+							stock.setActual(rs.getLong("actual"));
+							stock.setMaximo(rs.getLong("maximo"));
+							stock.setMinimo(rs.getInt("minimo"));
+							return stock;
+						}
+					});
+			return this.establecerEstadoStock(stock);
+		} catch (EmptyResultDataAccessException e) {
+			return 0;
+		}
+	}
+
+	private int establecerEstadoStock(Stock stock) {
+		if (stock.getActual() >= stock.getMaximo() || stock.getActual() < stock.getMinimo())
+			return 1;
+		else if (estadoCritico(stock.getActual(), stock.getMinimo(), 5))
+			return 2;
+		else if (estadoCritico(stock.getActual(), stock.getMinimo(), 10))
+			return 3;
+		return 4;
+	}
+
+	private boolean estadoCritico(Long actual, Integer minimo, Integer porcentual) {
+		return !(actual > (minimo + minimo * porcentual / 100));
+	}
 
 }
