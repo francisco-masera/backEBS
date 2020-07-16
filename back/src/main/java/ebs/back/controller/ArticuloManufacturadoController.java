@@ -2,7 +2,11 @@ package ebs.back.controller;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,18 +16,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import ebs.back.entity.ArticuloManufacturado;
 import ebs.back.entity.Insumo;
 import ebs.back.entity.Receta;
 import ebs.back.entity.Stock;
-import ebs.back.entity.wrapper.ArticuloManufacturadoWrapper;
 import ebs.back.service.ArticuloManufacturadoService;
 
 @RestController
@@ -43,32 +42,27 @@ public class ArticuloManufacturadoController
 	 *         stock suficiente de sus insumos
 	 */
 	/*
-	@GetMapping("/stockManufacturado/{id}")
-	public boolean hayStockManufacturado(@PathVariable Long idManufacturado) {
-
-		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-		mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
-		Object response = this.getOne(idManufacturado).getBody();
-
-		String responseJson = "";
-		try {
-			responseJson = mapper.writeValueAsString(response);
-		} catch (JsonProcessingException e) {
-
-			e.printStackTrace();
-		}
-
-		ArticuloManufacturadoWrapper manufacturadoWrapper = new ArticuloManufacturadoWrapper();
-		try {
-			manufacturadoWrapper = mapper.readValue(responseJson, ArticuloManufacturadoWrapper.class);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-
-		manufacturadoWrapper.setRecetas(this.getRecetasXManufacturado(idManufacturado));
-		return this.verificarStock(manufacturadoWrapper);
-	}
-	*/
+	 * @GetMapping("/stockManufacturado/{id}") public boolean
+	 * hayStockManufacturado(@PathVariable Long idManufacturado) {
+	 * 
+	 * ObjectMapper mapper = new
+	 * ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+	 * mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+	 * Object response = this.getOne(idManufacturado).getBody();
+	 * 
+	 * String responseJson = ""; try { responseJson =
+	 * mapper.writeValueAsString(response); } catch (JsonProcessingException e) {
+	 * 
+	 * e.printStackTrace(); }
+	 * 
+	 * ArticuloManufacturadoWrapper manufacturadoWrapper = new
+	 * ArticuloManufacturadoWrapper(); try { manufacturadoWrapper =
+	 * mapper.readValue(responseJson, ArticuloManufacturadoWrapper.class); } catch
+	 * (JsonProcessingException e) { e.printStackTrace(); }
+	 * 
+	 * manufacturadoWrapper.setRecetas(this.getRecetasXManufacturado(idManufacturado
+	 * )); return this.verificarStock(manufacturadoWrapper); }
+	 */
 
 	/**
 	 * 
@@ -93,7 +87,7 @@ public class ArticuloManufacturadoController
 						insumo.setIdInsumo(rs.getLong("i.idInsumo"));
 						insumo.setDenominacion(rs.getString("i.denominacion"));
 						insumo.setUnidadMedida(rs.getString("i.unidadMedida"));
-						
+
 						Stock stock = new Stock();
 						stock.setActual(rs.getLong("s.actual"));
 						insumo.setStock(stock);
@@ -104,17 +98,34 @@ public class ArticuloManufacturadoController
 
 		return recetas;
 	}
-	
-	
+
+	/**
+	 * 
+	 * @param idInsumo
+	 * @return Precio unitario más actual de un insumo
+	 */
+	public Float getPrecioUnitario(Long idInsumo) {
+		return this.jdbcTemplate
+				.queryForObject("SELECT precioUnitario FROM historialcompraaproveedores WHERE idInsumo =" + idInsumo
+						+ " ORDER BY fechaCompra DESC LIMIT 1", Float.class);
+	}
+
+	@GetMapping("/costo")
+	public List<Float> getCosto(@RequestParam String idsInsumosStr) {
+		List<String> idsAuxList = Arrays.asList(idsInsumosStr.split(","));
+		List<Long> idsInsumos = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
+		return idsInsumos.stream().map(id -> this.getPrecioUnitario(id)).collect(Collectors.toList());
+
+	}
 	/**
 	 * 
 	 * @param manufacturado
 	 * @return True: Si todos los insumos del manufacturado tienen stock necesario
 	 *         para fabricarlo
 	 */
-	/*public boolean verificarStock(ArticuloManufacturadoWrapper manufacturado) {
-		return manufacturado.getRecetas().stream()
-				.allMatch(r -> r.getCantidadInsumo() <= r.getInsumo().getStock().getActual());
-	}
-*/
+	/*
+	 * public boolean verificarStock(ArticuloManufacturadoWrapper manufacturado) {
+	 * return manufacturado.getRecetas().stream() .allMatch(r ->
+	 * r.getCantidadInsumo() <= r.getInsumo().getStock().getActual()); }
+	 */
 }
