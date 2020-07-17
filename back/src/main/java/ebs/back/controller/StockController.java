@@ -30,10 +30,10 @@ public class StockController extends BaseController<Stock, StockService> {
 	private int getEstadoStock(@PathVariable Long id) throws SQLException {
 		try {
 			Stock stock = this.jdbcTemplate.queryForObject(
-					"SELECT actual, maximo, minimo FROM stock s INNER JOIN insumo i ON s.idStock = i.idStock WHERE s.idStock = "
+					"SELECT actual, maximo, minimo FROM stock s INNER JOIN insumo i ON s.idStock = i.idStock WHERE i.idInsumo = "
 							+ id,
 					new RowMapper<Stock>() {
-						public Stock mapRow(ResultSet rs, int rownumber) throws SQLException {
+						public Stock mapRow(ResultSet rs, int rowNumber) throws SQLException {
 							Stock stock = new Stock();
 							stock.setActual(rs.getLong("actual"));
 							stock.setMaximo(rs.getLong("maximo"));
@@ -57,7 +57,7 @@ public class StockController extends BaseController<Stock, StockService> {
 		return 4;
 	}
 
-	private boolean estadoCritico(Long actual, Integer minimo, Integer porcentual) {
+	private boolean estadoCritico(long actual, int minimo, int porcentual) {
 		return !(actual > (minimo + minimo * porcentual / 100));
 	}
 
