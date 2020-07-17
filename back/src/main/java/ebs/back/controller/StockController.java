@@ -41,18 +41,18 @@ public class StockController extends BaseController<Stock, StockService> {
 							return stock;
 						}
 					});
-			return this.establecerEstadoStock(stock);
+			return this.establecerEstadoStock(stock.getActual(), stock.getMaximo(), stock.getMinimo());
 		} catch (EmptyResultDataAccessException e) {
 			return 0;
 		}
 	}
 
-	private int establecerEstadoStock(Stock stock) {
-		if (stock.getActual() >= stock.getMaximo() || stock.getActual() < stock.getMinimo())
+	private int establecerEstadoStock(long actual, long maximo, int minimo) {
+		if (actual >= maximo || actual < maximo)
 			return 1;
-		else if (estadoCritico(stock.getActual(), stock.getMinimo(), 5))
+		else if (estadoCritico(actual, minimo, 5))
 			return 2;
-		else if (estadoCritico(stock.getActual(), stock.getMinimo(), 10))
+		else if (estadoCritico(actual, minimo, 10))
 			return 3;
 		return 4;
 	}
