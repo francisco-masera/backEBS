@@ -48,13 +48,11 @@ public class StockController extends BaseController<Stock, StockService> {
 	}
 
 	private int establecerEstadoStock(long actual, long maximo, int minimo) {
-		if (actual >= maximo || actual < maximo)
+		if (actual >= maximo || actual < minimo)
 			return 1;
-		else if (estadoCritico(actual, minimo, 5))
-			return 2;
 		else if (estadoCritico(actual, minimo, 10))
-			return 3;
-		return 4;
+			return 2;
+		return 3;
 	}
 
 	private boolean estadoCritico(long actual, int minimo, int porcentual) {
