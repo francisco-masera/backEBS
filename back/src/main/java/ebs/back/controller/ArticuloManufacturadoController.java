@@ -4,7 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -111,11 +113,28 @@ public class ArticuloManufacturadoController
 	}
 
 	@GetMapping("/costo")
-	public List<Float> getCosto(@RequestParam String idsInsumosStr) {
+	public Float getCosto(@RequestParam String idsInsumosStr, @RequestParam String cantInsumo) {
 		List<String> idsAuxList = Arrays.asList(idsInsumosStr.split(","));
+		List<String> cantInsumosAuxList = Arrays.asList(cantInsumo.split(","));
 		List<Long> idsInsumos = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
-		return idsInsumos.stream().map(id -> this.getPrecioUnitario(id)).collect(Collectors.toList());
+		List<Float> cantInsumoList = cantInsumosAuxList.stream().map(Float::parseFloat).collect(Collectors.toList());
+		
+		List<Float> costosInsumo = idsInsumos.stream().map(id -> this.getPrecioUnitario(id)).collect(Collectors.toList());
+		Float sumatoria=0.0F;
+		for(int i=0; i<costosInsumo.size();i++) {			
+			sumatoria += cantInsumoList.get(i) * costosInsumo.get(i);
+		}
+		
+		return sumatoria;
 
+	}
+	
+	@GetMapping("/costos")
+	public List<Float> getCostos(){
+		List<Float> allCostos = new ArrayList<>();
+		
+		
+		return allCostos;
 	}
 	/**
 	 * 
