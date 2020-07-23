@@ -4,10 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +18,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import ebs.back.entity.ArticuloManufacturado;
 import ebs.back.entity.Insumo;
 import ebs.back.entity.Receta;
 import ebs.back.entity.Stock;
+import ebs.back.entity.wrapper.ArticuloManufacturadoWrapper;
 import ebs.back.service.ArticuloManufacturadoService;
 
 @RestController
@@ -36,35 +39,6 @@ public class ArticuloManufacturadoController
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
-
-	/**
-	 * 
-	 * @param idManufacturado
-	 * @return True: Si un Manufacturado puede elaborarse, teniendo en cuenta si hay
-	 *         stock suficiente de sus insumos
-	 */
-	/*
-	 * @GetMapping("/stockManufacturado/{id}") public boolean
-	 * hayStockManufacturado(@PathVariable Long idManufacturado) {
-	 * 
-	 * ObjectMapper mapper = new
-	 * ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-	 * mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
-	 * Object response = this.getOne(idManufacturado).getBody();
-	 * 
-	 * String responseJson = ""; try { responseJson =
-	 * mapper.writeValueAsString(response); } catch (JsonProcessingException e) {
-	 * 
-	 * e.printStackTrace(); }
-	 * 
-	 * ArticuloManufacturadoWrapper manufacturadoWrapper = new
-	 * ArticuloManufacturadoWrapper(); try { manufacturadoWrapper =
-	 * mapper.readValue(responseJson, ArticuloManufacturadoWrapper.class); } catch
-	 * (JsonProcessingException e) { e.printStackTrace(); }
-	 * 
-	 * manufacturadoWrapper.setRecetas(this.getRecetasXManufacturado(idManufacturado
-	 * )); return this.verificarStock(manufacturadoWrapper); }
-	 */
 
 	/**
 	 * 
@@ -108,33 +82,108 @@ public class ArticuloManufacturadoController
 	 */
 	public Float getPrecioUnitario(Long idInsumo) {
 		return this.jdbcTemplate
-				.queryForObject("SELECT precioUnitario FROM historialcompraaproveedores WHERE idInsumo =" + idInsumo
+				.queryForObject("SELECT precioUnitario FROM historialcompraaproveedores WHERE idInsumo = " + idInsumo
 						+ " ORDER BY fechaCompra DESC LIMIT 1", Float.class);
 	}
 
+	/**
+	 * 
+	 * @param idsInsumosStr
+	 * @param cantInsumo
+	 * @return El costo de producción de un manufacturado
+	 */
 	@GetMapping("/costo")
 	public Float getCosto(@RequestParam String idsInsumosStr, @RequestParam String cantInsumo) {
 		List<String> idsAuxList = Arrays.asList(idsInsumosStr.split(","));
 		List<String> cantInsumosAuxList = Arrays.asList(cantInsumo.split(","));
 		List<Long> idsInsumos = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
 		List<Float> cantInsumoList = cantInsumosAuxList.stream().map(Float::parseFloat).collect(Collectors.toList());
-		
-		List<Float> costosInsumo = idsInsumos.stream().map(id -> this.getPrecioUnitario(id)).collect(Collectors.toList());
-		Float sumatoria=0.0F;
-		for(int i=0; i<costosInsumo.size();i++) {			
+
+		List<Float> costosInsumo = idsInsumos.stream().map(id -> this.getPrecioUnitario(id))
+				.collect(Collectors.toList());
+		Float sumatoria = 0.0F;
+		for (int i = 0; i < costosInsumo.size(); i++) {
 			sumatoria += cantInsumoList.get(i) * costosInsumo.get(i);
 		}
-		
+
 		return sumatoria;
 
 	}
-	
+
+	public Float getCosto2(String idsInsumosStr, String cantInsumo) {
+		List<String> idsAuxList = Arrays.asList(idsInsumosStr.split(","));
+		List<String> cantInsumosAuxList = Arrays.asList(cantInsumo.split(","));
+		List<Long> idsInsumos = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
+		List<Float> cantInsumoList = cantInsumosAuxList.stream().map(Float::parseFloat).collect(Collectors.toList());
+
+		List<Float> costosInsumo = idsInsumos.stream().map(id -> this.getPrecioUnitario(id))
+				.collect(Collectors.toList());
+		Float sumatoria = 0.0F;
+		for (int i = 0; i < costosInsumo.size(); i++) {
+			sumatoria += cantInsumoList.get(i) * costosInsumo.get(i);
+		}
+
+		return sumatoria;
+
+	}
+
 	@GetMapping("/costos")
-	public List<Float> getCostos(){
-		List<Float> allCostos = new ArrayList<>();
-		
-		
-		return allCostos;
+	public List<Float> getCostos(@RequestParam String idsManufacturadosStr) {
+		List<String> idsAuxList = Arrays.asList(idsManufacturadosStr.split(","));
+		List<Long> idsManufacturados = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
+		List<Float> costosManufacturados = new ArrayList<>();
+		List<ArticuloManufacturadoWrapper> manufacturados = idsManufacturados.stream()
+				.map(id -> this.convertirManufacturado(id)).collect(Collectors.toList());
+		manufacturados.forEach(
+				manufacturado -> manufacturado.setRecetas(this.getRecetasXManufacturado(manufacturado.getId())));
+		for (ArticuloManufacturadoWrapper manufacturado : manufacturados) {
+			if (!manufacturado.getRecetas().isEmpty())
+				costosManufacturados.add(this.auxGetCostos(manufacturado.getRecetas()));
+		}
+		return costosManufacturados;
+	}
+
+	private Float auxGetCostos(List<Receta> recetas) {
+		String idsInsumos = this.crearStrIdsInsumos(recetas);
+		String cantidades = this.crearStrCantidades(recetas);
+		return this.getCosto2(idsInsumos, cantidades);
+
+	}
+
+	private String crearStrCantidades(List<Receta> recetas) {
+		List<String> cantidades = new ArrayList<>();
+		recetas.forEach(receta -> cantidades.add(String.valueOf(receta.getCantidadInsumo())));
+		String s = String.join(",", cantidades);
+		return s;
+	}
+
+	private String crearStrIdsInsumos(List<Receta> recetas) {
+		List<String> idsInsumos = new ArrayList<>();
+		recetas.forEach(receta -> idsInsumos.add(receta.getInsumo().getIdInsumo().toString()));
+		String s = String.join(",", idsInsumos);
+		return s;
+	}
+
+	private ArticuloManufacturadoWrapper convertirManufacturado(Long idManufacturado) {
+		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+		mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+		Object response = this.getOne(idManufacturado).getBody();
+
+		String responseJson = "";
+		try {
+			responseJson = mapper.writeValueAsString(response);
+		} catch (JsonProcessingException e) {
+
+			e.printStackTrace();
+		}
+
+		ArticuloManufacturadoWrapper manufacturadoWrapper = new ArticuloManufacturadoWrapper();
+		try {
+			manufacturadoWrapper = mapper.readValue(responseJson, ArticuloManufacturadoWrapper.class);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return manufacturadoWrapper;
 	}
 	/**
 	 * 

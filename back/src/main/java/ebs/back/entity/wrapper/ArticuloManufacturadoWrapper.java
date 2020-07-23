@@ -9,7 +9,7 @@ import ebs.back.entity.RubroManufacturado;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ArticuloManufacturadoWrapper {
-
+	private Long idArticuloManufacturado;
 	private int tiempoCocina;
 	private boolean aptoCeliaco;
 	private boolean vegano;
@@ -20,6 +20,14 @@ public class ArticuloManufacturadoWrapper {
 	private List<Receta> recetas;
 
 	public ArticuloManufacturadoWrapper() {
+	}
+
+	public Long getId() {
+		return idArticuloManufacturado;
+	}
+
+	public void setId(Long idArticuloManufacturado) {
+		this.idArticuloManufacturado = idArticuloManufacturado;
 	}
 
 	public int getTiempoCocina() {
