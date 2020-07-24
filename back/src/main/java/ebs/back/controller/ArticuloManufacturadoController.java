@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import ebs.back.entity.ArticuloManufacturado;
 import ebs.back.entity.Insumo;
 import ebs.back.entity.Receta;
-import ebs.back.entity.Stock;
 import ebs.back.entity.wrapper.ArticuloManufacturadoWrapper;
 import ebs.back.service.ArticuloManufacturadoService;
 
@@ -47,26 +46,18 @@ public class ArticuloManufacturadoController
 	 */
 	@GetMapping("/recetasManufacturado/{id}")
 	public List<Receta> getRecetasXManufacturado(@PathVariable Long id) {
-		List<Receta> recetas = this.jdbcTemplate.query(
-				"SELECT r.idReceta, r.cantidadInsumo, i.idInsumo, i.denominacion, i.unidadMedida, s.actual "
-						+ "FROM stock s INNER JOIN insumo i ON s.idStock = i.idStock INNER JOIN receta r "
-						+ "ON i.idInsumo = r.idInsumo WHERE r.idManufacturado = " + id,
+		List<Receta> recetas = this.jdbcTemplate.query("SELECT r.cantidadInsumo, i.idInsumo "
+				+ "FROM insumo i INNER JOIN receta r ON i.idInsumo = r.idInsumo WHERE r.idManufacturado = " + id,
 
 				new RowMapper<Receta>() {
 					@Override
 					public Receta mapRow(ResultSet rs, int rowNum) throws SQLException {
 						Receta receta = new Receta();
-						receta.setId(rs.getLong("r.idReceta"));
 						receta.setCantidadInsumo(rs.getFloat("r.cantidadInsumo"));
 
 						Insumo insumo = new Insumo();
 						insumo.setIdInsumo(rs.getLong("i.idInsumo"));
-						insumo.setDenominacion(rs.getString("i.denominacion"));
-						insumo.setUnidadMedida(rs.getString("i.unidadMedida"));
 
-						Stock stock = new Stock();
-						stock.setActual(rs.getLong("s.actual"));
-						insumo.setStock(stock);
 						receta.setInsumo(insumo);
 						return receta;
 					}
@@ -110,23 +101,6 @@ public class ArticuloManufacturadoController
 
 	}
 
-	public Float getCosto2(String idsInsumosStr, String cantInsumo) {
-		List<String> idsAuxList = Arrays.asList(idsInsumosStr.split(","));
-		List<String> cantInsumosAuxList = Arrays.asList(cantInsumo.split(","));
-		List<Long> idsInsumos = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
-		List<Float> cantInsumoList = cantInsumosAuxList.stream().map(Float::parseFloat).collect(Collectors.toList());
-
-		List<Float> costosInsumo = idsInsumos.stream().map(id -> this.getPrecioUnitario(id))
-				.collect(Collectors.toList());
-		Float sumatoria = 0.0F;
-		for (int i = 0; i < costosInsumo.size(); i++) {
-			sumatoria += cantInsumoList.get(i) * costosInsumo.get(i);
-		}
-
-		return sumatoria;
-
-	}
-
 	@GetMapping("/costos")
 	public List<Float> getCostos(@RequestParam String idsManufacturadosStr) {
 		List<String> idsAuxList = Arrays.asList(idsManufacturadosStr.split(","));
@@ -146,7 +120,7 @@ public class ArticuloManufacturadoController
 	private Float auxGetCostos(List<Receta> recetas) {
 		String idsInsumos = this.crearStrIdsInsumos(recetas);
 		String cantidades = this.crearStrCantidades(recetas);
-		return this.getCosto2(idsInsumos, cantidades);
+		return this.getCosto(idsInsumos, cantidades);
 
 	}
 
