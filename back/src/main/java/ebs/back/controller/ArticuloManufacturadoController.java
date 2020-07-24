@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import ebs.back.entity.ArticuloManufacturado;
 import ebs.back.entity.Insumo;
 import ebs.back.entity.Receta;
+import ebs.back.entity.Stock;
 import ebs.back.entity.wrapper.ArticuloManufacturadoWrapper;
 import ebs.back.service.ArticuloManufacturadoService;
 
@@ -46,8 +47,10 @@ public class ArticuloManufacturadoController
 	 */
 	@GetMapping("/recetasManufacturado/{id}")
 	public List<Receta> getRecetasXManufacturado(@PathVariable Long id) {
-		List<Receta> recetas = this.jdbcTemplate.query("SELECT r.cantidadInsumo, i.idInsumo "
-				+ "FROM insumo i INNER JOIN receta r ON i.idInsumo = r.idInsumo WHERE r.idManufacturado = " + id,
+		List<Receta> recetas = this.jdbcTemplate.query(
+				"SELECT r.cantidadInsumo, i.idInsumo, i.denominacion, i.unidadMedida, s.actual "
+						+ "FROM stock s INNER JOIN insumo i ON s.idStock = i.idStock INNER JOIN receta r ON i.idInsumo = r.idInsumo WHERE r.idManufacturado = "
+						+ id,
 
 				new RowMapper<Receta>() {
 					@Override
@@ -57,8 +60,15 @@ public class ArticuloManufacturadoController
 
 						Insumo insumo = new Insumo();
 						insumo.setIdInsumo(rs.getLong("i.idInsumo"));
+						insumo.setDenominacion(rs.getString("i.denominacion"));
+						insumo.setUnidadMedida(rs.getString("i.unidadMedida"));
 
+						Stock stock = new Stock();
+						stock.setActual(rs.getLong("s.actual"));
+
+						insumo.setStock(stock);
 						receta.setInsumo(insumo);
+
 						return receta;
 					}
 				});
@@ -84,9 +94,9 @@ public class ArticuloManufacturadoController
 	 * @return El costo de producción de un producto manufacturado
 	 */
 	@GetMapping("/costo")
-	public Float getCosto(@RequestParam String idsInsumosStr, @RequestParam String cantInsumo) {
+	public Float getCosto(@RequestParam String idsInsumosStr, @RequestParam String cantidadInsumos) {
 		List<String> idsAuxList = Arrays.asList(idsInsumosStr.split(","));
-		List<String> cantInsumosAuxList = Arrays.asList(cantInsumo.split(","));
+		List<String> cantInsumosAuxList = Arrays.asList(cantidadInsumos.split(","));
 		List<Long> idsInsumos = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
 		List<Float> cantInsumoList = cantInsumosAuxList.stream().map(Float::parseFloat).collect(Collectors.toList());
 
@@ -163,8 +173,8 @@ public class ArticuloManufacturadoController
 	/**
 	 * 
 	 * @param idManufacturado
-	 * @return {@link ArticuloManufacturadoWrapper}: Transforma el responseBody del getOne de un producto
-	 *         manufacturado a su clase envolvente
+	 * @return {@link ArticuloManufacturadoWrapper}: Transforma el responseBody del
+	 *         getOne de un producto manufacturado a su clase envolvente
 	 */
 	private ArticuloManufacturadoWrapper convertirManufacturado(Long idManufacturado) {
 		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);

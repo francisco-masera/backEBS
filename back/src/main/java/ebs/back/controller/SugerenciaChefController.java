@@ -84,9 +84,9 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 	 * @return Float: El costo de producción de un manufacturado sugerido
 	 */
 	@GetMapping("/costo")
-	public Float getCosto(@RequestParam String idsInsumosStr, @RequestParam String cantInsumo) {
+	public Float getCosto(@RequestParam String idsInsumosStr, @RequestParam String cantidadInsumos) {
 		List<String> idsAuxList = Arrays.asList(idsInsumosStr.split(","));
-		List<String> cantInsumosAuxList = Arrays.asList(cantInsumo.split(","));
+		List<String> cantInsumosAuxList = Arrays.asList(cantidadInsumos.split(","));
 		List<Long> idsInsumos = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
 		List<Float> cantInsumoList = cantInsumosAuxList.stream().map(Float::parseFloat).collect(Collectors.toList());
 
