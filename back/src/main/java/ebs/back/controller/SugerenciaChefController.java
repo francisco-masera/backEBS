@@ -41,7 +41,7 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 	/**
 	 * 
 	 * @param id
-	 * @return Todas las recetas de una sugerencia,
+	 * @return List<RecetaSugerida>: Todas las recetas de una sugerencia
 	 */
 	@GetMapping("/recetasManufacturado/{id}")
 	public List<RecetaSugerida> getRecetasXSugerencia(@PathVariable Long id) {
@@ -69,7 +69,7 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 	/**
 	 * 
 	 * @param idInsumo
-	 * @return Precio unitario más actual de un insumo
+	 * @return Float: El precio unitario más actual de un insumo
 	 */
 	public Float getPrecioUnitario(Long idInsumo) {
 		return this.jdbcTemplate
@@ -81,7 +81,7 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 	 * 
 	 * @param idsInsumosStr
 	 * @param cantInsumo
-	 * @return El costo de producción de un manufacturado sugerido
+	 * @return Float: El costo de producción de un manufacturado sugerido
 	 */
 	@GetMapping("/costo")
 	public Float getCosto(@RequestParam String idsInsumosStr, @RequestParam String cantInsumo) {
@@ -101,6 +101,11 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 
 	}
 
+	/**
+	 * 
+	 * @param idsSugerenciasStr
+	 * @return List<Float>: El costo de cada una de las sugerencias
+	 */
 	@GetMapping("/costos")
 	public List<Float> getCostos(@RequestParam String idsSugerenciasStr) {
 		List<String> idsAuxList = Arrays.asList(idsSugerenciasStr.split(","));
@@ -117,6 +122,11 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 		return costosSugerencias;
 	}
 
+	/**
+	 * 
+	 * @param recetasSugeridas
+	 * @return Float: El costo de una sugerencia
+	 */
 	private Float auxGetCostos(List<RecetaSugerida> recetasSugeridas) {
 		String idsInsumos = this.crearStrIdsInsumos(recetasSugeridas);
 		String cantidades = this.crearStrCantidades(recetasSugeridas);
@@ -124,20 +134,37 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 
 	}
 
+	/**
+	 * 
+	 * @param recetasSugeridas
+	 * @return String: Cantidades de cada insumo para fabricar un producto sugerido,
+	 *         concatenadas con comas
+	 */
 	private String crearStrCantidades(List<RecetaSugerida> recetasSugeridas) {
 		List<String> cantidades = new ArrayList<>();
 		recetasSugeridas.forEach(receta -> cantidades.add(String.valueOf(receta.getCantidadInsumo())));
-		String s = String.join(",", cantidades);
-		return s;
+		return String.join(",", cantidades);
 	}
 
+	/**
+	 * 
+	 * @param recetasSugeridas
+	 * @return String: Id de cada insumo necesario para fabricar un producto
+	 *         sugerido, concatenados con comas
+	 */
 	private String crearStrIdsInsumos(List<RecetaSugerida> recetasSugeridas) {
 		List<String> idsInsumos = new ArrayList<>();
 		recetasSugeridas.forEach(receta -> idsInsumos.add(receta.getInsumo().getIdInsumo().toString()));
-		String s = String.join(",", idsInsumos);
-		return s;
+		return String.join(",", idsInsumos);
+
 	}
 
+	/**
+	 * 
+	 * @param idSugerencia
+	 * @return {@link SugerenciaChefWrapper}: Transforma el responseBody del getOne
+	 *         de un producto sugerido a su clase envolvente
+	 */
 	private SugerenciaChefWrapper convertirSugerencia(Long idSugerencia) {
 		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 		mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);

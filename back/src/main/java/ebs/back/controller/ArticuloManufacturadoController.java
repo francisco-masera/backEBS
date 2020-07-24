@@ -42,7 +42,7 @@ public class ArticuloManufacturadoController
 	/**
 	 * 
 	 * @param id
-	 * @return Todas las recetas de un Manufacturado,
+	 * @return List<Receta>: Todas las recetas de un producto manufacturado
 	 */
 	@GetMapping("/recetasManufacturado/{id}")
 	public List<Receta> getRecetasXManufacturado(@PathVariable Long id) {
@@ -69,9 +69,9 @@ public class ArticuloManufacturadoController
 	/**
 	 * 
 	 * @param idInsumo
-	 * @return Precio unitario más actual de un insumo
+	 * @return Float: Precio unitario más actual de un insumo
 	 */
-	public Float getPrecioUnitario(Long idInsumo) {
+	private Float getPrecioUnitario(Long idInsumo) {
 		return this.jdbcTemplate
 				.queryForObject("SELECT precioUnitario FROM historialcompraaproveedores WHERE idInsumo = " + idInsumo
 						+ " ORDER BY fechaCompra DESC LIMIT 1", Float.class);
@@ -81,7 +81,7 @@ public class ArticuloManufacturadoController
 	 * 
 	 * @param idsInsumosStr
 	 * @param cantInsumo
-	 * @return El costo de producción de un manufacturado
+	 * @return El costo de producción de un producto manufacturado
 	 */
 	@GetMapping("/costo")
 	public Float getCosto(@RequestParam String idsInsumosStr, @RequestParam String cantInsumo) {
@@ -101,6 +101,11 @@ public class ArticuloManufacturadoController
 
 	}
 
+	/**
+	 * 
+	 * @param idsManufacturadosStr
+	 * @return List<Float>: El costo de cada uno de los productos manufacturados
+	 */
 	@GetMapping("/costos")
 	public List<Float> getCostos(@RequestParam String idsManufacturadosStr) {
 		List<String> idsAuxList = Arrays.asList(idsManufacturadosStr.split(","));
@@ -117,6 +122,11 @@ public class ArticuloManufacturadoController
 		return costosManufacturados;
 	}
 
+	/**
+	 * 
+	 * @param recetasSugeridas
+	 * @return Float: El costo de un producto manufacturado
+	 */
 	private Float auxGetCostos(List<Receta> recetas) {
 		String idsInsumos = this.crearStrIdsInsumos(recetas);
 		String cantidades = this.crearStrCantidades(recetas);
@@ -124,6 +134,12 @@ public class ArticuloManufacturadoController
 
 	}
 
+	/**
+	 * 
+	 * @param recetas
+	 * @return String: Cantidades de cada insumo para fabricar un producto
+	 *         manufacturado, concatenadas con comas
+	 */
 	private String crearStrCantidades(List<Receta> recetas) {
 		List<String> cantidades = new ArrayList<>();
 		recetas.forEach(receta -> cantidades.add(String.valueOf(receta.getCantidadInsumo())));
@@ -131,6 +147,12 @@ public class ArticuloManufacturadoController
 		return s;
 	}
 
+	/**
+	 * 
+	 * @param recetas
+	 * @return String: Id de cada insumo necesario para fabricar un producto
+	 *         manufacturado, concatenados con comas
+	 */
 	private String crearStrIdsInsumos(List<Receta> recetas) {
 		List<String> idsInsumos = new ArrayList<>();
 		recetas.forEach(receta -> idsInsumos.add(receta.getInsumo().getIdInsumo().toString()));
@@ -138,6 +160,12 @@ public class ArticuloManufacturadoController
 		return s;
 	}
 
+	/**
+	 * 
+	 * @param idManufacturado
+	 * @return {@link ArticuloManufacturadoWrapper}: Transforma el responseBody del getOne de un producto
+	 *         manufacturado a su clase envolvente
+	 */
 	private ArticuloManufacturadoWrapper convertirManufacturado(Long idManufacturado) {
 		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 		mapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
@@ -159,15 +187,5 @@ public class ArticuloManufacturadoController
 		}
 		return manufacturadoWrapper;
 	}
-	/**
-	 * 
-	 * @param manufacturado
-	 * @return True: Si todos los insumos del manufacturado tienen stock necesario
-	 *         para fabricarlo
-	 */
-	/*
-	 * public boolean verificarStock(ArticuloManufacturadoWrapper manufacturado) {
-	 * return manufacturado.getRecetas().stream() .allMatch(r ->
-	 * r.getCantidadInsumo() <= r.getInsumo().getStock().getActual()); }
-	 */
+
 }
