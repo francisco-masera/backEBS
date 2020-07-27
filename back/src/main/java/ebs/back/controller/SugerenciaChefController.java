@@ -24,7 +24,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import ebs.back.entity.Insumo;
+import ebs.back.entity.Receta;
 import ebs.back.entity.RecetaSugerida;
+import ebs.back.entity.Stock;
 import ebs.back.entity.SugerenciaChef;
 import ebs.back.entity.wrapper.SugerenciaChefWrapper;
 import ebs.back.service.SugerenciaChefService;
@@ -43,23 +45,31 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 	 * @param id
 	 * @return List<RecetaSugerida>: Todas las recetas de una sugerencia
 	 */
-	@GetMapping("/recetasManufacturado/{id}")
+	@GetMapping("/recetasSugerencia/{id}")
 	public List<RecetaSugerida> getRecetasXSugerencia(@PathVariable Long id) {
 		List<RecetaSugerida> recetas = this.jdbcTemplate.query(
-				"SELECT r.cantidadInsumo, i.idInsumo FROM insumo i INNER JOIN recetasugerida r "
-						+ "ON i.idInsumo = r.idInsumo WHERE r.idSugerencia = " + id,
+				"SELECT r.cantidadInsumo, i.idInsumo,i.denominacion, i.unidadMedida, s.actual "
+				+ "From stock s inner join insumo i on s.idStock = i.idStock inner join recetasugerida r "
+				+ "ON i.idInsumo = r.idInsumo WHERE r.idRecetaSugerida="+ id,
 
 				new RowMapper<RecetaSugerida>() {
 					@Override
 					public RecetaSugerida mapRow(ResultSet rs, int rowNum) throws SQLException {
-						RecetaSugerida recetaSugerida = new RecetaSugerida();
-						recetaSugerida.setCantidadInsumo(rs.getFloat("r.cantidadInsumo"));
+						RecetaSugerida receta = new RecetaSugerida();
+						receta.setCantidadInsumo(rs.getFloat("r.cantidadInsumo"));
 
 						Insumo insumo = new Insumo();
 						insumo.setIdInsumo(rs.getLong("i.idInsumo"));
+						insumo.setDenominacion(rs.getString("i.denominacion"));
+						insumo.setUnidadMedida(rs.getString("i.unidadMedida"));
 
-						recetaSugerida.setInsumo(insumo);
-						return recetaSugerida;
+						Stock stock = new Stock();
+						stock.setActual(rs.getLong("s.actual"));
+
+						insumo.setStock(stock);
+						receta.setInsumo(insumo);
+
+						return receta;
 					}
 				});
 
