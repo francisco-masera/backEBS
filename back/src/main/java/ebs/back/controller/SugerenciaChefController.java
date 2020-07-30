@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import ebs.back.entity.Insumo;
-import ebs.back.entity.Receta;
 import ebs.back.entity.RecetaSugerida;
 import ebs.back.entity.Stock;
 import ebs.back.entity.SugerenciaChef;
@@ -49,8 +48,8 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 	public List<RecetaSugerida> getRecetasXSugerencia(@PathVariable Long id) {
 		List<RecetaSugerida> recetas = this.jdbcTemplate.query(
 				"SELECT r.cantidadInsumo, i.idInsumo,i.denominacion, i.unidadMedida, s.actual "
-				+ "From stock s inner join insumo i on s.idStock = i.idStock inner join recetasugerida r "
-				+ "ON i.idInsumo = r.idInsumo WHERE r.idRecetaSugerida="+ id,
+						+ "From stock s inner join insumo i on s.idStock = i.idStock inner join recetasugerida r "
+						+ "ON i.idInsumo = r.idInsumo WHERE r.idRecetaSugerida=" + id,
 
 				new RowMapper<RecetaSugerida>() {
 					@Override

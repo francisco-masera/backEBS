@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ebs.back.entity.HistorialCompraAProveedores;
-import ebs.back.entity.Insumo;
 import ebs.back.service.HistorialCompraAProveedoresService;
 
 @RestController
@@ -93,21 +92,8 @@ public class HistorialCompraAProveedoresController
 	 * @return Lista de precios unitarios de compra de insumos a proveedores
 	 */
 	@GetMapping("/preciosUnitariosActuales")
-	public List<HistorialCompraAProveedores> getPreciosUnitariosActuales() {
-		List<HistorialCompraAProveedores> historial = this.jdbcTemplate.query("SELECT precioUnitario, idInsumo FROM historialcompraaproveedores "
-						+ " WHERE fechaCompra = (SELECT MAX(fechaCompra) FROM historialcompraaproveedores)",
-						new RowMapper<HistorialCompraAProveedores>() {
-							@Override
-							public HistorialCompraAProveedores mapRow(ResultSet rs, int rowNum) throws SQLException {
-								HistorialCompraAProveedores compra = new HistorialCompraAProveedores();
-								compra.setPrecioUnitario(rs.getFloat(1));
-								Insumo insumo = new Insumo();
-									insumo.setIdInsumo(rs.getLong(2));
-								compra.setInsumo(insumo);								
-								return compra;
-							}
-						});
-				return historial;
-			}
-
+	public List<Float> getPreciosUnitariosActuales() {
+		return this.jdbcTemplate.queryForList("SELECT precioUnitario FROM historialcompraaproveedores "
+						+ " WHERE fechaCompra = (SELECT MAX(fechaCompra) FROM historialcompraaproveedores)", Float.class);
+	}
 }
