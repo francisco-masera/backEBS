@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,21 +95,21 @@ public class HistorialCompraAProveedoresController
 	 */
 	@GetMapping("/preciosUnitariosActuales")
 	public List<HistorialCompraAProveedores> getPreciosUnitariosActuales() {
-		List<HistorialCompraAProveedores> historial = this.jdbcTemplate.query(
-				"SELECT precioUnitario, idInsumo FROM historialcompraaproveedores "
-						+ " WHERE fechaCompra = (SELECT MAX(fechaCompra) FROM historialcompraaproveedores)",
-				new RowMapper<HistorialCompraAProveedores>() {
-					@Override
-					public HistorialCompraAProveedores mapRow(ResultSet rs, int rowNum) throws SQLException {
-						HistorialCompraAProveedores compra = new HistorialCompraAProveedores();
-						compra.setPrecioUnitario(rs.getFloat(1));
-						Insumo insumo = new Insumo();
-						insumo.setIdInsumo(rs.getLong(2));
-						compra.setInsumo(insumo);
-						return compra;
-					}
-				});
-		return historial;
-	}
+		List<Long> idsCargados = this.jdbcTemplate.query(
+				"SELECT h.idInsumo FROM historialcompraaproveedores h INNER JOIN insumo i "
+						+ "ON h.idInsumo = i.idInsumo WHERE h.fechaCompra = (SELECT MAX(h1.fechaCompra) "
+						+ "FROM historialcompraaproveedores h1 WHERE h1.idInsumo = i.idInsumo)",
+				(rs, rowNum) -> new Long(rs.getLong(1)));
+		List<HistorialCompraAProveedores> compras = new ArrayList<>();
 
+		for (Long id : idsCargados) {
+			compras.add(this.jdbcTemplate.queryForObject(
+					"SELECT h.precioUnitario, h.idInsumo FROM historialcompraaproveedores h WHERE h.idInsumo = ? ORDER BY h.fechaCompra DESC LIMIT 1",
+					new Object[] { id }, (rs, rowNum) -> (new HistorialCompraAProveedores(null,
+							rs.getLong("precioUnitario"), 0.0F, null, new Insumo(rs.getLong("idInsumo"))))));
+		}
+
+		return compras;
+
+	}
 }

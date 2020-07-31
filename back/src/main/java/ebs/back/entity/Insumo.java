@@ -50,6 +50,10 @@ public class Insumo implements Serializable {
 		this.historialCompras = historialCompras;
 	}
 
+	public Insumo(Long idInsumo) {
+		this.idInsumo = idInsumo;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "idInsumo")
