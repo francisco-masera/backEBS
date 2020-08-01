@@ -91,7 +91,7 @@ public class HistorialCompraAProveedoresController
 
 	/**
 	 * 
-	 * @return Lista de precios unitarios de compra de insumos a proveedores
+	 * @return El precio unitario actual de cada insumo
 	 */
 	@GetMapping("/preciosUnitariosActuales")
 	public List<HistorialCompraAProveedores> getPreciosUnitariosActuales() {
@@ -106,7 +106,7 @@ public class HistorialCompraAProveedoresController
 			compras.add(this.jdbcTemplate.queryForObject(
 					"SELECT h.precioUnitario, h.idInsumo FROM historialcompraaproveedores h WHERE h.idInsumo = ? ORDER BY h.fechaCompra DESC LIMIT 1",
 					new Object[] { id }, (rs, rowNum) -> (new HistorialCompraAProveedores(null,
-							rs.getLong("precioUnitario"), 0.0F, null, new Insumo(rs.getLong("idInsumo"))))));
+							rs.getFloat("precioUnitario"), 0.0F, null, new Insumo(rs.getLong("idInsumo"))))));
 		}
 
 		return compras;
