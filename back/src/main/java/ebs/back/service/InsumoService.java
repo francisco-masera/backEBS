@@ -22,11 +22,7 @@ public class InsumoService extends BaseService<Insumo, InsumoRepository> {
 				entity.setBaja(true);
 				entity = repository.save(entity);
 			}
-			if(entity.isBaja()) {
-				return true;
-			}else {
-				return false;
-			}
+			return entity.isBaja();
 		
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(e.getMessage());

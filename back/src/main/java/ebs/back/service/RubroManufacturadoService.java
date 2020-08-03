@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
@@ -17,54 +15,48 @@ import ebs.back.repository.RubroManufacturadoRepository;
 
 @Service
 public class RubroManufacturadoService extends BaseService<RubroManufacturado, RubroManufacturadoRepository> {
-	
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
-	
+
 	@Override
 	public List<RubroManufacturado> getAll(int page, int size) {
 		List<RubroManufacturado> rubros = this.jdbcTemplate.query(
-			"SELECT * FROM elbuensabor.rubromanufacturado where baja=0",
-				
+				"SELECT * FROM elbuensabor.rubromanufacturado where baja=0",
 
-			new RowMapper<RubroManufacturado>() {
-				@Override
-				public RubroManufacturado mapRow(ResultSet rs, int rowNum) throws SQLException {
-					RubroManufacturado rubro = new RubroManufacturado();
-					rubro.setId(rs.getLong(1));
-					rubro.setBaja(rs.getBoolean(2));
-					rubro.setDenominacion(rs.getString(3));
+				new RowMapper<RubroManufacturado>() {
+					@Override
+					public RubroManufacturado mapRow(ResultSet rs, int rowNum) throws SQLException {
+						RubroManufacturado rubro = new RubroManufacturado();
+						rubro.setId(rs.getLong(1));
+						rubro.setBaja(rs.getBoolean(2));
+						rubro.setDenominacion(rs.getString(3));
 
-					return rubro;
-				}
-			});
+						return rubro;
+					}
+				});
 
-	return rubros;
+		return rubros;
 	}
-	
+
 	@Override
 	public boolean delete(Long id) throws Exception {
 		try {
-			
+
 			RubroManufacturado entity = new RubroManufacturado();
 			if (repository.existsById(id)) {
 				Optional<RubroManufacturado> entityOptional = repository.findById(id);
 				entity = entityOptional.get();
 				entity.setBaja(true);
-				entity = repository.save(entity);
+				entity = repository.save(entity);	
 			}
-			if(entity.isBaja()) {
-				return true;
-			}else {
-				return false;
-			}
-		
+			return entity.isBaja();
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(e.getMessage());
-		
+
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
-		
+
 	}
 }
