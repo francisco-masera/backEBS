@@ -1,5 +1,6 @@
 package ebs.back.controller;
 
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,5 +14,8 @@ import ebs.back.service.RubroManufacturadoService;
 		RequestMethod.DELETE })
 @RequestMapping(path = "buensabor/rubroManufacturado")
 public class RubroManufacturadoController extends BaseController<RubroManufacturado, RubroManufacturadoService> {
-
+	
+	
+	
+	
 }

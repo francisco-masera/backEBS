@@ -22,7 +22,7 @@ public class BaseController<E, S extends IBaseService<E>> {
 
 	@GetMapping("/")
 	public ResponseEntity<?> getAll(@RequestParam(value = "page", defaultValue = "0") int page,
-			@RequestParam(value = "size", defaultValue = "10") int size) {
+			@RequestParam(value = "size", defaultValue = "60") int size) {
 
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(service.getAll(page, size));
