@@ -214,19 +214,17 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 	 */
 	@PostMapping("/uploadImg")
 	@Transactional
-	public String uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes attributes)
+	public boolean uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes attributes)
 			throws IOException {
-		if (file == null || file.isEmpty()) {
-			attributes.addFlashAttribute("message", "Por favor seleccione un archivo");
-			return "redirect:status";
+		try {
+			String upload_folder = ".//src//main//resources//static//images//productos//sugeridos//";
+			byte[] filesBytes = file.getBytes();
+			Path path = Paths.get(upload_folder + file.getOriginalFilename());
+			Files.write(path, filesBytes);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
-
-		String upload_folder = ".//src//main//resources//static//images//productos//sugeridos//";
-		byte[] filesBytes = file.getBytes();
-		Path path = Paths.get(upload_folder + file.getOriginalFilename());
-		Files.write(path, filesBytes);
-
-		return "redirect:/status";
 	}
-		
 }

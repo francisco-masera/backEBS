@@ -1,5 +1,8 @@
 package ebs.back.controller;
 
+import java.util.Comparator;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ebs.back.entity.RecetaSugerida;
+import ebs.back.entity.wrapper.RecetaSugeridaWrapper;
 import ebs.back.service.RecetaSugeridaService;
 
 @RestController
@@ -27,10 +31,17 @@ public class RecetaSugeridaController extends BaseController<RecetaSugerida, Rec
 	@Override
 	public ResponseEntity<?> save(RecetaSugerida recetaSugerida) {
 		try {
-			jdbcTemplate.update("INSERT INTO recetasugerida (cantidadInsumo, idInsumo, idSugerencia) VALUES (?, ?, ?)",
+			this.jdbcTemplate.update(
+					"INSERT INTO recetasugerida (cantidadInsumo, idInsumo, idSugerencia) VALUES (?, ?, ?)",
 					recetaSugerida.getCantidadInsumo(), recetaSugerida.getInsumo().getIdInsumo(),
 					recetaSugerida.getSugerenciaChef().getId());
-			return ResponseEntity.status(HttpStatus.OK).body(recetaSugerida);
+			List<RecetaSugeridaWrapper> recetas = this.jdbcTemplate.query(
+					"SELECT * FROM recetasugerida WHERE idSugerencia = ? ORDER BY idRecetaSugerida",
+					new Object[] { recetaSugerida.getSugerenciaChef().getId() },
+					(rs, rowNum) -> new RecetaSugeridaWrapper(rs.getLong(1), rs.getFloat(2), rs.getLong(3),
+							rs.getLong(4)));
+			return ResponseEntity.status(HttpStatus.OK).body(recetas.stream().max(Comparator.comparing(RecetaSugeridaWrapper::getId))
+					.get());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

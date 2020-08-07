@@ -2,7 +2,6 @@ package ebs.back.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,7 +22,7 @@ public class RecetaSugerida implements Serializable {
 
 	}
 
-	public RecetaSugerida(Long id, float cantidadInsumo, boolean estado, Insumo insumo, SugerenciaChef sugerenciaChef) {
+	public RecetaSugerida(Long id, float cantidadInsumo, Insumo insumo, SugerenciaChef sugerenciaChef) {
 		this.id = id;
 		this.cantidadInsumo = cantidadInsumo;
 		this.insumo = insumo;
