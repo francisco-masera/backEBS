@@ -34,7 +34,7 @@ public class HistorialCompraAProveedoresController
 	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
 	/**
-	 * 
+	 * @deprecated
 	 * @param idInsumo
 	 * @return El historial de compras a proveedores de un determinado insumo, según
 	 *         la fecha más actual
@@ -42,23 +42,19 @@ public class HistorialCompraAProveedoresController
 	@GetMapping("/historial/{idInsumo}")
 	public List<HistorialCompraAProveedores> getHistorialInsumoFechaActual(@PathVariable Long idInsumo) {
 
-		List<HistorialCompraAProveedores> historial = this.jdbcTemplate.query(
-				"SELECT * FROM historialcompraaproveedores WHERE idInsumo = " + idInsumo
-						+ " AND fechaCompra = (SELECT MAX(fechaCompra) FROM historialcompraaproveedores)",
-				new RowMapper<HistorialCompraAProveedores>() {
-					@Override
-					public HistorialCompraAProveedores mapRow(ResultSet rs, int rowNum) throws SQLException {
-						HistorialCompraAProveedores historial = new HistorialCompraAProveedores();
-						historial.setId(rs.getLong(1));
-						historial.setCantidad(rs.getFloat(2));
-						Date date = rs.getDate(3);
-						Instant instant = Instant.ofEpochSecond(date.getTime());
-						LocalDateTime localDateTime1 = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-						historial.setFechaCompra(localDateTime1);
-						historial.setPrecioUnitario(rs.getFloat(4));
-						return historial;
-					}
-				});
+		List<HistorialCompraAProveedores> historial = this.jdbcTemplate
+				.query("SELECT * FROM historialcompraaproveedores WHERE idInsumo = " + idInsumo
+						+ " ORDER BY fechaCompra DESC LIMIT 1", new RowMapper<HistorialCompraAProveedores>() {
+							@Override
+							public HistorialCompraAProveedores mapRow(ResultSet rs, int rowNum) throws SQLException {
+								HistorialCompraAProveedores historial = new HistorialCompraAProveedores();
+								historial.setId(rs.getLong(1));
+								historial.setCantidad(rs.getFloat(2));
+								historial.setFechaCompra(rs.getTimestamp(3).toLocalDateTime());
+								historial.setPrecioUnitario(rs.getFloat(4));
+								return historial;
+							}
+						});
 		return historial;
 	}
 
@@ -71,17 +67,14 @@ public class HistorialCompraAProveedoresController
 	public List<HistorialCompraAProveedores> getHistorialInsumo(@PathVariable Long idInsumo) {
 
 		List<HistorialCompraAProveedores> historial = this.jdbcTemplate.query(
-				"SELECT * FROM historialcompraaproveedores WHERE idInsumo=" + idInsumo,
+				"SELECT * FROM historialcompraaproveedores WHERE idInsumo=" + idInsumo + " ORDER BY fechaCompra DESC",
 				new RowMapper<HistorialCompraAProveedores>() {
 					@Override
 					public HistorialCompraAProveedores mapRow(ResultSet rs, int rowNum) throws SQLException {
 						HistorialCompraAProveedores compra = new HistorialCompraAProveedores();
 						compra.setId(rs.getLong(1));
 						compra.setCantidad(rs.getFloat(2));
-						Date date = rs.getDate(3);
-						Instant instant = Instant.ofEpochSecond(date.getTime());
-						LocalDateTime localDateTime1 = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-						compra.setFechaCompra(localDateTime1);
+						compra.setFechaCompra(rs.getTimestamp(3).toLocalDateTime());
 						compra.setPrecioUnitario(rs.getFloat(4));
 						return compra;
 					}
