@@ -1,11 +1,7 @@
 package ebs.back.controller;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,7 +88,7 @@ public class HistorialCompraAProveedoresController
 				"SELECT h.idInsumo FROM historialcompraaproveedores h INNER JOIN insumo i "
 						+ "ON h.idInsumo = i.idInsumo WHERE h.fechaCompra = (SELECT MAX(h1.fechaCompra) "
 						+ "FROM historialcompraaproveedores h1 WHERE h1.idInsumo = i.idInsumo)",
-				(rs, rowNum) -> new Long(rs.getLong(1)));
+				(rs, rowNum) -> rs.getLong(1));
 		List<HistorialCompraAProveedores> compras = new ArrayList<>();
 
 		for (Long id : idsCargados) {
