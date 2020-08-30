@@ -101,4 +101,16 @@ public class HistorialCompraAProveedoresController
 		return compras;
 
 	}
+
+	@GetMapping("/precioUnitario/{id}")
+	public Float getPrecioUnitarioXiD(@PathVariable Long id) {
+		try {
+			return this.jdbcTemplate.queryForObject(
+					"SELECT precioUnitario FROM historialcompraaproveedores WHERE idInsumo = " + id, Float.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0.0F;
+		}
+	}
+
 }
