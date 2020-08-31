@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,11 +21,10 @@ public class PersonaController extends BaseController<Persona, PersonaService> {
 	@Autowired
 	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-	@GetMapping("/validarContrasenia/{id}")
-	public boolean validarContrasenia(@PathVariable Long id, @RequestParam String password) {
+	@GetMapping("/validarContrasenia")
+	public boolean validarContrasenia(@RequestParam Long id, @RequestParam String password) {
 		String contrasenia = this.jdbcTemplate.queryForObject("SELECT contrasenia FROM persona WHERE idPersona=?",
 				new Object[] { id }, String.class);
 		return contrasenia.equals(password);
 	}
-
 }
