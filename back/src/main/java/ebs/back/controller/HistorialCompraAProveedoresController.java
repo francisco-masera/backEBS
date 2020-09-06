@@ -6,17 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import ebs.back.entity.HistorialCompraAProveedores;
 import ebs.back.entity.Insumo;
+import ebs.back.entity.Stock;
 import ebs.back.service.HistorialCompraAProveedoresService;
 
 @RestController
@@ -77,7 +81,25 @@ public class HistorialCompraAProveedoresController
 				});
 		return historial;
 	}
-
+	public List<HistorialCompraAProveedores> traeUltimoCargado() {
+		List<HistorialCompraAProveedores> ultimo = this.jdbcTemplate.query(
+				"SELECT * FROM historialcompraaproveedores ORDER BY idCompra DESC LIMIT 1",
+				new RowMapper <HistorialCompraAProveedores>() {
+					@Override
+					public HistorialCompraAProveedores mapRow(ResultSet rs, int rowNum) throws SQLException {
+						HistorialCompraAProveedores compra = new HistorialCompraAProveedores();
+						compra.setId(rs.getLong(1));
+						compra.setCantidad(rs.getFloat(2));
+						compra.setFechaCompra(rs.getTimestamp(3).toLocalDateTime());
+						compra.setPrecioUnitario(rs.getFloat(4));
+						Insumo insumo = new Insumo();
+						insumo.setIdInsumo(rs.getLong(5));
+						compra.setInsumo(insumo);
+						return compra;
+					}
+				});
+		return ultimo;
+	}
 	/**
 	 * 
 	 * @return El precio unitario actual de cada insumo
@@ -101,4 +123,30 @@ public class HistorialCompraAProveedoresController
 		return compras;
 
 	}
+	
+	public int actualizaStock(Long idInsumo, float compra) {
+		Long idStock = this.jdbcTemplate.queryForObject("SELECT idStock FROM insumo WHERE idInsumo = " + idInsumo, Long.class);
+		float actual = this.jdbcTemplate.queryForObject("SELECT actual FROM stock WHERE idStock = " + idStock, Long.class) + compra;
+		return this.jdbcTemplate.update("UPDATE stock SET actual = " + actual+" WHERE idStock = " + idStock);
+	}
+	
+	public ResponseEntity<?> save(@RequestBody HistorialCompraAProveedores entity) {
+
+		try {
+			ResponseEntity<?> response = ResponseEntity.status(HttpStatus.CREATED).body(service.save(entity));
+			List<HistorialCompraAProveedores> ultimo = traeUltimoCargado();
+			actualizaStock(ultimo.get(0).getInsumo().getIdInsumo(), ultimo.get(0).getCantidad());
+			return response;
+
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("{\"Error inesperado\": \"" + e.getMessage() + "\"}");
+		}
+	}
+
+	
 }
