@@ -34,4 +34,5 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
 				(rs, rowNum) -> new Insumo(rs.getLong(1), rs.getString(6), rs.getString(3), rs.getBoolean(4),
 						rs.getBoolean(2), rs.getBoolean(5), null, null, null, null, null));
 	}
+
 }

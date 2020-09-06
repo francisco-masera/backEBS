@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ebs.back.entity.HistorialCompraAProveedores;
 import ebs.back.entity.Insumo;
-import ebs.back.entity.Stock;
 import ebs.back.service.HistorialCompraAProveedoresService;
 
 @RestController
@@ -81,10 +80,11 @@ public class HistorialCompraAProveedoresController
 				});
 		return historial;
 	}
+
 	public List<HistorialCompraAProveedores> traeUltimoCargado() {
 		List<HistorialCompraAProveedores> ultimo = this.jdbcTemplate.query(
 				"SELECT * FROM historialcompraaproveedores ORDER BY idCompra DESC LIMIT 1",
-				new RowMapper <HistorialCompraAProveedores>() {
+				new RowMapper<HistorialCompraAProveedores>() {
 					@Override
 					public HistorialCompraAProveedores mapRow(ResultSet rs, int rowNum) throws SQLException {
 						HistorialCompraAProveedores compra = new HistorialCompraAProveedores();
@@ -100,6 +100,7 @@ public class HistorialCompraAProveedoresController
 				});
 		return ultimo;
 	}
+
 	/**
 	 * 
 	 * @return El precio unitario actual de cada insumo
@@ -123,13 +124,15 @@ public class HistorialCompraAProveedoresController
 		return compras;
 
 	}
-	
+
 	public int actualizaStock(Long idInsumo, float compra) {
-		Long idStock = this.jdbcTemplate.queryForObject("SELECT idStock FROM insumo WHERE idInsumo = " + idInsumo, Long.class);
-		float actual = this.jdbcTemplate.queryForObject("SELECT actual FROM stock WHERE idStock = " + idStock, Long.class) + compra;
-		return this.jdbcTemplate.update("UPDATE stock SET actual = " + actual+" WHERE idStock = " + idStock);
+		Long idStock = this.jdbcTemplate.queryForObject("SELECT idStock FROM insumo WHERE idInsumo = " + idInsumo,
+				Long.class);
+		float actual = this.jdbcTemplate.queryForObject("SELECT actual FROM stock WHERE idStock = " + idStock,
+				Long.class) + compra;
+		return this.jdbcTemplate.update("UPDATE stock SET actual = " + actual + " WHERE idStock = " + idStock);
 	}
-	
+
 	public ResponseEntity<?> save(@RequestBody HistorialCompraAProveedores entity) {
 
 		try {
@@ -148,5 +151,22 @@ public class HistorialCompraAProveedoresController
 		}
 	}
 
-	
+	/**
+	 * 
+	 * @param id
+	 * @return El precio unitario más actual de un insumo dado
+	 */
+	@GetMapping("/precioUnitario/{id}")
+	public Float getPrecioUnitarioXiD(@PathVariable Long id) {
+		try {
+			return this.jdbcTemplate.queryForObject(
+					"SELECT precioUnitario FROM historialcompraaproveedores WHERE fechaCompra = (SELECT MAX(fechaCompra)) AND idInsumo = "
+							+ id + " ORDER BY fechaCompra DESC LIMIT 1",
+					Float.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0.0F;
+		}
+	}
+
 }
