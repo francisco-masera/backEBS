@@ -18,8 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 public class HistorialCompraAProveedores implements Serializable {
 
@@ -71,6 +69,7 @@ public class HistorialCompraAProveedores implements Serializable {
 		this.cantidad = cantidad;
 	}
 
+	@Column(nullable = false, updatable = false)
 	public LocalDateTime getFechaCompra() {
 		return fechaCompra;
 	}
@@ -79,14 +78,12 @@ public class HistorialCompraAProveedores implements Serializable {
 		this.fechaCompra = fechaCompra;
 	}
 
-	
 	@ManyToOne
 	@JoinColumn(name = "idInsumo", nullable = false)
 	public Insumo getInsumo() {
 		return insumo;
 	}
 
-	
 	public void setInsumo(Insumo insumo) {
 		this.insumo = insumo;
 	}

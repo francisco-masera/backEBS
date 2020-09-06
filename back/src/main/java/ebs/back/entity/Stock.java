@@ -15,16 +15,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Stock implements Serializable {
 
 	private Long id;
-	private long actual;
-	private int minimo;
-	private long maximo;
+	private Float actual;
+	private Float minimo;
+	private Float maximo;
 	private Insumo insumo;
 
 	public Stock() {
 
 	}
 
-	public Stock(Long id, long actual, int minimo, long maximo, Insumo insumo) {
+	public Stock(Long id, Float actual, Float minimo, Float maximo, Insumo insumo) {
 		this.id = id;
 		this.actual = actual;
 		this.minimo = minimo;
@@ -44,29 +44,29 @@ public class Stock implements Serializable {
 	}
 
 	@Column(nullable = false)
-	public Long getActual() {
+	public Float getActual() {
 		return actual;
 	}
 
-	public void setActual(long actual) {
+	public void setActual(Float actual) {
 		this.actual = actual;
 	}
 
 	@Column(nullable = false)
-	public int getMinimo() {
+	public Float getMinimo() {
 		return minimo;
 	}
 
-	public void setMinimo(int minimo) {
+	public void setMinimo(Float minimo) {
 		this.minimo = minimo;
 	}
 
 	@Column(nullable = false)
-	public long getMaximo() {
+	public Float getMaximo() {
 		return maximo;
 	}
 
-	public void setMaximo(long maximo) {
+	public void setMaximo(Float maximo) {
 		this.maximo = maximo;
 	}
 

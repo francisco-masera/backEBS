@@ -64,7 +64,7 @@ public class ArticuloManufacturadoController
 						insumo.setUnidadMedida(rs.getString("i.unidadMedida"));
 
 						Stock stock = new Stock();
-						stock.setActual(rs.getLong("s.actual"));
+						stock.setActual(rs.getFloat("s.actual"));
 
 						insumo.setStock(stock);
 						receta.setInsumo(insumo);

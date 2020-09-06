@@ -72,7 +72,7 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 						insumo.setUnidadMedida(rs.getString("i.unidadMedida"));
 
 						Stock stock = new Stock();
-						stock.setActual(rs.getLong("s.actual"));
+						stock.setActual(rs.getFloat("s.actual"));
 
 						insumo.setStock(stock);
 						receta.setInsumo(insumo);
@@ -204,7 +204,7 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 		}
 		return sugerenciaWrapper;
 	}
-	
+
 	/**
 	 * 
 	 * @param file
