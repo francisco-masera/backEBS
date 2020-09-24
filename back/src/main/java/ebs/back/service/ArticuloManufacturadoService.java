@@ -18,7 +18,8 @@ public class ArticuloManufacturadoService extends BaseService<ArticuloManufactur
 			if (repository.existsById(id)) {
 				Optional<ArticuloManufacturado> entityOptional = repository.findById(id);
 				entity = entityOptional.get();
-				entity.setBaja(true);
+				boolean baja = entity.isBaja();
+				entity.setBaja(!baja);
 				entity = repository.save(entity);
 			}
 			if(!entity.isBaja()) {
@@ -35,4 +36,6 @@ public class ArticuloManufacturadoService extends BaseService<ArticuloManufactur
 		}
 		
 	}
+	
+	
 }

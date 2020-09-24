@@ -1,5 +1,6 @@
 package ebs.back.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -22,7 +23,7 @@ public class InformacionInsumoVenta extends InformacionArticuloVenta {
 		this.insumo = insumo;
 	}
 
-	@OneToOne
+	@OneToOne	
 	@JoinColumn(name = "idInsumo", nullable = false)
 	public Insumo getInsumo() {
 		return insumo;

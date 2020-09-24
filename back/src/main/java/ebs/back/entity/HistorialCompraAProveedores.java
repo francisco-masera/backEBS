@@ -69,6 +69,7 @@ public class HistorialCompraAProveedores implements Serializable {
 		this.cantidad = cantidad;
 	}
 
+	@Column(nullable = false, updatable = false)
 	public LocalDateTime getFechaCompra() {
 		return fechaCompra;
 	}

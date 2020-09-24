@@ -35,7 +35,7 @@ public class InformacionArticuloVentaController
 			return "redirect:status";
 		}
 
-		String upload_folder = ".//src//main//resources//static//images//productos";
+		String upload_folder = ".//src//main//resources//static//images//productos//";
 		byte[] filesBytes = file.getBytes();
 		Path path = Paths.get(upload_folder + file.getOriginalFilename());
 		Files.write(path, filesBytes);

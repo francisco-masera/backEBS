@@ -1,20 +1,10 @@
-package ebs.back.entity;
+package ebs.back.entity.wrapper;
 
-import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import ebs.back.entity.RecetaSugerida;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-@Entity
-public class SugerenciaChef implements Serializable {
+public class SugerenciaChefWrapper {
 
 	private Long id;
 	private int tiempoCocina;
@@ -26,11 +16,11 @@ public class SugerenciaChef implements Serializable {
 	private String imagen;
 	private List<RecetaSugerida> recetasSugeridas;
 
-	public SugerenciaChef() {
+	public SugerenciaChefWrapper() {
 
 	}
 
-	public SugerenciaChef(Long id, int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
+	public SugerenciaChefWrapper(Long id, int tiempoCocina, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
 			String denominacion, String descripcion, String imagen, List<RecetaSugerida> recetasSugeridas) {
 		this.id = id;
 		this.tiempoCocina = tiempoCocina;
@@ -43,9 +33,6 @@ public class SugerenciaChef implements Serializable {
 		this.recetasSugeridas = recetasSugeridas;
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idSugerencia")
 	public Long getId() {
 		return id;
 	}
@@ -54,7 +41,6 @@ public class SugerenciaChef implements Serializable {
 		this.id = id;
 	}
 
-	@Column(nullable = false)
 	public int getTiempoCocina() {
 		return tiempoCocina;
 	}
@@ -63,7 +49,6 @@ public class SugerenciaChef implements Serializable {
 		this.tiempoCocina = tiempoCocina;
 	}
 
-	@Column(nullable = false)
 	public boolean isAptoCeliaco() {
 		return aptoCeliaco;
 	}
@@ -72,7 +57,6 @@ public class SugerenciaChef implements Serializable {
 		this.aptoCeliaco = aptoCeliaco;
 	}
 
-	@Column(nullable = false)
 	public boolean isVegano() {
 		return vegano;
 	}
@@ -81,7 +65,6 @@ public class SugerenciaChef implements Serializable {
 		this.vegano = vegano;
 	}
 
-	@Column(nullable = false)
 	public boolean isVegetariano() {
 		return vegetariano;
 	}
@@ -90,7 +73,6 @@ public class SugerenciaChef implements Serializable {
 		this.vegetariano = vegetariano;
 	}
 
-	@Column(nullable = false)
 	public String getDenominacion() {
 		return denominacion;
 	}
@@ -99,7 +81,6 @@ public class SugerenciaChef implements Serializable {
 		this.denominacion = denominacion;
 	}
 
-	@Column(nullable = false)
 	public String getDescripcion() {
 		return descripcion;
 	}
@@ -108,7 +89,6 @@ public class SugerenciaChef implements Serializable {
 		this.descripcion = descripcion;
 	}
 
-	@Column(nullable = false)
 	public String getImagen() {
 		return imagen;
 	}
@@ -116,9 +96,7 @@ public class SugerenciaChef implements Serializable {
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
 	}
-	
-	@JsonIgnore
-	@OneToMany(mappedBy = "sugerenciaChef", cascade = CascadeType.PERSIST)
+
 	public List<RecetaSugerida> getRecetasSugeridas() {
 		return recetasSugeridas;
 	}

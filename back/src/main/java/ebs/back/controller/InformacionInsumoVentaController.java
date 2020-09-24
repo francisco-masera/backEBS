@@ -55,6 +55,7 @@ public class InformacionInsumoVentaController
 						insumoVenta.setDescripcion(rs.getString(12));
 						insumoVenta.setImagen(rs.getString(13));
 						insumoVenta.setPrecioVenta(rs.getFloat(14));
+
 						Insumo insu = new Insumo();
 						insu.setIdInsumo(rs.getLong(2));
 						insu.setBaja(rs.getBoolean(4));
@@ -62,12 +63,14 @@ public class InformacionInsumoVentaController
 						insu.setEsExtra(rs.getBoolean(6));
 						insu.setEsInsumo(rs.getBoolean(7));
 						insu.setUnidadMedida(rs.getString(8));
+
 						Stock stock = new Stock();
 						stock.setId(rs.getLong(10));
-						stock.setActual(rs.getLong(16));
-						stock.setMaximo(rs.getLong(17));
-						stock.setMinimo(rs.getInt(18));
+						stock.setActual(rs.getFloat(16));
+						stock.setMaximo(rs.getFloat(17));
+						stock.setMinimo(rs.getFloat(18));
 						insu.setStock(stock);
+
 						RubroInsumo rubro = new RubroInsumo();
 						rubro.setId(rs.getLong(9));
 						rubro.setDenominacion(rs.getString(20));

@@ -22,7 +22,7 @@ public class RecetaSugerida implements Serializable {
 
 	}
 
-	public RecetaSugerida(Long id, float cantidadInsumo, boolean estado, Insumo insumo, SugerenciaChef sugerenciaChef) {
+	public RecetaSugerida(Long id, float cantidadInsumo, Insumo insumo, SugerenciaChef sugerenciaChef) {
 		this.id = id;
 		this.cantidadInsumo = cantidadInsumo;
 		this.insumo = insumo;
@@ -31,7 +31,7 @@ public class RecetaSugerida implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idSugerencia")
+	@Column(name = "idRecetaSugerida")
 	public Long getId() {
 		return id;
 	}
@@ -60,7 +60,7 @@ public class RecetaSugerida implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "idRecetaSugerida", nullable = false)
+	@JoinColumn(name = "idSugerencia", nullable = false)
 	public SugerenciaChef getSugerenciaChef() {
 		return sugerenciaChef;
 	}
