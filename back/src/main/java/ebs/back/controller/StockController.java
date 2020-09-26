@@ -2,6 +2,8 @@ package ebs.back.controller;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -35,28 +37,50 @@ public class StockController extends BaseController<Stock, StockService> {
 					new RowMapper<Stock>() {
 						public Stock mapRow(ResultSet rs, int rowNumber) throws SQLException {
 							Stock stock = new Stock();
-							stock.setActual(rs.getLong("actual"));
-							stock.setMaximo(rs.getLong("maximo"));
-							stock.setMinimo(rs.getInt("minimo"));
+							stock.setActual(rs.getFloat("actual"));
+							stock.setMaximo(rs.getFloat("maximo"));
+							stock.setMinimo(rs.getFloat("minimo"));
 							return stock;
 						}
 					});
 			return this.establecerEstadoStock(stock.getActual(), stock.getMaximo(), stock.getMinimo());
 		} catch (EmptyResultDataAccessException e) {
 			return 0;
+		} catch (Exception e) {
+			return 0;
 		}
 	}
 
-	private int establecerEstadoStock(long actual, long maximo, int minimo) {
-		if (actual >= maximo || actual < minimo)
+	@GetMapping("/estadoStockManufacturado/{id}")
+	public boolean getEstadoStockManufacturado(@PathVariable Long id) {
+		List<Integer> estados = getIdInsumosById(id).stream().map(i -> {
+			try {
+				return this.getEstadoStock(i);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return 0;
+			}
+		}).collect(Collectors.toList());
+
+		return estados.stream().allMatch(e -> e != 2);
+	}
+
+	private int establecerEstadoStock(float actual, float maximo, float minimo) {
+		if (actual >= maximo)
 			return 1;
-		else if (estadoCritico(actual, minimo, 10))
+		else if (actual < minimo)
 			return 2;
-		return 3;
+		else if (estadoCritico(actual, minimo))
+			return 3;
+		return 4;
 	}
 
-	private boolean estadoCritico(long actual, int minimo, int porcentual) {
-		return !(actual > (minimo + minimo * porcentual / 100));
+	private boolean estadoCritico(float actual, float minimo) {
+		return !(actual > (minimo + (minimo * 0.1)));
 	}
 
+	private List<Long> getIdInsumosById(Long id) {
+		return jdbcTemplate.query("SELECT idInsumo FROM Receta Where idManufacturado = " + id,
+				(rs, rowNum) -> rs.getLong(1));
+	}
 }
