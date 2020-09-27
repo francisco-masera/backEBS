@@ -1,7 +1,9 @@
 package ebs.back.controller;
 
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
@@ -14,12 +16,16 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -227,4 +233,46 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 			return false;
 		}
 	}
-}
+	
+	//@DeleteMapping("/{id}")
+	//public ResponseEntity<?> deleteSugerencia(@PathVariable Long id, @RequestBody String nombreImagen) {
+		//try {
+			//this.deleteImagen(nombreImagen);
+			//return ResponseEntity.status(HttpStatus.OK).body(service.delete(id));
+
+		//} catch (IllegalArgumentException e) {
+			//return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				//	.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+
+		//} catch (Exception e) {
+			//return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				//	.body("{\"Error inesperado\": \"" + e.getMessage() + "\"}");
+		//}
+	//}
+	
+	private void deleteImagen(String nombre) {
+		try
+        { 
+            Files.deleteIfExists(Paths.get(".//src//main//resources//static//images//productos//sugeridos// " + nombre)); 
+        } 
+        catch(NoSuchFileException e) 
+        { 
+            System.out.println("No such file/directory exists"); 
+        } 
+        catch(DirectoryNotEmptyException e) 
+        { 
+            System.out.println("Directory is not empty."); 
+        } 
+        catch(IOException e) 
+        { 
+            System.out.println("Invalid permissions."); 
+        } 
+          
+        System.out.println("Deletion successful."); 
+    } 
+	}
+	
+	
+
+	
+

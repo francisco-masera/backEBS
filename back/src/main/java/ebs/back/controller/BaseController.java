@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ebs.back.service.IBaseService;
+import javassist.bytecode.stackmap.TypeData.ClassName;
 
 public class BaseController<E, S extends IBaseService<E>> {
 
@@ -88,6 +89,7 @@ public class BaseController<E, S extends IBaseService<E>> {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		try {
+			
 			return ResponseEntity.status(HttpStatus.OK).body(service.delete(id));
 
 		} catch (IllegalArgumentException e) {

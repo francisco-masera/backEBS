@@ -8,11 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ebs.back.entity.RecetaSugerida;
@@ -53,5 +56,19 @@ public class RecetaSugeridaController extends BaseController<RecetaSugerida, Rec
 	public ResponseEntity<?> auxPostReceta(@RequestBody RecetaSugerida receta, @PathVariable Long idSugerencia) {
 		receta.getSugerenciaChef().setId(idSugerencia);
 		return this.save(receta);
+	}
+	
+	@DeleteMapping("eliminaRecetas/{id}")
+	public int deleteRecetas(@PathVariable Long id){
+		int rowsDelete=0;
+		try {
+		String query = "DELETE FROM recetasugerida where idSugerencia = " + id;	
+		rowsDelete = jdbcTemplate.update(query);
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		return rowsDelete;
 	}
 }
