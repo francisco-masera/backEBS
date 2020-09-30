@@ -81,7 +81,7 @@ public class HistorialCompraAProveedoresController
 		return historial;
 	}
 
-	public List<HistorialCompraAProveedores> traeUltimoCargado() {
+	private List<HistorialCompraAProveedores> traeUltimoCargado() {
 		List<HistorialCompraAProveedores> ultimo = this.jdbcTemplate.query(
 				"SELECT * FROM historialcompraaproveedores ORDER BY idCompra DESC LIMIT 1",
 				new RowMapper<HistorialCompraAProveedores>() {
@@ -125,7 +125,7 @@ public class HistorialCompraAProveedoresController
 
 	}
 
-	public int actualizaStock(Long idInsumo, float compra) {
+	private int actualizaStock(Long idInsumo, float compra) {
 		Long idStock = this.jdbcTemplate.queryForObject("SELECT idStock FROM insumo WHERE idInsumo = " + idInsumo,
 				Long.class);
 		float actual = this.jdbcTemplate.queryForObject("SELECT actual FROM stock WHERE idStock = " + idStock,

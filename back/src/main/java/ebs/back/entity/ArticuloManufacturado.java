@@ -105,7 +105,7 @@ public class ArticuloManufacturado extends InformacionArticuloVenta {
 	public void setRubro(RubroManufacturado rubro) {
 		this.rubro = rubro;
 	}
-	
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "manufacturado", cascade = CascadeType.PERSIST)
 	public List<Receta> getRecetas() {

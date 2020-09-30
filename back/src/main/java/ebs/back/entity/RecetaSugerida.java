@@ -2,6 +2,7 @@ package ebs.back.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -59,7 +60,7 @@ public class RecetaSugerida implements Serializable {
 		this.insumo = insumo;
 	}
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "idSugerencia", nullable = false)
 	public SugerenciaChef getSugerenciaChef() {
 		return sugerenciaChef;

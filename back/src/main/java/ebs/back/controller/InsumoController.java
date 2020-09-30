@@ -30,7 +30,9 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
 
 	@GetMapping("/insumosProduccion")
 	public List<Insumo> getInsumosFabricacion() {
-		return this.jdbcTemplate.query("SELECT * FROM Insumo Where esInsumo = 1",
+		return this.jdbcTemplate.query(
+				"SELECT * FROM Insumo i NATURAL LEFT JOIN historialcompraaproveedores hc"
+						+ " WHERE esInsumo = 1 AND BAJA = 0 AND hc.IdInsumo IS NOT NULL",
 				(rs, rowNum) -> new Insumo(rs.getLong(1), rs.getString(6), rs.getString(3), rs.getBoolean(4),
 						rs.getBoolean(2), rs.getBoolean(5), null, null, null, null, null));
 	}

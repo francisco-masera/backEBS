@@ -1,7 +1,8 @@
 package ebs.back.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -13,25 +14,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -40,7 +37,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import ebs.back.entity.Insumo;
 import ebs.back.entity.RecetaSugerida;
-import ebs.back.entity.Stock;
 import ebs.back.entity.SugerenciaChef;
 import ebs.back.entity.wrapper.SugerenciaChefWrapper;
 import ebs.back.service.SugerenciaChefService;
@@ -62,25 +58,21 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 	@GetMapping("/recetasSugerencia/{id}")
 	public List<RecetaSugerida> getRecetasXSugerencia(@PathVariable Long id) {
 		List<RecetaSugerida> recetas = this.jdbcTemplate.query(
-				"SELECT r.cantidadInsumo, i.idInsumo,i.denominacion, i.unidadMedida, s.actual "
-						+ "From stock s inner join insumo i on s.idStock = i.idStock inner join recetasugerida r "
-						+ "ON i.idInsumo = r.idInsumo WHERE r.idRecetaSugerida=" + id,
+				"SELECT rc.cantidadInsumo, i.idInsumo, i.denominacion, i.unidadMedida FROM sugerenciachef sc "
+						+ "INNER JOIN recetasugerida rc ON sc.idSugerencia = rc.idSugerencia "
+						+ "INNER JOIN insumo i ON rc.idInsumo = i.idInsumo WHERE sc.idSugerencia = " + id,
 
 				new RowMapper<RecetaSugerida>() {
 					@Override
 					public RecetaSugerida mapRow(ResultSet rs, int rowNum) throws SQLException {
 						RecetaSugerida receta = new RecetaSugerida();
-						receta.setCantidadInsumo(rs.getFloat("r.cantidadInsumo"));
+						receta.setCantidadInsumo(rs.getFloat("rc.cantidadInsumo"));
 
 						Insumo insumo = new Insumo();
 						insumo.setIdInsumo(rs.getLong("i.idInsumo"));
 						insumo.setDenominacion(rs.getString("i.denominacion"));
 						insumo.setUnidadMedida(rs.getString("i.unidadMedida"));
 
-						Stock stock = new Stock();
-						stock.setActual(rs.getFloat("s.actual"));
-
-						insumo.setStock(stock);
 						receta.setInsumo(insumo);
 
 						return receta;
@@ -95,7 +87,7 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 	 * @param idInsumo
 	 * @return Float: El precio unitario más actual de un insumo
 	 */
-	public Float getPrecioUnitario(Long idInsumo) {
+	private Float getPrecioUnitario(Long idInsumo) {
 		return this.jdbcTemplate
 				.queryForObject("SELECT precioUnitario FROM historialcompraaproveedores WHERE idInsumo = " + idInsumo
 						+ " ORDER BY fechaCompra DESC LIMIT 1", Float.class);
@@ -214,14 +206,12 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 	/**
 	 * 
 	 * @param file
-	 * @param attributes
 	 * @return status
 	 * @throws IOException
 	 */
 	@PostMapping("/uploadImg")
 	@Transactional
-	public boolean uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes attributes)
-			throws IOException {
+	public boolean uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
 		try {
 			String upload_folder = ".//src//main//resources//static//images//productos//sugeridos//";
 			byte[] filesBytes = file.getBytes();
@@ -233,46 +223,49 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 			return false;
 		}
 	}
-	
-	//@DeleteMapping("/{id}")
-	//public ResponseEntity<?> deleteSugerencia(@PathVariable Long id, @RequestBody String nombreImagen) {
-		//try {
-			//this.deleteImagen(nombreImagen);
-			//return ResponseEntity.status(HttpStatus.OK).body(service.delete(id));
 
-		//} catch (IllegalArgumentException e) {
-			//return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				//	.body("{\"Error en la solicitud\": \"" + e.getMessage() + "\"}");
+	/**
+	 * 
+	 * @param nombre
+	 */
+	@GetMapping("/deleteImg")
+	@Transactional
+	public String deleteImagen(@RequestParam String nombre) {
+		try {
+			Files.deleteIfExists(Paths.get(".//src//main//resources//static//images//productos//sugeridos//" + nombre));
+			return "OK";
+		} catch (NoSuchFileException e) {
+			e.printStackTrace();
+			return e.getMessage();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
 
-		//} catch (Exception e) {
-			//return ResponseEntity.status(HttpStatus.NOT_FOUND)
-				//	.body("{\"Error inesperado\": \"" + e.getMessage() + "\"}");
-		//}
-	//}
-	
-	private void deleteImagen(String nombre) {
-		try
-        { 
-            Files.deleteIfExists(Paths.get(".//src//main//resources//static//images//productos//sugeridos// " + nombre)); 
-        } 
-        catch(NoSuchFileException e) 
-        { 
-            System.out.println("No such file/directory exists"); 
-        } 
-        catch(DirectoryNotEmptyException e) 
-        { 
-            System.out.println("Directory is not empty."); 
-        } 
-        catch(IOException e) 
-        { 
-            System.out.println("Invalid permissions."); 
-        } 
-          
-        System.out.println("Deletion successful."); 
-    } 
 	}
-	
-	
 
-	
-
+	/**
+	 * 
+	 * @param nombre
+	 * @param ext    Extensión de la imagen (JPEG, PNG...)
+	 * @return
+	 */
+	@GetMapping("/moveImg")
+	@Transactional
+	public String getImg(@RequestParam String nombre, @RequestParam String ext) {
+		File file = new File(".//src//main//resources//static//images//productos//sugeridos//" + nombre);
+		BufferedImage image = null;
+		try {
+			image = ImageIO.read(file);
+			ImageIO.write(image, ext, new File(".//src//main//resources//static//images//productos//" + nombre));
+			this.deleteImagen(nombre);
+			return "OK";
+		} catch (IOException e) {
+			e.printStackTrace();
+			return e.getMessage();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
+	}
+}

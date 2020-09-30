@@ -9,13 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ebs.back.entity.RecetaSugerida;
@@ -43,8 +41,8 @@ public class RecetaSugeridaController extends BaseController<RecetaSugerida, Rec
 					new Object[] { recetaSugerida.getSugerenciaChef().getId() },
 					(rs, rowNum) -> new RecetaSugeridaWrapper(rs.getLong(1), rs.getFloat(2), rs.getLong(3),
 							rs.getLong(4)));
-			return ResponseEntity.status(HttpStatus.OK).body(recetas.stream().max(Comparator.comparing(RecetaSugeridaWrapper::getId))
-					.get());
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(recetas.stream().max(Comparator.comparing(RecetaSugeridaWrapper::getId)).get());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -57,17 +55,17 @@ public class RecetaSugeridaController extends BaseController<RecetaSugerida, Rec
 		receta.getSugerenciaChef().setId(idSugerencia);
 		return this.save(receta);
 	}
-	
+
 	@DeleteMapping("eliminaRecetas/{id}")
-	public int deleteRecetas(@PathVariable Long id){
-		int rowsDelete=0;
+	public int deleteRecetas(@PathVariable Long id) {
+		int rowsDelete = 0;
 		try {
-		String query = "DELETE FROM recetasugerida where idSugerencia = " + id;	
-		rowsDelete = jdbcTemplate.update(query);
-		
-		}catch (Exception e) {
+			String query = "DELETE FROM recetasugerida where idSugerencia = " + id;
+			rowsDelete = jdbcTemplate.update(query);
+
+		} catch (Exception e) {
 			e.printStackTrace();
-			
+
 		}
 		return rowsDelete;
 	}

@@ -116,7 +116,7 @@ public class SugerenciaChef implements Serializable {
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
 	}
-	
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "sugerenciaChef", cascade = CascadeType.PERSIST)
 	public List<RecetaSugerida> getRecetasSugeridas() {

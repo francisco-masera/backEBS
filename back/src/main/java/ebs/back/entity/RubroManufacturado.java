@@ -26,6 +26,11 @@ public class RubroManufacturado implements Serializable {
 
 	}
 
+	public RubroManufacturado(Long id) {
+		super();
+		this.id = id;
+	}
+
 	public RubroManufacturado(Long id, String denominacion, boolean baja, List<ArticuloManufacturado> manufacturados) {
 		this.id = id;
 		this.denominacion = denominacion;
