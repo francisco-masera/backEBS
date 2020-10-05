@@ -31,3 +31,8 @@ build/
 .vscode/
 
 application.properties
+
+### images ###
+*.jpg
+*.jpeg
+*.png
