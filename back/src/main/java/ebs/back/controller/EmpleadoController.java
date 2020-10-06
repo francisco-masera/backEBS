@@ -34,7 +34,7 @@ public class EmpleadoController extends BaseController<Empleado, EmpleadoService
 			return "redirect:status";
 		}
 
-		String upload_folder = ".//src//main//resources//static//images//empleados//";
+		String upload_folder = ".//src//main//resources//static//images//personas//";
 		byte[] filesBytes = file.getBytes();
 		Path path = Paths.get(upload_folder + file.getOriginalFilename());
 		Files.write(path, filesBytes);
