@@ -25,7 +25,7 @@ public class BaseController<E, S extends IBaseService<E>> {
 			@RequestParam(value = "size", defaultValue = "60") int size) {
 
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(service.getAll(page, size));
+			return ResponseEntity.status(HttpStatus.OK).body(service.getAll(page, Integer.MAX_VALUE));
 
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)

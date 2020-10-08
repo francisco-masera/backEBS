@@ -13,7 +13,5 @@ public interface IBaseService<E> {
 	public abstract E update(E entity, Long id) throws Exception;
 
 	public boolean delete(Long id) throws Exception;
-	
-	
 
 }

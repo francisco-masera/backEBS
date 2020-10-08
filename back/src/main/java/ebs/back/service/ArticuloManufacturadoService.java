@@ -13,7 +13,7 @@ public class ArticuloManufacturadoService extends BaseService<ArticuloManufactur
 	@Override
 	public boolean delete(Long id) throws Exception {
 		try {
-			
+
 			ArticuloManufacturado entity = new ArticuloManufacturado();
 			if (repository.existsById(id)) {
 				Optional<ArticuloManufacturado> entityOptional = repository.findById(id);
@@ -22,20 +22,19 @@ public class ArticuloManufacturadoService extends BaseService<ArticuloManufactur
 				entity.setBaja(!baja);
 				entity = repository.save(entity);
 			}
-			if(!entity.isBaja()) {
+			if (!entity.isBaja()) {
 				return true;
-			}else {
+			} else {
 				return false;
 			}
-		
+
 		} catch (IllegalArgumentException e) {
 			throw new IllegalArgumentException(e.getMessage());
-		
+
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
-		
+
 	}
-	
-	
+
 }
