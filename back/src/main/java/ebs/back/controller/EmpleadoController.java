@@ -27,11 +27,10 @@ public class EmpleadoController extends BaseController<Empleado, EmpleadoService
 
 	@PostMapping("/uploadImg")
 	@Transactional
-	public String uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes attributes)
+	public boolean uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes attributes)
 			throws IOException {
 		if (file == null || file.isEmpty()) {
-			attributes.addFlashAttribute("message", "Por favor seleccione un archivo");
-			return "redirect:status";
+			return false;
 		}
 
 		String upload_folder = ".//src//main//resources//static//images//personas//";
@@ -39,7 +38,7 @@ public class EmpleadoController extends BaseController<Empleado, EmpleadoService
 		Path path = Paths.get(upload_folder + file.getOriginalFilename());
 		Files.write(path, filesBytes);
 
-		return "redirect:/status";
+		return true;
 	}
 
 }

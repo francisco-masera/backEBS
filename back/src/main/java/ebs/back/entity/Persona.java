@@ -13,6 +13,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Persona implements Serializable {
@@ -130,6 +132,7 @@ public abstract class Persona implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "persona", cascade = CascadeType.PERSIST)
+	@JsonIgnore
 	public List<Domicilio> getDomicilios() {
 		return domicilios;
 	}
