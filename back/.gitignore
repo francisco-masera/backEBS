@@ -32,7 +32,3 @@ build/
 
 application.properties
 
-### images ###
-*.jpg
-*.jpeg
-*.png
