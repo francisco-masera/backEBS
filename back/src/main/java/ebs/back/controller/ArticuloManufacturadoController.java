@@ -136,6 +136,9 @@ public class ArticuloManufacturadoController
 		for (ArticuloManufacturadoWrapper manufacturado : manufacturados) {
 			if (!manufacturado.getRecetas().isEmpty())
 				costosManufacturados.add(this.auxGetCostos(manufacturado.getRecetas()));
+			else
+				costosManufacturados.add(null);
+
 		}
 		return costosManufacturados;
 	}
