@@ -14,15 +14,20 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({ @Type(value = Empleado.class), @Type(value = Cliente.class) })
 public abstract class Persona implements Serializable {
 
 	protected Long id;
 	protected String nombre;
 	protected String apellido;
-	protected int telefono;
+	protected String telefono;
 	protected String email;
 	protected String foto;
 	protected String usuario;
@@ -33,7 +38,7 @@ public abstract class Persona implements Serializable {
 	public Persona() {
 	}
 
-	public Persona(Long id, String nombre, String apellido, int telefono, String email, String foto, String usuario,
+	public Persona(Long id, String nombre, String apellido, String telefono, String email, String foto, String usuario,
 			String contrasenia, boolean baja, List<Domicilio> domicilios) {
 		super();
 		this.id = id;
@@ -78,11 +83,11 @@ public abstract class Persona implements Serializable {
 	}
 
 	@Column(nullable = false)
-	public int getTelefono() {
+	public String getTelefono() {
 		return telefono;
 	}
 
-	public void setTelefono(int telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 
