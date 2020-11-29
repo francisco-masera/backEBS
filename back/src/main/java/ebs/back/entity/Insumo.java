@@ -159,6 +159,5 @@ public class Insumo implements Serializable {
 	public void setHistorialCompras(List<HistorialCompraAProveedores> historialCompras) {
 		this.historialCompras = historialCompras;
 	}
-	
 
 }

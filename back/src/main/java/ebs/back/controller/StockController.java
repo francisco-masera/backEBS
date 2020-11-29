@@ -29,7 +29,7 @@ public class StockController extends BaseController<Stock, StockService> {
 	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
 	@GetMapping("/estadoStock/{id}")
-	private int getEstadoStock(@PathVariable Long id) throws SQLException {
+	public int getEstadoStock(@PathVariable Long id) throws SQLException {
 		try {
 			Stock stock = this.jdbcTemplate.queryForObject(
 					"SELECT actual, maximo, minimo FROM stock s INNER JOIN insumo i ON s.idStock = i.idStock WHERE i.idInsumo = "

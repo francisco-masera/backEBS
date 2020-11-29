@@ -42,6 +42,21 @@ public class ArticuloManufacturado extends InformacionArticuloVenta {
 		this.recetas = recetas;
 	}
 
+	public ArticuloManufacturado(Long id, String descripcion, float precioVenta, String imagen,
+			List<DetallePedido> detalles, List<HistorialVentas> historialPrecios, int tiempoCocina, boolean aptoCeliaco,
+			boolean vegano, boolean vegetariano, String denominacion, boolean baja, RubroManufacturado rubro,
+			List<Receta> recetas) {
+		super(id, descripcion, precioVenta, imagen, detalles, historialPrecios);
+		this.tiempoCocina = tiempoCocina;
+		this.aptoCeliaco = aptoCeliaco;
+		this.vegano = vegano;
+		this.vegetariano = vegetariano;
+		this.denominacion = denominacion;
+		this.baja = baja;
+		this.rubro = rubro;
+		this.recetas = recetas;
+	}
+
 	@Column(nullable = false)
 	public int getTiempoCocina() {
 		return tiempoCocina;

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,10 +35,15 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import ebs.back.entity.ArticuloManufacturado;
 import ebs.back.entity.Insumo;
 import ebs.back.entity.Receta;
+import ebs.back.entity.RubroManufacturado;
 import ebs.back.entity.Stock;
 import ebs.back.entity.wrapper.ArticuloManufacturadoWrapper;
 import ebs.back.service.ArticuloManufacturadoService;
 
+/**
+ * @author franc
+ *
+ */
 @RestController
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
 		RequestMethod.DELETE })
@@ -47,6 +53,78 @@ public class ArticuloManufacturadoController
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
+
+	@GetMapping("/conStock")
+	public List<ArticuloManufacturado> getConStock() throws SQLException {
+		List<ArticuloManufacturado> articulos = this.jdbcTemplate.query(
+				"SELECT a.aptoCeliaco, a.baja, a.denominacion, a.tiempoCocina, a.vegano, a.vegetariano, "
+						+ "ia.idArticuloVenta, ia.descripcion, ia.imagen, ia.precioVenta, r.idRubroManufacturado, r.denominacion, r.baja "
+						+ "FROM ArticuloManufacturado a INNER JOIN informacionarticuloventa ia "
+						+ "ON ia.idArticuloVenta = a.idArticuloManufacturado "
+						+ "INNER JOIN rubromanufacturado r ON a.idRubro = r.idRubroManufacturado WHERE a.Baja = 0 AND r.baja = 0 "
+						+ "ORDER BY a.denominacion",
+
+				(rs, rowNum) -> new ArticuloManufacturado(rs.getLong(7), rs.getString(8), rs.getFloat(10),
+						rs.getString(9), null, null, rs.getInt(4), rs.getBoolean(1), rs.getBoolean(5), rs.getBoolean(6),
+						rs.getString(3), rs.getBoolean(2),
+						new RubroManufacturado(rs.getLong(11), rs.getString(12), rs.getBoolean(13), null), null));
+
+		return articulos.stream().filter(a -> this.getEstadoStockManufacturado(a.getId())).collect(Collectors.toList());
+	}
+
+	private List<Long> getIdInsumosById(Long id) {
+		return jdbcTemplate.query("SELECT idInsumo FROM Receta Where idManufacturado = " + id,
+				(rs, rowNum) -> rs.getLong(1));
+	}
+
+	private boolean getEstadoStockManufacturado(Long id) {
+		List<Integer> estados = getIdInsumosById(id).stream().map(i -> {
+			try {
+				return this.getEstadoStock(i);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return 0;
+			}
+		}).collect(Collectors.toList());
+
+		return estados.stream().allMatch(e -> e != 2);
+	}
+
+	private int establecerEstadoStock(float actual, float maximo, float minimo) {
+		if (actual >= maximo)
+			return 1;
+		else if (actual < minimo)
+			return 2;
+		else if (estadoCritico(actual, minimo))
+			return 3;
+		return 4;
+	}
+
+	private boolean estadoCritico(float actual, float minimo) {
+		return !(actual > (minimo + (minimo * 0.1)));
+	}
+
+	private int getEstadoStock(Long id) throws SQLException {
+		try {
+			Stock stock = this.jdbcTemplate.queryForObject(
+					"SELECT actual, maximo, minimo FROM stock s INNER JOIN insumo i ON s.idStock = i.idStock WHERE i.idInsumo = "
+							+ id,
+					new RowMapper<Stock>() {
+						public Stock mapRow(ResultSet rs, int rowNumber) throws SQLException {
+							Stock stock = new Stock();
+							stock.setActual(rs.getFloat("actual"));
+							stock.setMaximo(rs.getFloat("maximo"));
+							stock.setMinimo(rs.getFloat("minimo"));
+							return stock;
+						}
+					});
+			return establecerEstadoStock(stock.getActual(), stock.getMaximo(), stock.getMinimo());
+		} catch (EmptyResultDataAccessException e) {
+			return 0;
+		} catch (Exception e) {
+			return 0;
+		}
+	}
 
 	/**
 	 * 
