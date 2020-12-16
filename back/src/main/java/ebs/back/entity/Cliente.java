@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @PrimaryKeyJoinColumn(name = "idCliente")
 public class Cliente extends Persona {
@@ -24,6 +26,7 @@ public class Cliente extends Persona {
 		this.pedidos = pedidos;
 	}
 
+	@JsonBackReference
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.PERSIST)
 	public List<Pedido> getPedidos() {
 		return pedidos;

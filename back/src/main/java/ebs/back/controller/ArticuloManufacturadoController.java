@@ -125,7 +125,7 @@ public class ArticuloManufacturadoController
 	 * @return List<Float>: El costo de cada uno de los productos manufacturados
 	 */
 	@GetMapping("/costos")
-	public List<Float> getCostos(@RequestParam String idsManufacturadosStr) {
+	public List<Float> getCostos(@PathVariable String idsManufacturadosStr) {
 		List<String> idsAuxList = Arrays.asList(idsManufacturadosStr.split(","));
 		List<Long> idsManufacturados = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
 		List<Float> costosManufacturados = new ArrayList<>();

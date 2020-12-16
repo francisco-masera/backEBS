@@ -15,6 +15,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class Factura implements Serializable {
 
@@ -96,6 +99,7 @@ public class Factura implements Serializable {
 		this.formaPago = formaPago;
 	}
 
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name = "idPedido", nullable = false, updatable = false)
 	public Pedido getPedido() {

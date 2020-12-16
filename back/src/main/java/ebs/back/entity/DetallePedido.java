@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class DetallePedido implements Serializable {
 
@@ -58,9 +61,9 @@ public class DetallePedido implements Serializable {
 	public void setArticulo(InformacionArticuloVenta articulo) {
 		this.articulo = articulo;
 	}
-
+	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "idPedido", nullable = false, unique = true)
+	@JoinColumn(name = "idPedido", nullable = false)
 	public Pedido getPedido() {
 		return pedido;
 	}

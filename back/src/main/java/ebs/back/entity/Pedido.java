@@ -18,6 +18,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class Pedido implements Serializable {
 
@@ -92,6 +96,7 @@ public class Pedido implements Serializable {
 		this.tipoEntrega = tipoEntrega;
 	}
 
+
 	@OneToOne(mappedBy = "pedido")
 	public Factura getFactura() {
 		return factura;
@@ -100,9 +105,9 @@ public class Pedido implements Serializable {
 	public void setFactura(Factura factura) {
 		this.factura = factura;
 	}
-
+	@JsonManagedReference
 	@ManyToOne
-	@JoinColumn(name = "idCliente", nullable = false, unique = true, updatable = false)
+	@JoinColumn(name = "idCliente", nullable = false, updatable = false)
 	public Cliente getCliente() {
 		return cliente;
 	}
@@ -111,6 +116,7 @@ public class Pedido implements Serializable {
 		this.cliente = cliente;
 	}
 
+	
 	@OneToMany(mappedBy = "pedido")
 	public List<DetallePedido> getDetalles() {
 		return detalles;
@@ -134,7 +140,7 @@ public class Pedido implements Serializable {
 
 	@Temporal(TemporalType.TIME)
 	@Column(nullable = false, updatable = false)
-	private Time convertirHora() {
+	public Time convertirHora() {
 		return Time.valueOf(this.getHora());
 	}
 
