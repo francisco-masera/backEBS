@@ -7,6 +7,9 @@ import java.nio.file.Paths;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +28,9 @@ import ebs.back.service.ClienteService;
 @RequestMapping(path = "buensabor/cliente")
 public class ClienteController extends BaseController<Cliente, ClienteService> {
 
+	@Autowired
+	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
+
 	@PostMapping("/uploadImg")
 	@Transactional
 	public boolean uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes attributes)
@@ -39,6 +45,24 @@ public class ClienteController extends BaseController<Cliente, ClienteService> {
 		Files.write(path, filesBytes);
 
 		return true;
+	}
+
+	@PostMapping("/login")
+	@Transactional
+	public ResponseEntity<?> loginCliente(@RequestParam String email, String contrasenia) {
+		try {
+			int existe = this.jdbcTemplate.queryForObject(
+					"SELECT COUNT(*) FROM persona WHERE email = ? AND contrasenia = ?",
+					new Object[] { email, contrasenia }, Integer.class);
+			if (existe != 1)
+				throw new Exception("Más de un usuario coincidente.");
+			return this.getOne(this.jdbcTemplate.queryForObject(
+					"SELECT idPersona FROM persona WHERE email = ? AND contrasenia = ?",
+					new Object[] { email, contrasenia }, Long.class));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }
