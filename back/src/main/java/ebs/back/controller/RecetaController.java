@@ -31,10 +31,10 @@ public class RecetaController extends BaseController<Receta, RecetaService> {
 	@Override
 	public ResponseEntity<?> save(Receta receta) {
 		try {
-			this.jdbcTemplate.update("INSERT INTO receta (cantidadInsumo, idInsumo, idManufacturado) VALUES (?, ?, ?)",
+			this.jdbcTemplate.update("INSERT INTO Receta (cantidadInsumo, idInsumo, idManufacturado) VALUES (?, ?, ?)",
 					receta.getCantidadInsumo(), receta.getInsumo().getIdInsumo(), receta.getManufacturado().getId());
 			List<RecetaSugeridaWrapper> recetas = this.jdbcTemplate.query(
-					"SELECT * FROM receta WHERE idManufacturado = ? ORDER BY idReceta",
+					"SELECT * FROM Receta WHERE idManufacturado = ? ORDER BY idReceta",
 					new Object[] { receta.getManufacturado().getId() },
 					(rs, rowNum) -> new RecetaSugeridaWrapper(rs.getLong(1), rs.getFloat(3), rs.getLong(4),
 							rs.getLong(4)));

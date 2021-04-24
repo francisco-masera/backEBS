@@ -33,11 +33,11 @@ public class RecetaSugeridaController extends BaseController<RecetaSugerida, Rec
 	public ResponseEntity<?> save(RecetaSugerida recetaSugerida) {
 		try {
 			this.jdbcTemplate.update(
-					"INSERT INTO recetasugerida (cantidadInsumo, idInsumo, idSugerencia) VALUES (?, ?, ?)",
+					"INSERT INTO RecetaSugerida (cantidadInsumo, idInsumo, idSugerencia) VALUES (?, ?, ?)",
 					recetaSugerida.getCantidadInsumo(), recetaSugerida.getInsumo().getIdInsumo(),
 					recetaSugerida.getSugerenciaChef().getId());
 			List<RecetaSugeridaWrapper> recetas = this.jdbcTemplate.query(
-					"SELECT * FROM recetasugerida WHERE idSugerencia = ? ORDER BY idRecetaSugerida",
+					"SELECT * FROM RecetaSugerida WHERE idSugerencia = ? ORDER BY idRecetaSugerida",
 					new Object[] { recetaSugerida.getSugerenciaChef().getId() },
 					(rs, rowNum) -> new RecetaSugeridaWrapper(rs.getLong(1), rs.getFloat(2), rs.getLong(3),
 							rs.getLong(4)));
@@ -60,7 +60,7 @@ public class RecetaSugeridaController extends BaseController<RecetaSugerida, Rec
 	public int deleteRecetas(@PathVariable Long id) {
 		int rowsDelete = 0;
 		try {
-			String query = "DELETE FROM recetasugerida where idSugerencia = " + id;
+			String query = "DELETE FROM RecetaSugerida where idSugerencia = " + id;
 			rowsDelete = jdbcTemplate.update(query);
 
 		} catch (Exception e) {

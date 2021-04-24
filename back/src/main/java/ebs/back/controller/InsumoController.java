@@ -25,13 +25,13 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
 
 	@GetMapping("/idStock/{id}")
 	public Long getIdStock(@PathVariable Long id) {
-		return this.jdbcTemplate.queryForObject("SELECT idStock FROM insumo WHERE idInsumo = " + id, Long.class);
+		return this.jdbcTemplate.queryForObject("SELECT idStock FROM Insumo WHERE idInsumo = " + id, Long.class);
 	}
 
 	@GetMapping("/insumosProduccion")
 	public List<Insumo> getInsumosFabricacion() {
 		return this.jdbcTemplate.query(
-				"SELECT * FROM Insumo i NATURAL LEFT JOIN historialcompraaproveedores hc"
+				"SELECT * FROM Insumo i NATURAL LEFT JOIN HistorialCompraAProveedores hc"
 						+ " WHERE i.esInsumo = 1 AND i.Baja = 0 AND hc.IdInsumo IS NOT NULL",
 				(rs, rowNum) -> new Insumo(rs.getLong(1), rs.getString(6), rs.getString(3), rs.getBoolean(4),
 						rs.getBoolean(2), rs.getBoolean(5), null, null, null, null, null));

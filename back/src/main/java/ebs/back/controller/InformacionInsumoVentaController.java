@@ -41,11 +41,11 @@ public class InformacionInsumoVentaController
 
 		List<InformacionInsumoVenta> resultList = this.jdbcTemplate.query(
 				"SELECT * FROM informacionarticuloventa_insumo "
-						+ "INNER JOIN insumo ON informacionarticuloventa_insumo.idInsumo = insumo.idInsumo "
-						+ "INNER JOIN informacionarticuloventa ON informacionarticuloventa_insumo.idInsumoVenta = informacionarticuloventa.idArticuloVenta "
-						+ "INNER JOIN stock ON insumo.idStock = stock.idStock "
-						+ "INNER JOIN rubroinsumo ON insumo.idRubro = rubroinsumo.idRubroInsumo "
-						+ "WHERE insumo.idInsumo=" + idInsumo,
+						+ "INNER JOIN Insumo ON informacionarticuloventa_insumo.idInsumo = Insumo.idInsumo "
+						+ "INNER JOIN InformacionArticuloVenta ON informacionarticuloventa_insumo.idInsumoVenta = InformacionArticuloVenta.idArticuloVenta "
+						+ "INNER JOIN Stock ON Insumo.idStock = Stock.idStock "
+						+ "INNER JOIN RubroInsumo ON Insumo.idRubro = RubroInsumo.idRubroInsumo "
+						+ "WHERE Insumo.idInsumo=" + idInsumo,
 
 				new RowMapper<InformacionInsumoVenta>() {
 
@@ -89,7 +89,7 @@ public class InformacionInsumoVentaController
 				"SELECT i.idInsumo, i.unidadMedida, i.denominacion, i.baja, "
 						+ "s.idStock, s.actual, r.idRubroInsumo, r.denominacion "
 						+ "FROM Insumo i INNER JOIN Stock s ON i.idStock = s.idStock "
-						+ "INNER JOIN rubroinsumo r ON r.idRubroInsumo = i.idRubro "
+						+ "INNER JOIN RubroInsumo r ON r.idRubroInsumo = i.idRubro "
 						+ "WHERE i.esInsumo = 0 AND i.Baja = 0 AND s.actual > 0 ORDER BY i.denominacion",
 				(rs, rowNum) -> new Insumo(rs.getLong(1), rs.getString(2), rs.getString(3), false, false,
 						rs.getBoolean(4), new Stock(rs.getLong(5), rs.getFloat(6), 0.0F, 0.0F, null),
@@ -101,7 +101,7 @@ public class InformacionInsumoVentaController
 			InformacionInsumoVenta informacion = this.jdbcTemplate.queryForObject(
 					"SELECT ia.idArticuloVenta, ia.imagen, ia.descripcion, ia.precioVenta  "
 							+ "FROM Insumo i INNER JOIN informacionarticuloventa_insumo ii ON i.idInsumo = ii.idInsumo "
-							+ "INNER JOIN informacionarticuloventa ia ON ia.idArticuloVenta = ii.idInsumoVenta "
+							+ "INNER JOIN InformacionArticuloVenta ia ON ia.idArticuloVenta = ii.idInsumoVenta "
 							+ "WHERE i.esInsumo = 0 AND i.Baja = 0 AND i.idInsumo = ?",
 					new Object[] { insumo.getIdInsumo() }, (rs, rowNum) -> new InformacionInsumoVenta(rs.getLong(1),
 							rs.getString(3), rs.getFloat(4), rs.getString(2), null, null, insumo));

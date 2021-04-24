@@ -24,6 +24,6 @@ public class HistorialVentasController extends BaseController<HistorialVentas, H
 
 	@GetMapping("/costos")
 	public List<Float> getCostos() {
-		return this.jdbcTemplate.queryForList("SELECT costo from historialventas", Float.class);
+		return this.jdbcTemplate.queryForList("SELECT costo from HistorialVentas", Float.class);
 	}
 }

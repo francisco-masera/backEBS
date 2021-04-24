@@ -42,7 +42,7 @@ public class HistorialCompraAProveedoresController
 	public List<HistorialCompraAProveedores> getHistorialInsumoFechaActual(@PathVariable Long idInsumo) {
 
 		List<HistorialCompraAProveedores> historial = this.jdbcTemplate
-				.query("SELECT * FROM historialcompraaproveedores WHERE idInsumo = " + idInsumo
+				.query("SELECT * FROM HistorialCompraAProveedores WHERE idInsumo = " + idInsumo
 						+ " ORDER BY fechaCompra DESC LIMIT 1", new RowMapper<HistorialCompraAProveedores>() {
 							@Override
 							public HistorialCompraAProveedores mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -66,7 +66,7 @@ public class HistorialCompraAProveedoresController
 	public List<HistorialCompraAProveedores> getHistorialInsumo(@PathVariable Long idInsumo) {
 
 		List<HistorialCompraAProveedores> historial = this.jdbcTemplate.query(
-				"SELECT * FROM historialcompraaproveedores WHERE idInsumo=" + idInsumo + " ORDER BY fechaCompra DESC",
+				"SELECT * FROM HistorialCompraAProveedores WHERE idInsumo=" + idInsumo + " ORDER BY fechaCompra DESC",
 				new RowMapper<HistorialCompraAProveedores>() {
 					@Override
 					public HistorialCompraAProveedores mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -83,7 +83,7 @@ public class HistorialCompraAProveedoresController
 
 	private List<HistorialCompraAProveedores> traeUltimoCargado() {
 		List<HistorialCompraAProveedores> ultimo = this.jdbcTemplate.query(
-				"SELECT * FROM historialcompraaproveedores ORDER BY idCompra DESC LIMIT 1",
+				"SELECT * FROM HistorialCompraAProveedores ORDER BY idCompra DESC LIMIT 1",
 				new RowMapper<HistorialCompraAProveedores>() {
 					@Override
 					public HistorialCompraAProveedores mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -108,15 +108,15 @@ public class HistorialCompraAProveedoresController
 	@GetMapping("/preciosUnitariosActuales")
 	public List<HistorialCompraAProveedores> getPreciosUnitariosActuales() {
 		List<Long> idsCargados = this.jdbcTemplate.query(
-				"SELECT h.idInsumo FROM historialcompraaproveedores h INNER JOIN insumo i "
+				"SELECT h.idInsumo FROM HistorialCompraAProveedores h INNER JOIN Insumo i "
 						+ "ON h.idInsumo = i.idInsumo WHERE h.fechaCompra = (SELECT MAX(h1.fechaCompra) "
-						+ "FROM historialcompraaproveedores h1 WHERE h1.idInsumo = i.idInsumo)",
+						+ "FROM HistorialCompraAProveedores h1 WHERE h1.idInsumo = i.idInsumo)",
 				(rs, rowNum) -> rs.getLong(1));
 		List<HistorialCompraAProveedores> compras = new ArrayList<>();
 
 		for (Long id : idsCargados) {
 			compras.add(this.jdbcTemplate.queryForObject(
-					"SELECT h.precioUnitario, h.idInsumo FROM historialcompraaproveedores h WHERE h.idInsumo = ? ORDER BY h.fechaCompra DESC LIMIT 1",
+					"SELECT h.precioUnitario, h.idInsumo FROM HistorialCompraAProveedores h WHERE h.idInsumo = ? ORDER BY h.fechaCompra DESC LIMIT 1",
 					new Object[] { id }, (rs, rowNum) -> (new HistorialCompraAProveedores(null,
 							rs.getFloat("precioUnitario"), 0.0F, null, new Insumo(rs.getLong("idInsumo"))))));
 		}
@@ -126,11 +126,11 @@ public class HistorialCompraAProveedoresController
 	}
 
 	private int actualizaStock(Long idInsumo, float compra) {
-		Long idStock = this.jdbcTemplate.queryForObject("SELECT idStock FROM insumo WHERE idInsumo = " + idInsumo,
+		Long idStock = this.jdbcTemplate.queryForObject("SELECT idStock FROM Insumo WHERE idInsumo = " + idInsumo,
 				Long.class);
-		float actual = this.jdbcTemplate.queryForObject("SELECT actual FROM stock WHERE idStock = " + idStock,
+		float actual = this.jdbcTemplate.queryForObject("SELECT actual FROM Stock WHERE idStock = " + idStock,
 				Long.class) + compra;
-		return this.jdbcTemplate.update("UPDATE stock SET actual = " + actual + " WHERE idStock = " + idStock);
+		return this.jdbcTemplate.update("UPDATE Stock SET actual = " + actual + " WHERE idStock = " + idStock);
 	}
 
 	public ResponseEntity<?> save(@RequestBody HistorialCompraAProveedores entity) {
@@ -160,7 +160,7 @@ public class HistorialCompraAProveedoresController
 	public Float getPrecioUnitarioXiD(@PathVariable Long id) {
 		try {
 			return this.jdbcTemplate.queryForObject(
-					"SELECT precioUnitario FROM historialcompraaproveedores WHERE fechaCompra = (SELECT MAX(fechaCompra)) AND idInsumo = "
+					"SELECT precioUnitario FROM HistorialCompraAProveedores WHERE fechaCompra = (SELECT MAX(fechaCompra)) AND idInsumo = "
 							+ id + " ORDER BY fechaCompra DESC LIMIT 1",
 					Float.class);
 		} catch (Exception e) {

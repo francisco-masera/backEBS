@@ -59,9 +59,9 @@ public class ArticuloManufacturadoController
 		List<ArticuloManufacturado> articulos = this.jdbcTemplate.query(
 				"SELECT a.aptoCeliaco, a.baja, a.denominacion, a.tiempoCocina, a.vegano, a.vegetariano, "
 						+ "ia.idArticuloVenta, ia.descripcion, ia.imagen, ia.precioVenta, r.idRubroManufacturado, r.denominacion, r.baja "
-						+ "FROM ArticuloManufacturado a INNER JOIN informacionarticuloventa ia "
+						+ "FROM ArticuloManufacturado a INNER JOIN InformacionArticuloVenta ia "
 						+ "ON ia.idArticuloVenta = a.idArticuloManufacturado "
-						+ "INNER JOIN rubromanufacturado r ON a.idRubro = r.idRubroManufacturado WHERE a.Baja = 0 AND r.baja = 0 "
+						+ "INNER JOIN RubroManufacturado r ON a.idRubro = r.idRubroManufacturado WHERE a.Baja = 0 AND r.baja = 0 "
 						+ "ORDER BY a.denominacion",
 
 				(rs, rowNum) -> new ArticuloManufacturado(rs.getLong(7), rs.getString(8), rs.getFloat(10),
@@ -107,7 +107,7 @@ public class ArticuloManufacturadoController
 	private int getEstadoStock(Long id) throws SQLException {
 		try {
 			Stock stock = this.jdbcTemplate.queryForObject(
-					"SELECT actual, maximo, minimo FROM stock s INNER JOIN insumo i ON s.idStock = i.idStock WHERE i.idInsumo = "
+					"SELECT actual, maximo, minimo FROM Stock s INNER JOIN Insumo i ON s.idStock = i.idStock WHERE i.idInsumo = "
 							+ id,
 					new RowMapper<Stock>() {
 						public Stock mapRow(ResultSet rs, int rowNumber) throws SQLException {
@@ -135,7 +135,7 @@ public class ArticuloManufacturadoController
 	public List<Receta> getRecetasXManufacturado(@PathVariable Long id) {
 		List<Receta> recetas = this.jdbcTemplate.query(
 				"SELECT r.cantidadInsumo, i.idInsumo, i.denominacion, i.unidadMedida, s.actual "
-						+ "FROM stock s INNER JOIN insumo i ON s.idStock = i.idStock INNER JOIN receta r ON i.idInsumo = r.idInsumo WHERE r.idManufacturado = "
+						+ "FROM Stock s INNER JOIN Insumo i ON s.idStock = i.idStock INNER JOIN Receta r ON i.idInsumo = r.idInsumo WHERE r.idManufacturado = "
 						+ id,
 
 				new RowMapper<Receta>() {
@@ -169,7 +169,7 @@ public class ArticuloManufacturadoController
 	 */
 	private Float getPrecioUnitario(Long idInsumo) {
 		return this.jdbcTemplate
-				.queryForObject("SELECT precioUnitario FROM historialcompraaproveedores WHERE idInsumo = " + idInsumo
+				.queryForObject("SELECT precioUnitario FROM HistorialCompraAProveedores WHERE idInsumo = " + idInsumo
 						+ " ORDER BY fechaCompra DESC LIMIT 1", Float.class);
 	}
 
@@ -204,9 +204,13 @@ public class ArticuloManufacturadoController
 	 */
 	@GetMapping("/costos")
 	public List<Float> getCostos(@RequestParam String idsManufacturadosStr) {
+		List<Float> costosManufacturados = new ArrayList<>();
+		if(idsManufacturadosStr.equals("")){
+			return costosManufacturados;
+		}
 		List<String> idsAuxList = Arrays.asList(idsManufacturadosStr.split(","));
 		List<Long> idsManufacturados = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
-		List<Float> costosManufacturados = new ArrayList<>();
+
 		List<ArticuloManufacturadoWrapper> manufacturados = idsManufacturados.stream()
 				.map(id -> this.convertirManufacturado(id)).collect(Collectors.toList());
 		manufacturados.forEach(

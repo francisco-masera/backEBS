@@ -22,7 +22,7 @@ public class RubroManufacturadoService extends BaseService<RubroManufacturado, R
 	@Override
 	public List<RubroManufacturado> getAll(int page, int size) {
 		List<RubroManufacturado> rubros = this.jdbcTemplate.query(
-				"SELECT * FROM elbuensabor.rubromanufacturado where baja=0",
+				"SELECT * FROM RubroManufacturado where baja=0",
 
 				new RowMapper<RubroManufacturado>() {
 					@Override

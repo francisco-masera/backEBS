@@ -58,9 +58,9 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 	@GetMapping("/recetasSugerencia/{id}")
 	public List<RecetaSugerida> getRecetasXSugerencia(@PathVariable Long id) {
 		List<RecetaSugerida> recetas = this.jdbcTemplate.query(
-				"SELECT rc.cantidadInsumo, i.idInsumo, i.denominacion, i.unidadMedida FROM sugerenciachef sc "
-						+ "INNER JOIN recetasugerida rc ON sc.idSugerencia = rc.idSugerencia "
-						+ "INNER JOIN insumo i ON rc.idInsumo = i.idInsumo WHERE sc.idSugerencia = " + id,
+				"SELECT rc.cantidadInsumo, i.idInsumo, i.denominacion, i.unidadMedida FROM SugerenciaChef sc "
+						+ "INNER JOIN RecetaSugerida rc ON sc.idSugerencia = rc.idSugerencia "
+						+ "INNER JOIN Insumo i ON rc.idInsumo = i.idInsumo WHERE sc.idSugerencia = " + id,
 
 				new RowMapper<RecetaSugerida>() {
 					@Override
@@ -89,7 +89,7 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
 	 */
 	private Float getPrecioUnitario(Long idInsumo) {
 		return this.jdbcTemplate
-				.queryForObject("SELECT precioUnitario FROM historialcompraaproveedores WHERE idInsumo = " + idInsumo
+				.queryForObject("SELECT precioUnitario FROM HistorialCompraAProveedores WHERE idInsumo = " + idInsumo
 						+ " ORDER BY fechaCompra DESC LIMIT 1", Float.class);
 	}
 

@@ -23,7 +23,7 @@ public class PersonaController extends BaseController<Persona, PersonaService> {
 
 	@GetMapping("/validarContrasenia")
 	public boolean validarContrasenia(@RequestParam Long id, @RequestParam String password) {
-		String contrasenia = this.jdbcTemplate.queryForObject("SELECT contrasenia FROM persona WHERE idPersona=?",
+		String contrasenia = this.jdbcTemplate.queryForObject("SELECT contrasenia FROM Persona WHERE idPersona=?",
 				new Object[] { id }, String.class);
 		return contrasenia.equals(password);
 	}

@@ -52,12 +52,12 @@ public class ClienteController extends BaseController<Cliente, ClienteService> {
 	public ResponseEntity<?> loginCliente(@RequestParam String email, String contrasenia) {
 		try {
 			int existe = this.jdbcTemplate.queryForObject(
-					"SELECT COUNT(*) FROM persona WHERE email = ? AND contrasenia = ?",
+					"SELECT COUNT(*) FROM Persona WHERE email = ? AND contrasenia = ?",
 					new Object[] { email, contrasenia }, Integer.class);
 			if (existe != 1)
 				throw new Exception("Más de un usuario coincidente.");
 			return this.getOne(this.jdbcTemplate.queryForObject(
-					"SELECT idPersona FROM persona WHERE email = ? AND contrasenia = ?",
+					"SELECT idPersona FROM Persona WHERE email = ? AND contrasenia = ?",
 					new Object[] { email, contrasenia }, Long.class));
 		} catch (Exception e) {
 			e.printStackTrace();

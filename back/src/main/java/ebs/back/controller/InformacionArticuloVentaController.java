@@ -187,7 +187,7 @@ public class InformacionArticuloVentaController
 		} else if (tipo == 1) {
 			sql = "SELECT DISTINCT ia.idArticuloVenta, ia.descripcion, ia.precioVenta, ia.imagen, i.idInsumo, i.denominacion "
 					+ "FROM  Insumo i INNER JOIN informacionarticuloventa_insumo ii ON i.idInsumo = ii.idInsumo "
-					+ "INNER JOIN informacionArticuloVenta ia ON ii.idInsumoVenta = ia.idArticuloVenta "
+					+ "INNER JOIN InformacionArticuloVenta ia ON ii.idInsumoVenta = ia.idArticuloVenta "
 					+ "INNER JOIN RubroInsumo r INNER JOIN Stock s ON s.idStock = i.idStock WHERE "
 					+ "i.baja = 0 AND s.actual > 0 AND r.idRubroInsumo LIKE '1%'";
 			return this.jdbcTemplate.query(sql,
@@ -219,8 +219,8 @@ public class InformacionArticuloVentaController
 	private List<Receta> getRecetasXManufacturado(Long id) {
 		List<Receta> recetas = this.jdbcTemplate.query(
 				"SELECT r.cantidadInsumo, i.idInsumo, i.denominacion, i.unidadMedida, s.actual "
-						+ "FROM stock s INNER JOIN insumo i ON s.idStock = i.idStock "
-						+ "INNER JOIN receta r ON i.idInsumo = r.idInsumo WHERE r.idManufacturado = " + id,
+						+ "FROM Stock s INNER JOIN Insumo i ON s.idStock = i.idStock "
+						+ "INNER JOIN Receta r ON i.idInsumo = r.idInsumo WHERE r.idManufacturado = " + id,
 
 				new RowMapper<Receta>() {
 					@Override
