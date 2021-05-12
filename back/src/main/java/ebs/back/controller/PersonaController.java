@@ -19,7 +19,7 @@ import ebs.back.service.PersonaService;
 public class PersonaController extends BaseController<Persona, PersonaService> {
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
+	private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
 	@GetMapping("/validarContrasenia")
 	public boolean validarContrasenia(@RequestParam Long id, @RequestParam String password) {

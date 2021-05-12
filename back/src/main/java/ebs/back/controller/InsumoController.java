@@ -21,7 +21,7 @@ import ebs.back.service.InsumoService;
 public class InsumoController extends BaseController<Insumo, InsumoService> {
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
+	private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
 	@GetMapping("/idStock/{id}")
 	public Long getIdStock(@PathVariable Long id) {

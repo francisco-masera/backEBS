@@ -52,10 +52,10 @@ public class ArticuloManufacturadoController
 		extends BaseController<ArticuloManufacturado, ArticuloManufacturadoService> {
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
+	private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
 	@GetMapping("/conStock")
-	public List<ArticuloManufacturado> getConStock() throws SQLException {
+	public List<ArticuloManufacturado> getConStock() {
 		List<ArticuloManufacturado> articulos = this.jdbcTemplate.query(
 				"SELECT a.aptoCeliaco, a.baja, a.denominacion, a.tiempoCocina, a.vegano, a.vegetariano, "
 						+ "ia.idArticuloVenta, ia.descripcion, ia.imagen, ia.precioVenta, r.idRubroManufacturado, r.denominacion, r.baja "
@@ -81,7 +81,7 @@ public class ArticuloManufacturadoController
 		List<Integer> estados = getIdInsumosById(id).stream().map(i -> {
 			try {
 				return this.getEstadoStock(i);
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				return 0;
 			}
@@ -104,24 +104,20 @@ public class ArticuloManufacturadoController
 		return !(actual > (minimo + (minimo * 0.1)));
 	}
 
-	private int getEstadoStock(Long id) throws SQLException {
+	private int getEstadoStock(Long id) {
 		try {
 			Stock stock = this.jdbcTemplate.queryForObject(
 					"SELECT actual, maximo, minimo FROM Stock s INNER JOIN Insumo i ON s.idStock = i.idStock WHERE i.idInsumo = "
 							+ id,
-					new RowMapper<Stock>() {
-						public Stock mapRow(ResultSet rs, int rowNumber) throws SQLException {
-							Stock stock = new Stock();
-							stock.setActual(rs.getFloat("actual"));
-							stock.setMaximo(rs.getFloat("maximo"));
-							stock.setMinimo(rs.getFloat("minimo"));
-							return stock;
-						}
+					(rs, rowNumber) -> {
+						Stock stock1 = new Stock();
+						stock1.setActual(rs.getFloat("actual"));
+						stock1.setMaximo(rs.getFloat("maximo"));
+						stock1.setMinimo(rs.getFloat("minimo"));
+						return stock1;
 					});
 			return establecerEstadoStock(stock.getActual(), stock.getMaximo(), stock.getMinimo());
 		} catch (EmptyResultDataAccessException e) {
-			return 0;
-		} catch (Exception e) {
 			return 0;
 		}
 	}
@@ -133,33 +129,29 @@ public class ArticuloManufacturadoController
 	 */
 	@GetMapping("/recetasManufacturado/{id}")
 	public List<Receta> getRecetasXManufacturado(@PathVariable Long id) {
-		List<Receta> recetas = this.jdbcTemplate.query(
+
+		return this.jdbcTemplate.query(
 				"SELECT r.cantidadInsumo, i.idInsumo, i.denominacion, i.unidadMedida, s.actual "
 						+ "FROM Stock s INNER JOIN Insumo i ON s.idStock = i.idStock INNER JOIN Receta r ON i.idInsumo = r.idInsumo WHERE r.idManufacturado = "
 						+ id,
 
-				new RowMapper<Receta>() {
-					@Override
-					public Receta mapRow(ResultSet rs, int rowNum) throws SQLException {
-						Receta receta = new Receta();
-						receta.setCantidadInsumo(rs.getFloat("r.cantidadInsumo"));
+				(rs, rowNum) -> {
+					Receta receta = new Receta();
+					receta.setCantidadInsumo(rs.getFloat("r.cantidadInsumo"));
 
-						Insumo insumo = new Insumo();
-						insumo.setIdInsumo(rs.getLong("i.idInsumo"));
-						insumo.setDenominacion(rs.getString("i.denominacion"));
-						insumo.setUnidadMedida(rs.getString("i.unidadMedida"));
+					Insumo insumo = new Insumo();
+					insumo.setIdInsumo(rs.getLong("i.idInsumo"));
+					insumo.setDenominacion(rs.getString("i.denominacion"));
+					insumo.setUnidadMedida(rs.getString("i.unidadMedida"));
 
-						Stock stock = new Stock();
-						stock.setActual(rs.getFloat("s.actual"));
+					Stock stock = new Stock();
+					stock.setActual(rs.getFloat("s.actual"));
 
-						insumo.setStock(stock);
-						receta.setInsumo(insumo);
+					insumo.setStock(stock);
+					receta.setInsumo(insumo);
 
-						return receta;
-					}
+					return receta;
 				});
-
-		return recetas;
 	}
 
 	/**
@@ -176,7 +168,7 @@ public class ArticuloManufacturadoController
 	/**
 	 * 
 	 * @param idsInsumosStr
-	 * @param cantInsumo
+	 * @param cantidadInsumos
 	 * @return El costo de producción de un producto manufacturado
 	 */
 	@GetMapping("/costo")
@@ -186,9 +178,9 @@ public class ArticuloManufacturadoController
 		List<Long> idsInsumos = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
 		List<Float> cantInsumoList = cantInsumosAuxList.stream().map(Float::parseFloat).collect(Collectors.toList());
 
-		List<Float> costosInsumo = idsInsumos.stream().map(id -> this.getPrecioUnitario(id))
+		List<Float> costosInsumo = idsInsumos.stream().map(this::getPrecioUnitario)
 				.collect(Collectors.toList());
-		Float sumatoria = 0.0F;
+		float sumatoria = 0.0F;
 		for (int i = 0; i < costosInsumo.size(); i++) {
 			sumatoria += cantInsumoList.get(i) * costosInsumo.get(i);
 		}
@@ -212,7 +204,7 @@ public class ArticuloManufacturadoController
 		List<Long> idsManufacturados = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
 
 		List<ArticuloManufacturadoWrapper> manufacturados = idsManufacturados.stream()
-				.map(id -> this.convertirManufacturado(id)).collect(Collectors.toList());
+				.map(this::convertirManufacturado).collect(Collectors.toList());
 		manufacturados.forEach(
 				manufacturado -> manufacturado.setRecetas(this.getRecetasXManufacturado(manufacturado.getId())));
 		for (ArticuloManufacturadoWrapper manufacturado : manufacturados) {
@@ -227,7 +219,7 @@ public class ArticuloManufacturadoController
 
 	/**
 	 * 
-	 * @param recetasSugeridas
+	 * @param recetas
 	 * @return Float: El costo de un producto manufacturado
 	 */
 	private Float auxGetCostos(List<Receta> recetas) {
@@ -246,8 +238,7 @@ public class ArticuloManufacturadoController
 	private String crearStrCantidades(List<Receta> recetas) {
 		List<String> cantidades = new ArrayList<>();
 		recetas.forEach(receta -> cantidades.add(String.valueOf(receta.getCantidadInsumo())));
-		String s = String.join(",", cantidades);
-		return s;
+		return String.join(",", cantidades);
 	}
 
 	/**
@@ -259,8 +250,7 @@ public class ArticuloManufacturadoController
 	private String crearStrIdsInsumos(List<Receta> recetas) {
 		List<String> idsInsumos = new ArrayList<>();
 		recetas.forEach(receta -> idsInsumos.add(receta.getInsumo().getIdInsumo().toString()));
-		String s = String.join(",", idsInsumos);
-		return s;
+		return String.join(",", idsInsumos);
 	}
 
 	/**
@@ -295,11 +285,10 @@ public class ArticuloManufacturadoController
 	 * 
 	 * @param file
 	 * @return status
-	 * @throws IOException
 	 */
 	@PostMapping("/uploadImg")
 	@Transactional
-	public boolean uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+	public boolean uploadFile(@RequestParam("file") MultipartFile file) {
 		try {
 			String upload_folder = ".//src//main//resources//static//images//productos//";
 			byte[] filesBytes = file.getBytes();

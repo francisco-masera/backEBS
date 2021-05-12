@@ -20,7 +20,7 @@ import ebs.back.service.HistorialVentasService;
 public class HistorialVentasController extends BaseController<HistorialVentas, HistorialVentasService> {
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
+	private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
 	@GetMapping("/costos")
 	public List<Float> getCostos() {

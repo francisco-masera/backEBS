@@ -27,7 +27,7 @@ import ebs.back.service.RecetaSugeridaService;
 public class RecetaSugeridaController extends BaseController<RecetaSugerida, RecetaSugeridaService> {
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
+	private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
 	@Override
 	public ResponseEntity<?> save(RecetaSugerida recetaSugerida) {

@@ -44,7 +44,7 @@ public class InformacionArticuloVentaController
 		extends BaseController<InformacionArticuloVenta, InformacionArticuloVentaService> {
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
+	private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
 	@PostMapping("/uploadImg")
 	@Transactional
@@ -68,26 +68,19 @@ public class InformacionArticuloVentaController
 	 * 
 	 * @param terminos
 	 * @return
-	 * @throws SQLException
 	 */
 	@PostMapping("/filtrados")
 	@Procedure
-	public List<InformacionArticuloVenta> getProductoVentaByFiltros(@RequestParam String terminos) throws SQLException {
+	public List<InformacionArticuloVenta> getProductoVentaByFiltros(@RequestParam String terminos) {
 		try {
 			SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("getManufacturadosByFiltro")
 
-					.returningResultSet("manufacturados", new RowMapper<Object>() {
-
-						@Override
-						public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-							return new ArticuloManufacturado(rs.getLong(1), rs.getString(2), rs.getFloat(4),
-									rs.getString(3), null, null, rs.getInt(7), rs.getBoolean(5), rs.getBoolean(8),
-									rs.getBoolean(9), rs.getString(6), false, null, null);
-						}
-					});
+					.returningResultSet("manufacturados", (rs, rowNum) -> new ArticuloManufacturado(rs.getLong(1), rs.getString(2), rs.getFloat(4),
+							rs.getString(3), null, null, rs.getInt(7), rs.getBoolean(5), rs.getBoolean(8),
+							rs.getBoolean(9), rs.getString(6), false, null, null));
 
 			Map<String, Object> out = jdbcCall.execute(terminos);
-			List<InformacionArticuloVenta> articulos = null;
+			List<InformacionArticuloVenta> articulos;
 
 			articulos = (List<InformacionArticuloVenta>) out.get("manufacturados");
 
@@ -105,14 +98,9 @@ public class InformacionArticuloVentaController
 
 			}
 			jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("getInsumosVentaByFiltro")
-					.returningResultSet("insumos", new RowMapper<Object>() {
-						@Override
-						public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-							return new InformacionInsumoVenta(rs.getLong(1), rs.getString(2), rs.getFloat(4),
-									rs.getString(3), null, null, new Insumo(rs.getLong(8), "", rs.getString(5), false,
-											false, false, null, null, null, null, null));
-						}
-					});
+					.returningResultSet("insumos", (rs, rowNum) -> new InformacionInsumoVenta(rs.getLong(1), rs.getString(2), rs.getFloat(4),
+							rs.getString(3), null, null, new Insumo(rs.getLong(8), "", rs.getString(5), false,
+									false, false, null, null, null, null, null)));
 
 			out = jdbcCall.execute(terminos);
 
@@ -129,13 +117,12 @@ public class InformacionArticuloVentaController
 	 * @param tipo
 	 * @param categoria
 	 * @return
-	 * @throws SQLException
 	 */
 	@PostMapping("/articulosByCategoria")
 	@Procedure
 	public List<InformacionArticuloVenta> getProductoVentaByCategoria(@RequestParam int tipo,
-			@RequestParam int categoria) throws SQLException {
-		String sql = "";
+			@RequestParam int categoria) {
+		String sql;
 		List<InformacionArticuloVenta> articulos = new ArrayList<>();
 		List<ArticuloManufacturado> manufacturados = new ArrayList<>();
 		if (tipo == 0) {
@@ -217,7 +204,8 @@ public class InformacionArticuloVentaController
 	}
 
 	private List<Receta> getRecetasXManufacturado(Long id) {
-		List<Receta> recetas = this.jdbcTemplate.query(
+
+		return this.jdbcTemplate.query(
 				"SELECT r.cantidadInsumo, i.idInsumo, i.denominacion, i.unidadMedida, s.actual "
 						+ "FROM Stock s INNER JOIN Insumo i ON s.idStock = i.idStock "
 						+ "INNER JOIN Receta r ON i.idInsumo = r.idInsumo WHERE r.idManufacturado = " + id,
@@ -242,8 +230,6 @@ public class InformacionArticuloVentaController
 						return receta;
 					}
 				});
-
-		return recetas;
 	}
 
 	/**
@@ -266,10 +252,9 @@ public class InformacionArticuloVentaController
 
 		// Obtenemos el estaado del stock, dado por el stock actual de cada insumo usado
 		// para fabricarlo
-		final List<ArticuloManufacturado> manufacturadosAux = manufacturados.stream()
-				.filter(m -> getEstadoStockManufacturado(m.getRecetas())).collect(Collectors.toList());
 
-		return manufacturadosAux;
+		return manufacturados.stream()
+				.filter(m -> getEstadoStockManufacturado(m.getRecetas())).collect(Collectors.toList());
 
 	}
 

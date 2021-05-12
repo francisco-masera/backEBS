@@ -24,6 +24,12 @@ public class Cliente extends Persona {
 		this.pedidos = pedidos;
 	}
 
+	public Cliente(Long id, String nombre, String apellido, String telefono, String email, String foto, String usuario, String contrasenia, boolean baja, List<Domicilio> domicilios, List<TarjetaDebito> tarjetas, List<Pedido> pedidos) {
+		super(id, nombre, apellido, telefono, email, foto, usuario, contrasenia, baja, domicilios);
+		this.tarjetas = tarjetas;
+		this.pedidos = pedidos;
+	}
+
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.PERSIST)
 	public List<Pedido> getPedidos() {
 		return pedidos;

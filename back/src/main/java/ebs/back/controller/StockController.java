@@ -26,7 +26,7 @@ import ebs.back.service.StockService;
 public class StockController extends BaseController<Stock, StockService> {
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate = new JdbcTemplate();
+	private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
 	@GetMapping("/estadoStock/{id}")
 	public int getEstadoStock(@PathVariable Long id) throws SQLException {
@@ -34,18 +34,14 @@ public class StockController extends BaseController<Stock, StockService> {
 			Stock stock = this.jdbcTemplate.queryForObject(
 					"SELECT actual, maximo, minimo FROM Stock s INNER JOIN Insumo i ON s.idStock = i.idStock WHERE i.idInsumo = "
 							+ id,
-					new RowMapper<Stock>() {
-						public Stock mapRow(ResultSet rs, int rowNumber) throws SQLException {
-							Stock stock = new Stock();
-							stock.setActual(rs.getFloat("actual"));
-							stock.setMaximo(rs.getFloat("maximo"));
-							stock.setMinimo(rs.getFloat("minimo"));
-							return stock;
-						}
+					(rs, rowNumber) -> {
+						Stock stock1 = new Stock();
+						stock1.setActual(rs.getFloat("actual"));
+						stock1.setMaximo(rs.getFloat("maximo"));
+						stock1.setMinimo(rs.getFloat("minimo"));
+						return stock1;
 					});
 			return this.establecerEstadoStock(stock.getActual(), stock.getMaximo(), stock.getMinimo());
-		} catch (EmptyResultDataAccessException e) {
-			return 0;
 		} catch (Exception e) {
 			return 0;
 		}

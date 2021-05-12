@@ -1,44 +1,107 @@
 package ebs.back.controller;
 
+import ebs.back.entity.Empleado;
+import ebs.back.entity.Persona;
+import ebs.back.service.EmpleadoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import javax.transaction.Transactional;
-
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import ebs.back.entity.Empleado;
-import ebs.back.service.EmpleadoService;
+import java.util.ArrayList;
 
 @RestController
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
-		RequestMethod.DELETE })
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+        RequestMethod.DELETE})
 @RequestMapping(path = "buensabor/empleado")
 public class EmpleadoController extends BaseController<Empleado, EmpleadoService> {
 
-	@PostMapping("/uploadImg")
-	@Transactional
-	public boolean uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes attributes)
-			throws IOException {
-		if (file == null || file.isEmpty()) {
-			return false;
-		}
+    @Autowired
+    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-		String upload_folder = ".//src//main//resources//static//images//personas//";
-		byte[] filesBytes = file.getBytes();
-		Path path = Paths.get(upload_folder + file.getOriginalFilename());
-		Files.write(path, filesBytes);
+    @PostMapping("/uploadImg")
+    @Transactional
+    public boolean uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes attributes)
+            throws IOException {
+        if (file == null || file.isEmpty()) {
+            return false;
+        }
 
-		return true;
-	}
+        String upload_folder = ".//src//main//resources//static//images//personas//";
+        byte[] filesBytes = file.getBytes();
+        Path path = Paths.get(upload_folder + file.getOriginalFilename());
+        Files.write(path, filesBytes);
 
+        return true;
+    }
+
+    @PostMapping("/login")
+    @Transactional
+    public Persona loginEmpleado(
+            @RequestParam(required = false, defaultValue = "") String email,
+            @RequestParam(required = false, defaultValue = "") String usuario,
+            @RequestParam String pass) throws Exception {
+        try {
+            Persona empleado;
+            boolean esCliente = !this.jdbcTemplate.queryForList("Select c.idCliente FROM Cliente c INNER JOIN Persona p" +
+                    " ON c.idCliente = p.idPersona AND (email = ? OR usuario=?)", new Object[]{email, usuario}, ArrayList.class).isEmpty();
+            if (esCliente)
+                throw new Exception("El proceso de autenticación falló.");
+
+            empleado = this.jdbcTemplate.queryForObject("SELECT * FROM Persona p INNER JOIN Empleado e ON " +
+                            " p.idPersona = e.idEmpleado" +
+                            " WHERE (email = ? OR usuario = ?) AND contrasenia = ? ",
+                    new Object[]{email, email, pass}, (rs, rowNum) ->
+                            new Empleado(
+                                    rs.getLong("idPersona"),
+                                    rs.getString("nombre"),
+                                    rs.getString("apellido"),
+                                    rs.getString("telefono"),
+                                    rs.getString("email"),
+                                    rs.getString("foto"),
+                                    rs.getString("usuario"),
+                                    rs.getString("contrasenia"),
+                                    rs.getBoolean("baja"),
+                                    null,
+                                    rs.getString("rol")
+
+                            ));
+            if (empleado.getBaja())
+                throw new Exception("Este usuario no tiene acceso al portal.");
+            return empleado;
+        } catch (EmptyResultDataAccessException ex) {
+            ex.printStackTrace();
+            throw new Exception("No se encontró un usuario registrado con los datos ingresados.", new Throwable(ex.getCause()));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    @PostMapping("/registro")
+    public Object registro(@RequestBody Empleado empleado) throws Exception {
+        try {
+            int existe = this.jdbcTemplate.queryForObject("Select Count(idPersona) From Persona Where email = ? OR usuario = ?",
+                    new Object[]{empleado.getEmail(), empleado.getUsuario()}, Integer.class);
+            if (existe != 0)
+                throw new Exception("Este usuario o email ya está registrado como cliente.");
+
+            this.save(empleado);
+
+            return this.loginEmpleado(empleado.getEmail(), empleado.getContrasenia(), empleado.getUsuario());
+        } catch (EmptyResultDataAccessException ex) {
+            ex.printStackTrace();
+            throw new Exception("No se encontró un usuario registrado con los datos ingresados.", new Throwable(ex.getCause()));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
 }
