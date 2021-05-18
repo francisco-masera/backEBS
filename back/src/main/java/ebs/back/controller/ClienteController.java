@@ -8,10 +8,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,18 +26,22 @@ public class ClienteController extends BaseController<Cliente, ClienteService> {
 
     @PostMapping("/uploadImg")
     @Transactional
-    public boolean uploadFile(MultipartFile file, RedirectAttributes attributes)
-            throws IOException {
-        if (file == null || file.isEmpty()) {
-            return false;
+    public boolean uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("name") String nombre)
+            throws Exception {
+        try {
+            if (file == null || file.isEmpty()) {
+                throw new Exception("El archivo está corrupto o no puede leerse.");
+            }
+
+            String upload_folder = ".//src//main//resources//static//images//personas//";
+            byte[] filesBytes = file.getBytes();
+            Path path = Paths.get(upload_folder + nombre);
+            Files.write(path, filesBytes);
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
         }
-
-        String upload_folder = ".//src//main//resources//static//images//personas//";
-        byte[] filesBytes = file.getBytes();
-        Path path = Paths.get(upload_folder + file.getOriginalFilename());
-        Files.write(path, filesBytes);
-
-        return true;
     }
 
     @PostMapping("/login")

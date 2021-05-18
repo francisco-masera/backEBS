@@ -106,6 +106,9 @@ public class SugerenciaChefController extends BaseController<SugerenciaChef, Sug
      */
     @GetMapping("/costos")
     public List<Float> getCostos(@RequestParam String idsSugerenciasStr) {
+        if(idsSugerenciasStr.equals("")){
+            return new ArrayList<>();
+        }
         List<String> idsAuxList = Arrays.asList(idsSugerenciasStr.split(","));
         List<Long> idsSugerencias = idsAuxList.stream().map(Long::parseLong).collect(Collectors.toList());
         List<Float> costosSugerencias = new ArrayList<>();
