@@ -41,6 +41,15 @@ public class ArticuloManufacturado extends InformacionArticuloVenta {
 		this.rubro = rubro;
 		this.recetas = recetas;
 	}
+	
+	public ArticuloManufacturado(Long id, String descripcion, float precioVenta, String imagen, boolean aptoCeliaco,
+		boolean vegano, boolean vegetariano, String denominacion) {
+		super(id, descripcion, precioVenta, imagen);
+		this.aptoCeliaco = aptoCeliaco;
+		this.vegano = vegano;
+		this.vegetariano = vegetariano;
+		this.denominacion = denominacion;
+	}
 
 	public ArticuloManufacturado(Long id, String descripcion, float precioVenta, String imagen,
 			List<DetallePedido> detalles, List<HistorialVentas> historialPrecios, int tiempoCocina, boolean aptoCeliaco,

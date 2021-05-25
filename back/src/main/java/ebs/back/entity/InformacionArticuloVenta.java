@@ -43,6 +43,12 @@ public abstract class InformacionArticuloVenta implements Serializable {
 		this.detalles = detalles;
 		this.historialPrecios = historialPrecios;
 	}
+	public InformacionArticuloVenta(Long id, String descripcion, float precioVenta, String imagen) {
+		this.id = id;
+		this.descripcion = descripcion;
+		this.precioVenta = precioVenta;
+		this.imagen = imagen;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
