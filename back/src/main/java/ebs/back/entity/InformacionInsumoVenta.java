@@ -24,6 +24,10 @@ public class InformacionInsumoVenta extends InformacionArticuloVenta {
 		super(id, descripcion, precioVenta, imagen, detalles, historialPrecios);
 		this.insumo = insumo;
 	}
+	public InformacionInsumoVenta(Long id, String descripcion, float precioVenta, String imagen, Insumo insumo) {
+		super(id, descripcion, precioVenta, imagen);
+		this.insumo = insumo;
+	}
 
 	public InformacionInsumoVenta(Insumo insumo) {
 		super();
