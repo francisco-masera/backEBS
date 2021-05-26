@@ -107,7 +107,7 @@ public class InformacionInsumoVentaController
 				+ "inner join informacionarticuloventa_insumo x on x.idInsumoVenta = "
 				+ "a.idArticuloVenta INNER JOIN Insumo i ON x.idInsumo = i.idInsumo "
 				+ "INNER JOIN Stock s ON i.idStock = s.idStock where i.baja=0  AND "
-				+ "s.actual > 0 group BY idArticulo ORDER BY total DESC  LIMIT 10",
+				+ "s.actual > 0 group BY idArticulo ORDER BY total DESC  LIMIT 9",
 				(rs, rowNum) -> new InformacionInsumoVenta(rs.getLong(4), rs.getString(1), rs.getFloat(2), rs.getString(3), new Insumo(rs.getLong(5), rs.getString(7), rs.getString(6))));
 
 		return insumosVenta;

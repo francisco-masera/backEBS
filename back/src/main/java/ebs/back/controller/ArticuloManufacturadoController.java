@@ -308,7 +308,7 @@ public class ArticuloManufacturadoController
 				+ " m.denominacion, m.vegano, m.vegetariano,m.aptoCeliaco, COUNT( h.idArticulo ) "
 				+ "AS total FROM  HistorialVentas h inner join InformacionArticuloVenta a on "
 				+ "h.idArticulo=a.idArticuloVenta inner join ArticuloManufacturado m on m.idArticuloManufacturado "
-				+ "= a.idArticuloVenta where m.baja=0 group BY idArticulo ORDER BY total DESC  LIMIT 10",
+				+ "= a.idArticuloVenta where m.baja=0 group BY idArticulo ORDER BY total DESC  LIMIT 9",
 
 				(rs, rowNum) -> new ArticuloManufacturado(rs.getLong(4), rs.getString(1), rs.getFloat(2),
 						rs.getString(3), rs.getBoolean(8), rs.getBoolean(6), rs.getBoolean(7),
