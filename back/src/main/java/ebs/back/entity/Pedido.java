@@ -1,41 +1,45 @@
 package ebs.back.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 @Entity
 public class Pedido implements Serializable {
 
-	private Long id;
-	private long numero;
-	private String estado;
-	private LocalTime hora;
-	private boolean tipoEntrega;
-	private Factura factura;
-	private Cliente cliente;
-	private List<DetallePedido> detalles = new ArrayList<>();
+    private Long id;
+    private long numero;
+    private String estado;
+    private LocalTime hora;
+	private boolean formaPago;
+    private boolean tipoEntrega;
+    private Factura factura;
+    private Cliente cliente;
+    private List<DetallePedido> detalles = new ArrayList<>();
 
-	public Pedido() {
+    public Pedido() {
 
-	}
+    }
+
+    public Pedido(Long id, long numero, String estado, LocalTime hora, boolean tipoEntrega, Factura factura,
+                  Cliente cliente, List<DetallePedido> detalles) {
+        this.id = id;
+        this.numero = numero;
+        this.estado = estado;
+        this.hora = hora;
+        this.tipoEntrega = tipoEntrega;
+        this.factura = factura;
+        this.cliente = cliente;
+        this.detalles = detalles;
+    }
 
 	public Pedido(Long id, long numero, String estado, LocalTime hora, boolean tipoEntrega, Factura factura,
-			Cliente cliente, List<DetallePedido> detalles) {
+				  Cliente cliente, boolean formaPago, List<DetallePedido> detalles) {
 		this.id = id;
 		this.numero = numero;
 		this.estado = estado;
@@ -43,99 +47,109 @@ public class Pedido implements Serializable {
 		this.tipoEntrega = tipoEntrega;
 		this.factura = factura;
 		this.cliente = cliente;
+		this.formaPago = formaPago;
 		this.detalles = detalles;
 	}
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idPedido")
-	public Long getId() {
-		return id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idPedido")
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Column(nullable = false)
+    public long getNumero() {
+        return numero;
+    }
+
+    public void setNumero(long numero) {
+        this.numero = numero;
+    }
+
+    @Column(nullable = false)
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public LocalTime getHora() {
+        return hora;
+    }
+
+    public void setHora(LocalTime hora) {
+        this.hora = hora;
+    }
+
+	public boolean isFormaPago() {
+		return formaPago;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setFormaPago(boolean formaPago) {
+		this.formaPago = formaPago;
 	}
+
 
 	@Column(nullable = false)
-	public long getNumero() {
-		return numero;
-	}
+    public boolean isTipoEntrega() {
+        return tipoEntrega;
+    }
 
-	public void setNumero(long numero) {
-		this.numero = numero;
-	}
+    public void setTipoEntrega(boolean tipoEntrega) {
+        this.tipoEntrega = tipoEntrega;
+    }
 
-	@Column(nullable = false)
-	public String getEstado() {
-		return estado;
-	}
+    @OneToOne(mappedBy = "pedido")
+    public Factura getFactura() {
+        return factura;
+    }
 
-	public void setEstado(String estado) {
-		this.estado = estado;
-	}
+    public void setFactura(Factura factura) {
+        this.factura = factura;
+    }
 
-	public LocalTime getHora() {
-		return hora;
-	}
+    @ManyToOne
+    @JoinColumn(name = "idCliente", nullable = false, unique = true, updatable = false)
+    public Cliente getCliente() {
+        return cliente;
+    }
 
-	public void setHora(LocalTime hora) {
-		this.hora = hora;
-	}
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
 
-	@Column(nullable = false)
-	public boolean isTipoEntrega() {
-		return tipoEntrega;
-	}
+    @OneToMany(mappedBy = "pedido")
+    public List<DetallePedido> getDetalles() {
+        return detalles;
+    }
 
-	public void setTipoEntrega(boolean tipoEntrega) {
-		this.tipoEntrega = tipoEntrega;
-	}
+    public void setDetalles(List<DetallePedido> detalles) {
+        this.detalles = detalles;
+    }
 
-	@OneToOne(mappedBy = "pedido")
-	public Factura getFactura() {
-		return factura;
-	}
+    public float calularTotal() {
+        return 0.0f;
+    }
 
-	public void setFactura(Factura factura) {
-		this.factura = factura;
-	}
+    public void agregarDetalle(DetallePedido detalle) {
 
-	@ManyToOne
-	@JoinColumn(name = "idCliente", nullable = false, unique = true, updatable = false)
-	public Cliente getCliente() {
-		return cliente;
-	}
+    }
 
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
+    public void cambiarEstado(String estado) {
 
-	@OneToMany(mappedBy = "pedido")
-	public List<DetallePedido> getDetalles() {
-		return detalles;
-	}
+    }
 
-	public void setDetalles(List<DetallePedido> detalles) {
-		this.detalles = detalles;
-	}
-
-	public float calularTotal() {
-		return 0.0f;
-	}
-
-	public void agregarDetalle(DetallePedido detalle) {
-
-	}
-
-	public void cambiarEstado(String estado) {
-
-	}
-
-	@Temporal(TemporalType.TIME)
-	@Column(nullable = false, updatable = false)
-	private Time convertirHora() {
-		return Time.valueOf(this.getHora());
-	}
+    @Temporal(TemporalType.TIME)
+    @Column(nullable = false, updatable = false)
+    private Time convertirHora() {
+        return Time.valueOf(this.getHora());
+    }
 
 }

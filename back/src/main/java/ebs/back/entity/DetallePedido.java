@@ -1,5 +1,7 @@
 package ebs.back.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -61,6 +63,7 @@ public class DetallePedido implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "idPedido", nullable = false, unique = true)
+	@JsonIgnore
 	public Pedido getPedido() {
 		return pedido;
 	}

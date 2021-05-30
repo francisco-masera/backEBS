@@ -1,6 +1,7 @@
 package ebs.back.controller;
 
 import ebs.back.entity.*;
+import ebs.back.entity.wrapper.ArticuloVentaWrapper;
 import ebs.back.service.InformacionArticuloVentaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.query.Procedure;
@@ -100,6 +101,7 @@ public class InformacionArticuloVentaController
             return null;
         }
     }
+
 
     /**
      * @param tipo
@@ -244,6 +246,47 @@ public class InformacionArticuloVentaController
         return manufacturados.stream()
                 .filter(m -> getEstadoStockManufacturado(m.getRecetas())).collect(Collectors.toList());
 
+    }
+
+    private Boolean existe(String sql, Long id) {
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{id}, Integer.class) == 1;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    @GetMapping("/getDetalle/{id}")
+    @Procedure
+    public Object getDetalle(@PathVariable long id) throws Exception {
+        try {
+
+            if (existe("Select Count(idArticuloManufacturado) From ArticuloManufacturado Where idArticuloManufacturado = ?", id))
+                return this.jdbcTemplate.queryForObject("Select * from ArticuloManufacturado AM INNER JOIN " +
+                                "InformacionArticuloVenta IAV ON AM.idArticuloManufacturado = IAV.idArticuloVenta WHERE IAV.idArticuloVenta = ?",
+                        new Object[]{id}, (rs, rowNum) -> new ArticuloVentaWrapper(
+                                rs.getLong("idArticuloVenta"), rs.getBoolean("aptoCeliaco"), rs.getBoolean("vegano"),
+                                rs.getBoolean("vegetariano"), rs.getString("denominacion"), rs.getFloat("precioVenta"),
+                                false,
+                                rs.getString("descripcion")
+                        ));
+
+            else if (existe("Select Count(idInsumoVenta) From informacionarticuloventa_insumo Where idInsumoVenta = ?", id))
+                return this.jdbcTemplate.queryForObject("Select * from informacionarticuloventa_insumo IAVI INNER JOIN " +
+                                "InformacionArticuloVenta IAV ON IAVI.idInsumoVenta = IAV.idArticuloVenta INNER JOIN " +
+                                "Insumo i ON i.idInsumo = IAVI.idInsumo WHERE idArticuloVenta=?",
+                        new Object[]{id}, (rs, rowNum) -> new ArticuloVentaWrapper(
+                                rs.getLong("idArticuloVenta"), false, false,
+                                false, rs.getString("denominacion"), rs.getFloat("precioVenta"),
+                                true,
+                                rs.getString("descripcion")
+
+                        ));
+            else
+                throw new Exception("Error interno del servidor.");
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
 
 }

@@ -1,5 +1,7 @@
 package ebs.back.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -31,6 +33,7 @@ public class Cliente extends Persona {
 	}
 
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.PERSIST)
+	@JsonIgnore
 	public List<Pedido> getPedidos() {
 		return pedidos;
 	}

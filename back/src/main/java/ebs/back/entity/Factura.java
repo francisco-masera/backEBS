@@ -1,5 +1,7 @@
 package ebs.back.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -98,6 +100,7 @@ public class Factura implements Serializable {
 
 	@OneToOne
 	@JoinColumn(name = "idPedido", nullable = false, updatable = false)
+	@JsonIgnore
 	public Pedido getPedido() {
 		return pedido;
 	}
