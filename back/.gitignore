@@ -37,6 +37,7 @@ tmp/
 application.properties
 
 ### images ###
+static/*
 *.jpg
 *.jpeg
 *.png
