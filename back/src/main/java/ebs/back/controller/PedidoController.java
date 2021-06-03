@@ -1,16 +1,15 @@
 package ebs.back.controller;
 
-import ebs.back.entity.ArticuloManufacturado;
-import ebs.back.entity.DetallePedido;
-import ebs.back.entity.InformacionArticuloVenta;
 import ebs.back.entity.Pedido;
-import ebs.back.entity.wrapper.CarritoPendiente;
+import ebs.back.entity.wrapper.ItemPedidoPendiente;
+import ebs.back.entity.wrapper.PedidoPendiente;
 import ebs.back.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -22,72 +21,123 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
     @Autowired
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-    @GetMapping("/getCarritoByCliente/{idCliente}")
-    public CarritoPendiente getCarritoByCliente(@PathVariable Long idCliente) {
+    @GetMapping("/getCarritoPediente/{idCliente}")
+    public PedidoPendiente getCarritoByCliente(@PathVariable Long idCliente) {
         try {
-            CarritoPendiente carrito = this.jdbcTemplate.queryForObject("Select * From Pedido " +
-                    "WHERE idCliente = ?", new Object[]{idCliente}, (rs, rowNum) -> new CarritoPendiente(
-                    null, null, null, null, null, rs.getBoolean("formaPago"), rs.getBoolean("tipoEntrega"), "", 0L,
-                    null, new ArrayList<DetallePedido>()
-            ));
 
-            List<DetallePedido> detalles = this.jdbcTemplate.query("", new Object[]{idCliente}, (rs, rowNum) -> new DetallePedido(
-                    rs.getLong("idDetalle"), rs.getInt("cantidad"), null, null
-            ));
+            List<ItemPedidoPendiente> items = jdbcTemplate.query("SELECT * FROM DetallePedido " +
+                            " INNER JOIN InformacionArticuloVenta IAV on DetallePedido.idArticulo = IAV.idArticuloVenta" +
+                            " LEFT JOIN Pedido P on P.idPedido = DetallePedido.idPedido where p.idCliente = ? AND p.estado = 'Pendiente'",
+                    new Object[]{idCliente},
+                    (rs, rowNum) -> new ItemPedidoPendiente(rs.getLong("idDetalle"),rs.getLong("idArticuloVenta"), rs.getInt("cantidad"),
+                            rs.getLong("idPedido"), rs.getFloat("precioVenta"), ""));
 
-            detalles.forEach(d -> {
-                InformacionArticuloVenta articulo = this.jdbcTemplate.queryForObject("SELECT IAV.idArticuloVenta, " +
-                        "IAV.precioVenta from InformacionArticuloVenta IAV INNER JOIN DetallePedido DP on IAV.idArticuloVenta = DP.idArticulo " +
-                        "WHERE DP.idDetalle = ?", new Object[]{d.getId()}, InformacionArticuloVenta.class);
-                InformacionArticuloVenta articulo2 = null;
-                if (existe("Select Count(idArticuloManufacturado) From ArticuloManufacturado Where idArticuloManufacturado = ?", articulo.getId())) {
-                    articulo2 = jdbcTemplate.queryForObject("SELECT * From ArticuloManufacturado", new Object[]{articulo.getId()}, ArticuloManufacturado.class);
 
-                    articulo2.setId(articulo.getId());
-                    articulo2.setPrecioVenta(articulo.getPrecioVenta());
+            for (ItemPedidoPendiente item : items) {
+                String denominacion = "";
+                if (existeByID("Select Count(idArticuloManufacturado) From ArticuloManufacturado Where idArticuloManufacturado = ?"
+                        , item.getIdArticuloVenta())) {
+                    denominacion = jdbcTemplate.queryForObject("Select denominacion FROM ArticuloManufacturado WHERE idArticuloManufacturado = ?",
+                            new Object[]{item.getIdArticuloVenta()}, String.class);
 
                 } else {
-
-                    articulo2 = jdbcTemplate.queryForObject("SELECT * From informacionarticuloventa_insumo iavi " +
-                            "INNER JOIN Insumo I on iavi.idInsumo = I.idInsumo", new Object[]{articulo.getId()}, ArticuloManufacturado.class);
-
-                    articulo2.setId(articulo.getId());
-                    articulo2.setPrecioVenta(articulo.getPrecioVenta());
-
+                    denominacion = jdbcTemplate.queryForObject("SELECT I.denominacion from informacionarticuloventa_insumo IA " +
+                            "INNER JOIN Insumo I on IA.idInsumo = I.idInsumo" +
+                            " WHERE IA.idInsumoVenta = ?", new Object[]{item.getIdArticuloVenta()}, String.class);
                 }
+                item.setDenominacion(denominacion);
+            }
 
-                d.setArticulo(articulo2);
-            });
-            carrito.setDetalles(detalles);
-            return carrito;
+
+            List<Float> precios = jdbcTemplate.query("Select IAV.precioVenta FROM InformacionArticuloVenta IAV" +
+                            " JOIN DetallePedido DP on IAV.idArticuloVenta = DP.idArticulo" +
+                            " INNER JOIN Pedido P on DP.idPedido = P.idPedido where p.idCliente = ?",
+                    new Object[]{idCliente}, (rs, rowNum) -> rs.getFloat(1));
+
+            Float total = precios.stream().reduce(0F, Float::sum);
+
+            return jdbcTemplate.queryForObject("SELECT * FROM Pedido Where idCliente= ? AND estado = ?",
+                    new Object[]{idCliente, "Pendiente"},
+                    (rs, rowNum) -> new PedidoPendiente(
+                            rs.getLong("idCliente"), total, rs.getBoolean("formaPago"), rs.getBoolean("tipoEntrega"),
+                            rs.getString("estado"), rs.getLong("numero"), rs.getTime("hora").toLocalTime(), items));
+
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw ex;
         }
+
     }
 
-    private Boolean existe(String sql, Long id) {
+    private Boolean existeByID(String sql, Long id) {
         try {
             return jdbcTemplate.queryForObject(sql, new Object[]{id}, Integer.class) == 1;
         } catch (Exception ex) {
+            ex.printStackTrace();
             return false;
         }
     }
 
-    @PostMapping("/pedidoPendiente")
-    private void pedidoPendiente(@RequestParam CarritoPendiente carrito) {
-
+    private Boolean existePedido() {
         try {
-            this.jdbcTemplate.update("INSERT INTO Pedido (estado, hora, numero, tipoEntrega, idCliente) VALUES (?,?,?,?,?)",
-                    carrito.getEstado(), carrito.getHoraEstimada(), carrito.getNumero(), carrito.getEsDelivery()
-            );
-            carrito.getDetalles().forEach(d -> {
-                this.jdbcTemplate.update("INSERT INTO DetallePedido (cantidad, idArticulo, idPedido) VALUES(?,?,?)",
-                        d.getCantidad(), 0, d.getArticulo().getId());
+            return jdbcTemplate.queryForObject("Select Count(idPedido) FROM Pedido Where estado = 'PENDIENTE'", Integer.class) == 1;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    private Boolean existeDetalle(Long idArticulo) {
+        try {
+            return jdbcTemplate.queryForObject("Select Count(idDetalle) FROM DetallePedido Where idArticulo = ?", new Object[]{idArticulo}, Integer.class) > 0;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+
+    @PostMapping("/saveCarrito")
+    public void pedidoPendiente(@RequestBody PedidoPendiente carrito) {
+        Boolean hayPedidoPendiente;
+
+        hayPedidoPendiente = existePedido();
+
+        //LocalTime local = LocalTime.now();
+        Time horaEstimada = Time.valueOf(LocalTime.of(0, 0, 0));
+
+        //if (carrito.getHoraEstimada() != null) horaEstimada = Time.valueOf(carrito.getHoraEstimada());
+
+
+        if (!hayPedidoPendiente) {
+            try {
+
+
+                jdbcTemplate.update("INSERT INTO Pedido (estado, hora, numero, tipoEntrega, idCliente, formaPago)  VALUES (?,?,?,?,?,?)"
+                        , carrito.getEstado(), horaEstimada, carrito.getNumero(),
+                        carrito.getTipoEntrega(), carrito.getIdCliente(), carrito.getFormaPago());
+
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                throw ex;
+            }
+        }
+        try {
+            Long idPedido = jdbcTemplate.queryForObject("Select idPedido From Pedido Where estado = ? " +
+                    "AND idCliente = ? Order BY idPedido Desc", new Object[]{"Pendiente", carrito.getIdCliente()}, Long.class);
+            carrito.getItems().forEach(d -> {
+                if (!existeDetalle(d.getIdArticuloVenta()))
+                    this.jdbcTemplate.update("INSERT INTO DetallePedido (cantidad, idArticulo, idPedido) VALUES(?,?,?)",
+                            d.getCantidad(), d.getIdArticuloVenta(), idPedido);
+                else
+                    this.jdbcTemplate.update("UPDATE  DetallePedido SET cantidad = ? WHERE idPedido = ? AND idArticulo  = ?",
+                            d.getCantidad(), d.getIdPedido(), d.getIdArticuloVenta());
 
             });
         } catch (Exception ex) {
-            throw ex;
+            ex.printStackTrace();
         }
     }
 

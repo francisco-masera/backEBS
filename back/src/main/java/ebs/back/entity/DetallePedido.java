@@ -62,7 +62,7 @@ public class DetallePedido implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "idPedido", nullable = false, unique = true)
+	@JoinColumn(name = "idPedido", nullable = false)
 	@JsonIgnore
 	public Pedido getPedido() {
 		return pedido;

@@ -116,7 +116,7 @@ public class Pedido implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "idCliente", nullable = false, unique = true, updatable = false)
+    @JoinColumn(name = "idCliente", nullable = false, updatable = false)
     public Cliente getCliente() {
         return cliente;
     }
