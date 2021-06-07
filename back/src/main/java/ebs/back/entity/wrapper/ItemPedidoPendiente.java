@@ -5,7 +5,6 @@ public class ItemPedidoPendiente {
     private Long idItem;
     private Long idArticuloVenta;
     private Integer cantidad;
-    private Long idPedido;
     private Float precioVenta;
     private String denominacion;
 
@@ -13,11 +12,10 @@ public class ItemPedidoPendiente {
     public ItemPedidoPendiente() {
     }
 
-    public ItemPedidoPendiente(Long idItem, Long idArticuloVenta, Integer cantidad, Long idPedido, Float precioVenta, String denominacion) {
+    public ItemPedidoPendiente(Long idItem, Long idArticuloVenta, Integer cantidad, Float precioVenta, String denominacion) {
         this.idItem = idItem;
         this.idArticuloVenta = idArticuloVenta;
         this.cantidad = cantidad;
-        this.idPedido = idPedido;
         this.precioVenta = precioVenta;
         this.denominacion = denominacion;
     }
@@ -36,14 +34,6 @@ public class ItemPedidoPendiente {
 
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
-    }
-
-    public Long getIdPedido() {
-        return idPedido;
-    }
-
-    public void setIdPedido(Long idPedido) {
-        this.idPedido = idPedido;
     }
 
     public Float getPrecioVenta() {

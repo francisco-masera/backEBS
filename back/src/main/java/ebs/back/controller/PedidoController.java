@@ -29,12 +29,12 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
                             " INNER JOIN InformacionArticuloVenta IAV on DetallePedido.idArticulo = IAV.idArticuloVenta" +
                             " LEFT JOIN Pedido P on P.idPedido = DetallePedido.idPedido where p.idCliente = ? AND p.estado = 'Pendiente'",
                     new Object[]{idCliente},
-                    (rs, rowNum) -> new ItemPedidoPendiente(rs.getLong("idDetalle"),rs.getLong("idArticuloVenta"), rs.getInt("cantidad"),
-                            rs.getLong("idPedido"), rs.getFloat("precioVenta"), ""));
+                    (rs, rowNum) -> new ItemPedidoPendiente(rs.getLong("idDetalle"), rs.getLong("idArticuloVenta"),
+                            rs.getInt("cantidad"), rs.getFloat("precioVenta"), ""));
 
 
             for (ItemPedidoPendiente item : items) {
-                String denominacion = "";
+                String denominacion;
                 if (existeByID("Select Count(idArticuloManufacturado) From ArticuloManufacturado Where idArticuloManufacturado = ?"
                         , item.getIdArticuloVenta())) {
                     denominacion = jdbcTemplate.queryForObject("Select denominacion FROM ArticuloManufacturado WHERE idArticuloManufacturado = ?",
@@ -49,18 +49,19 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
             }
 
 
-            List<Float> precios = jdbcTemplate.query("Select IAV.precioVenta FROM InformacionArticuloVenta IAV" +
+      /*      List<Float> precios = jdbcTemplate.query("Select IAV.precioVenta FROM InformacionArticuloVenta IAV" +
                             " JOIN DetallePedido DP on IAV.idArticuloVenta = DP.idArticulo" +
                             " INNER JOIN Pedido P on DP.idPedido = P.idPedido where p.idCliente = ?",
-                    new Object[]{idCliente}, (rs, rowNum) -> rs.getFloat(1));
+                    new Object[]{idCliente}, (rs, rowNum) -> rs.getFloat(1));*/
 
-            Float total = precios.stream().reduce(0F, Float::sum);
+            //    Float total = precios.stream().reduce(0F, Float::sum);
 
             return jdbcTemplate.queryForObject("SELECT * FROM Pedido Where idCliente= ? AND estado = ?",
                     new Object[]{idCliente, "Pendiente"},
                     (rs, rowNum) -> new PedidoPendiente(
-                            rs.getLong("idCliente"), total, rs.getBoolean("formaPago"), rs.getBoolean("tipoEntrega"),
-                            rs.getString("estado"), rs.getLong("numero"), rs.getTime("hora").toLocalTime(), items));
+                            rs.getLong("idPedido"), rs.getLong("idCliente"),
+                            rs.getBoolean("formaPago"), rs.getBoolean("tipoEntrega"),
+                            rs.getString("estado"), rs.getLong("numero"), null, items));
 
 
         } catch (Exception ex) {
@@ -88,9 +89,10 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
         }
     }
 
-    private Boolean existeDetalle(Long idArticulo) {
+    private Boolean existeDetalle(Long idArticulo, Long idPedido) {
         try {
-            return jdbcTemplate.queryForObject("Select Count(idDetalle) FROM DetallePedido Where idArticulo = ?", new Object[]{idArticulo}, Integer.class) > 0;
+            return jdbcTemplate.queryForObject("Select Count(idDetalle) FROM DetallePedido Where idArticulo = ? AND idPedido=?",
+                    new Object[]{idArticulo, idPedido}, Integer.class) > 0;
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
@@ -128,12 +130,12 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
             Long idPedido = jdbcTemplate.queryForObject("Select idPedido From Pedido Where estado = ? " +
                     "AND idCliente = ? Order BY idPedido Desc", new Object[]{"Pendiente", carrito.getIdCliente()}, Long.class);
             carrito.getItems().forEach(d -> {
-                if (!existeDetalle(d.getIdArticuloVenta()))
+                if (!existeDetalle(d.getIdArticuloVenta(), idPedido))
                     this.jdbcTemplate.update("INSERT INTO DetallePedido (cantidad, idArticulo, idPedido) VALUES(?,?,?)",
                             d.getCantidad(), d.getIdArticuloVenta(), idPedido);
                 else
                     this.jdbcTemplate.update("UPDATE  DetallePedido SET cantidad = ? WHERE idPedido = ? AND idArticulo  = ?",
-                            d.getCantidad(), d.getIdPedido(), d.getIdArticuloVenta());
+                            d.getCantidad(), idPedido, d.getIdArticuloVenta());
 
             });
         } catch (Exception ex) {
@@ -141,5 +143,27 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
         }
     }
 
+    @DeleteMapping("/eliminarPedido/{idCliente}")
+    public void eliminarPedido(@PathVariable Long idCliente) {
+        try {
+            Long idPedido = jdbcTemplate.queryForObject("SELECT idPedido FROM Pedido WHERE idCliente = ? AND " +
+                    " estado = ?", new Object[]{idCliente, "PENDIENTE"}, Long.class);
+            jdbcTemplate.update("DELETE FROM DetallePedido WHERE idPedido = ?", idPedido);
+            jdbcTemplate.update("DELETE FROM Pedido WHERE idPedido = ?", idPedido);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
 
+    @PutMapping("/confirmarPedido/{idPedido}")
+    public boolean confirmarPedido(@PathVariable Long idPedido) {
+        try {
+            jdbcTemplate.update("Update Pedido SET estado = ?  WHERE idPedido = ?", "Confirmado", idPedido);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+        return true;
+    }
 }

@@ -268,7 +268,8 @@ public class InformacionArticuloVentaController
                                 rs.getLong("idArticuloVenta"), rs.getBoolean("aptoCeliaco"), rs.getBoolean("vegano"),
                                 rs.getBoolean("vegetariano"), rs.getString("denominacion"), rs.getFloat("precioVenta"),
                                 false,
-                                rs.getString("descripcion")
+                                rs.getString("descripcion"),
+                                rs.getString("imagen")
                         ));
 
             else if (existe("Select Count(idInsumoVenta) From informacionarticuloventa_insumo Where idInsumoVenta = ?", id))
@@ -279,7 +280,8 @@ public class InformacionArticuloVentaController
                                 rs.getLong("idArticuloVenta"), false, false,
                                 false, rs.getString("denominacion"), rs.getFloat("precioVenta"),
                                 true,
-                                rs.getString("descripcion")
+                                rs.getString("descripcion"),
+                                rs.getString("imagen")
 
                         ));
             else

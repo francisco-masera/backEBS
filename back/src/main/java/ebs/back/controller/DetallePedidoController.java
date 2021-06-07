@@ -19,7 +19,7 @@ public class DetallePedidoController extends BaseController<DetallePedido, Detal
 	@DeleteMapping("/quitarItem/{idArticulo}/{idPedido}")
 	public void quitarItem(@PathVariable Long idArticulo, @PathVariable Long idPedido) {
 		try {
-			jdbcTemplate.update("DELETE  FROM DetallePedido WHERE idPedido = ? AND idArticulo=?", idPedido, idArticulo);
+			jdbcTemplate.update("DELETE FROM DetallePedido WHERE idPedido = ? AND idArticulo=?", idPedido, idArticulo);
 
 		} catch (Exception ex) {
 			ex.printStackTrace();

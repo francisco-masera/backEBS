@@ -8,6 +8,7 @@ public class PedidoPendiente {
 
     private final static Float envio = 50.0F;
     private final static Float descuento = 0.1F;
+    private Long idPedido;
     private Long idCliente;
     private Boolean formaPago;
     private Boolean tipoEntrega;
@@ -19,8 +20,9 @@ public class PedidoPendiente {
     public PedidoPendiente() {
     }
 
-    public PedidoPendiente(Long idCliente, Float total, Boolean formaPago, Boolean tipoEntrega, String estado,
+    public PedidoPendiente(Long idPedido, Long idCliente, Boolean formaPago, Boolean tipoEntrega, String estado,
                            Long numero, LocalTime horaEstimada, List<ItemPedidoPendiente> items) {
+        this.idPedido = idPedido;
         this.idCliente = idCliente;
         this.formaPago = formaPago;
         this.tipoEntrega = tipoEntrega;
@@ -28,6 +30,14 @@ public class PedidoPendiente {
         this.numero = numero;
         this.horaEstimada = horaEstimada;
         this.items = items;
+    }
+
+    public Long getIdPedido() {
+        return idPedido;
+    }
+
+    public void setIdPedido(Long idPedido) {
+        this.idPedido = idPedido;
     }
 
     public Long getIdCliente() {

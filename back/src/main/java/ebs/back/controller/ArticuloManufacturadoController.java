@@ -8,6 +8,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import ebs.back.entity.*;
 import ebs.back.entity.wrapper.ArticuloManufacturadoWrapper;
 import ebs.back.service.ArticuloManufacturadoService;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -288,6 +292,61 @@ public class ArticuloManufacturadoController
                         rs.getString(5)));
 
         return articulos.stream().filter(a -> this.getEstadoStockManufacturado(a.getId())).collect(Collectors.toList());
+    }
+
+    private Boolean existeByID(String sql, Long id) {
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{id}, Integer.class) == 1;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    @PostMapping("/calcularTiempo")
+    public Long calcularTiempo(@RequestBody String params) throws ParseException {
+
+        try {
+
+            JSONParser parser = new JSONParser();
+
+            JSONObject paramObj = (JSONObject) parser.parse(params);
+            boolean esDelivery = (boolean) paramObj.get("esDelivery");
+            JSONArray idsJSON = (JSONArray) paramObj.get("manufacturadosID");
+            List<Long> ids = new ArrayList<>();
+            for (Object o : idsJSON) {
+                ids.add(Long.parseLong(o.toString()));
+            }
+
+            List<Long> tiemposEstimados = new ArrayList<>();
+
+            List<Long> filtrados = ids.stream().filter(id ->
+                    existeByID("Select Count(idArticuloManufacturado) From ArticuloManufacturado Where idArticuloManufacturado = ?",
+                            id)).collect(Collectors.toList());
+            for (Long id : filtrados) {
+                tiemposEstimados.add(jdbcTemplate.queryForObject("Select tiempoCocina From ArticuloManufacturado " +
+                        "WHERE idArticuloManufacturado = ?", new Object[]{id}, Long.class));
+            }
+
+            Long pedidosActuales = jdbcTemplate.queryForObject("SELECT SUM(AM.tiempoCocina) FROM ArticuloManufacturado AM" +
+                    " INNER JOIN InformacionArticuloVenta IAV on AM.idArticuloManufacturado = IAV.idArticuloVenta" +
+                    " INNER JOIN DetallePedido DP on IAV.idArticuloVenta = DP.idArticulo" +
+                    " INNER JOIN Pedido P on DP.idPedido = P.idPedido WHERE P.estado  = ?", new Object[]{"Entregado"}, Long.class);
+
+            Integer cantidadCocineros = jdbcTemplate.queryForObject("SELECT COUNT(rol) FROM Empleado WHERE rol=?", new Object[]{"cocina"}, Integer.class);
+            long tiempo = 0;
+            if (pedidosActuales != null)
+                tiempo = tiemposEstimados.stream().reduce(0L, Long::sum) + (pedidosActuales / cantidadCocineros);
+            else
+                tiempo = tiemposEstimados.stream().reduce(0L, Long::sum);
+            if (esDelivery)
+                tiempo += 10L;
+            return tiempo;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
 }

@@ -56,7 +56,7 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
     @GetMapping("/getAdicionales")
     public List<Insumo> getAdicionales() {
         try {
-            return jdbcTemplate.query("SELECT idInsumo, denominacion From Insumo WHERE esExtra =?", new Object[]{true}, (rs, rowNum) -> new Insumo(
+            return jdbcTemplate.query("SELECT idInsumo, denominacion From Insumo WHERE esExtra = ?", new Object[]{true}, (rs, rowNum) -> new Insumo(
                     rs.getLong("idInsumo"), null, rs.getString("denominacion")));
         } catch (Exception ex) {
             throw ex;
