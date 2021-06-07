@@ -16,6 +16,8 @@ public class PedidoPendiente {
     private Long numero;
     private LocalTime horaEstimada;
     private List<ItemPedidoPendiente> items;
+    private int tiempoEstimado;
+
 
     public PedidoPendiente() {
     }
@@ -31,6 +33,7 @@ public class PedidoPendiente {
         this.horaEstimada = horaEstimada;
         this.items = items;
     }
+
 
     public Long getIdPedido() {
         return idPedido;
@@ -104,5 +107,11 @@ public class PedidoPendiente {
         this.items = items;
     }
 
+    public int getTiempoEstimado() {
+        return tiempoEstimado;
+    }
 
+    public void setTiempoEstimado(int tiempoEstimado) {
+        this.tiempoEstimado = tiempoEstimado;
+    }
 }

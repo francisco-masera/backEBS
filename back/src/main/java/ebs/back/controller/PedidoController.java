@@ -156,14 +156,19 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
         }
     }
 
-    @PutMapping("/confirmarPedido/{idPedido}")
-    public boolean confirmarPedido(@PathVariable Long idPedido) {
+    @PutMapping("/confirmarPedido")
+    public boolean confirmarPedido(@RequestBody PedidoPendiente pedido) {
         try {
-            jdbcTemplate.update("Update Pedido SET estado = ?  WHERE idPedido = ?", "Confirmado", idPedido);
+            LocalTime time = LocalTime.now();
+            time = time.plusMinutes(pedido.getTiempoEstimado());
+            Time hora = Time.valueOf(time);
+            jdbcTemplate.update("Update Pedido SET estado = ?, formaPago = ?, tipoEntrega = ?, hora = ? WHERE idPedido = ?",
+                    "Confirmado", pedido.getFormaPago(), pedido.getTipoEntrega(), time, pedido.getIdPedido());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
         }
         return true;
     }
+
 }

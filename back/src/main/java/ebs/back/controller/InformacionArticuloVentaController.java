@@ -64,8 +64,10 @@ public class InformacionArticuloVentaController
         try {
             SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("getManufacturadosByFiltro")
 
-                    .returningResultSet("manufacturados", (rs, rowNum) -> new ArticuloManufacturado(rs.getLong(1), rs.getString(2), rs.getFloat(4),
-                            rs.getString(3), null, null, rs.getInt(7), rs.getBoolean(5), rs.getBoolean(8),
+                    .returningResultSet("manufacturados", (rs, rowNum) -> new ArticuloManufacturado(rs.getLong(1),
+                            rs.getString(2), rs.getFloat(4),
+                            rs.getString(3), null, null, rs.getInt(7),
+                            rs.getBoolean(5), rs.getBoolean(8),
                             rs.getBoolean(9), rs.getString(6), false, null, null));
 
             Map<String, Object> out = jdbcCall.execute(terminos);
@@ -184,7 +186,8 @@ public class InformacionArticuloVentaController
      * @return
      */
     private boolean getEstadoStockManufacturado(List<Receta> recetas) {
-
+        if (recetas.size() == 0)
+            return false;
         for (Receta receta : recetas) {
             if (receta.getInsumo().getStock().getActual() < receta.getCantidadInsumo())
                 return false;
