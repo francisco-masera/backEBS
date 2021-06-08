@@ -62,6 +62,7 @@ public class InformacionArticuloVentaController
     @Procedure
     public List<InformacionArticuloVenta> getProductoVentaByFiltros(@RequestParam String terminos) {
         try {
+            List<InformacionArticuloVenta> filtrados = new ArrayList<>();
             SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("getManufacturadosByFiltro")
 
                     .returningResultSet("manufacturados", (rs, rowNum) -> new ArticuloManufacturado(rs.getLong(1),
@@ -81,8 +82,8 @@ public class InformacionArticuloVentaController
                     if (articulo instanceof ArticuloManufacturado) {
                         ((ArticuloManufacturado) articulo).setRecetas(this.getRecetasXManufacturado(articulo.getId()));
                         ArticuloManufacturado manufacturado = (ArticuloManufacturado) articulo;
-                        if (!this.getEstadoStockManufacturado(manufacturado.getRecetas()))
-                            articulos.remove(manufacturado);
+                        if (this.getEstadoStockManufacturado(manufacturado.getRecetas()))
+                            filtrados.add(manufacturado);
                     }
 
                 }
