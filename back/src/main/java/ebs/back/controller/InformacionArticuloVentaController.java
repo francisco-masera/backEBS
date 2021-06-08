@@ -115,8 +115,8 @@ public class InformacionArticuloVentaController
     public List<InformacionArticuloVenta> getProductoVentaByCategoria(@RequestParam int tipo,
                                                                       @RequestParam int categoria) {
         String sql;
-        List<InformacionArticuloVenta> articulos = new ArrayList<>();
-        List<ArticuloManufacturado> manufacturados = new ArrayList<>();
+        List<InformacionArticuloVenta> articulos;
+
         if (tipo == 0) {
             sql = "SELECT am.denominacion, ia.idArticuloVenta, ia.descripcion, ia.imagen, "
                     + "ia.precioVenta, r.idRubroManufacturado, r.denominacion "
@@ -129,7 +129,7 @@ public class InformacionArticuloVentaController
                             rs.getString(4), null, null, 0, true, true, true, rs.getString(1), true,
                             new RubroManufacturado(rs.getLong(6), rs.getString(7), false, null), null));
 
-            articulos.addAll(this.setUpManufacturados(articulos, manufacturados));
+            articulos = this.setUpManufacturados(articulos);
             return articulos;
 
         } else if (tipo == 2 && categoria == 1) {
@@ -143,7 +143,7 @@ public class InformacionArticuloVentaController
                             rs.getString(4), null, null, 0, true, true, true, rs.getString(1), true,
                             new RubroManufacturado(rs.getLong(6), rs.getString(7), false, null), null));
 
-            articulos.addAll(this.setUpManufacturados(articulos, manufacturados));
+            articulos = this.setUpManufacturados(articulos);
             return articulos;
 
         } else if (tipo == 2 && categoria == 2) {
@@ -160,7 +160,7 @@ public class InformacionArticuloVentaController
                             new RubroManufacturado(rs.getLong(6), rs.getString(7), false, null),
                             getRecetasXManufacturado(rs.getLong(2))));
 
-            articulos.addAll(this.setUpManufacturados(articulos, manufacturados));
+            articulos = this.setUpManufacturados(articulos);
             return articulos;
 
         } else if (tipo == 1) {
@@ -230,16 +230,16 @@ public class InformacionArticuloVentaController
      * no tienen stock suficiente para ser fabricados
      *
      * @param articulos
-     * @param manufacturados
      * @return
      */
-    private List<ArticuloManufacturado> setUpManufacturados(List<InformacionArticuloVenta> articulos,
-                                                            List<ArticuloManufacturado> manufacturados) {
+    private List<InformacionArticuloVenta> setUpManufacturados(List<InformacionArticuloVenta> articulos) {
         // Dejamos de lado los artículos de tipo Insumo
+        List<ArticuloManufacturado> manufacturados = new ArrayList<>();
         for (InformacionArticuloVenta art : articulos) {
             if (art instanceof ArticuloManufacturado) {
                 ((ArticuloManufacturado) art).setRecetas(this.getRecetasXManufacturado(art.getId()));
-                manufacturados.add((ArticuloManufacturado) art);
+                if (((ArticuloManufacturado) art).getRecetas().size() > 0)
+                    manufacturados.add((ArticuloManufacturado) art);
             }
         }
 
