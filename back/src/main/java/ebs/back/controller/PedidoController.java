@@ -164,7 +164,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
 
     @PutMapping("/pedidoEntregado/{id}/{estado}")
     private void cambiarEstado(@PathVariable String id, @PathVariable String estado) {
-        System.out.print("Estoy aca" + id + estado);
+
         try {
             this.jdbcTemplate
                     .update("UPDATE Pedido set estado = " + "'" + estado + "'" + "where idPedido = " + "'" + id + "'");

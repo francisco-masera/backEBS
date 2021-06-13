@@ -21,13 +21,15 @@ public class Domicilio implements Serializable {
 	private String departamento;
 	private boolean baja;
 	private Persona persona;
+	private String latitud;
+	private String longitud;
 
 	public Domicilio() {
 
 	}
 
 	public Domicilio(Long id, String localidad, String calle, int numero, int piso, boolean baja, String departamento,
-			Persona persona) {
+			Persona persona, String latitud, String longitud) {
 		this.id = id;
 		this.localidad = localidad;
 		this.calle = calle;
@@ -36,6 +38,8 @@ public class Domicilio implements Serializable {
 		this.departamento = departamento;
 		this.baja = baja;
 		this.persona = persona;
+		this.latitud = latitud;
+		this.longitud = longitud;
 	}
 
 	@Id
@@ -112,4 +116,23 @@ public class Domicilio implements Serializable {
 	public void setPersona(Persona persona) {
 		this.persona = persona;
 	}
+
+    public String getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(String latitud) {
+        this.latitud = latitud;
+    }
+
+    @Column(nullable = false)
+    public String getLongitud() {
+        return longitud;
+    }
+
+    @Column(nullable = false)
+    public void setLongitud(String longitud) {
+        this.longitud = longitud;
+    }
+	
 }
