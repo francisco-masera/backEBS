@@ -62,10 +62,13 @@ public class InformacionArticuloVentaController
     @Procedure
     public List<InformacionArticuloVenta> getProductoVentaByFiltros(@RequestParam String terminos) {
         try {
+            List<InformacionArticuloVenta> filtrados = new ArrayList<>();
             SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("getManufacturadosByFiltro")
 
-                    .returningResultSet("manufacturados", (rs, rowNum) -> new ArticuloManufacturado(rs.getLong(1), rs.getString(2), rs.getFloat(4),
-                            rs.getString(3), null, null, rs.getInt(7), rs.getBoolean(5), rs.getBoolean(8),
+                    .returningResultSet("manufacturados", (rs, rowNum) -> new ArticuloManufacturado(rs.getLong(1),
+                            rs.getString(2), rs.getFloat(4),
+                            rs.getString(3), null, null, rs.getInt(7),
+                            rs.getBoolean(5), rs.getBoolean(8),
                             rs.getBoolean(9), rs.getString(6), false, null, null));
 
             Map<String, Object> out = jdbcCall.execute(terminos);
@@ -79,8 +82,8 @@ public class InformacionArticuloVentaController
                     if (articulo instanceof ArticuloManufacturado) {
                         ((ArticuloManufacturado) articulo).setRecetas(this.getRecetasXManufacturado(articulo.getId()));
                         ArticuloManufacturado manufacturado = (ArticuloManufacturado) articulo;
-                        if (!this.getEstadoStockManufacturado(manufacturado.getRecetas()))
-                            articulos.remove(manufacturado);
+                        if (this.getEstadoStockManufacturado(manufacturado.getRecetas()))
+                            filtrados.add(manufacturado);
                     }
 
                 }
@@ -113,8 +116,8 @@ public class InformacionArticuloVentaController
     public List<InformacionArticuloVenta> getProductoVentaByCategoria(@RequestParam int tipo,
                                                                       @RequestParam int categoria) {
         String sql;
-        List<InformacionArticuloVenta> articulos = new ArrayList<>();
-        List<ArticuloManufacturado> manufacturados = new ArrayList<>();
+        List<InformacionArticuloVenta> articulos;
+
         if (tipo == 0) {
             sql = "SELECT am.denominacion, ia.idArticuloVenta, ia.descripcion, ia.imagen, "
                     + "ia.precioVenta, r.idRubroManufacturado, r.denominacion "
@@ -127,7 +130,7 @@ public class InformacionArticuloVentaController
                             rs.getString(4), null, null, 0, true, true, true, rs.getString(1), true,
                             new RubroManufacturado(rs.getLong(6), rs.getString(7), false, null), null));
 
-            articulos.addAll(this.setUpManufacturados(articulos, manufacturados));
+            articulos = this.setUpManufacturados(articulos);
             return articulos;
 
         } else if (tipo == 2 && categoria == 1) {
@@ -141,7 +144,7 @@ public class InformacionArticuloVentaController
                             rs.getString(4), null, null, 0, true, true, true, rs.getString(1), true,
                             new RubroManufacturado(rs.getLong(6), rs.getString(7), false, null), null));
 
-            articulos.addAll(this.setUpManufacturados(articulos, manufacturados));
+            articulos = this.setUpManufacturados(articulos);
             return articulos;
 
         } else if (tipo == 2 && categoria == 2) {
@@ -158,7 +161,7 @@ public class InformacionArticuloVentaController
                             new RubroManufacturado(rs.getLong(6), rs.getString(7), false, null),
                             getRecetasXManufacturado(rs.getLong(2))));
 
-            articulos.addAll(this.setUpManufacturados(articulos, manufacturados));
+            articulos = this.setUpManufacturados(articulos);
             return articulos;
 
         } else if (tipo == 1) {
@@ -184,7 +187,8 @@ public class InformacionArticuloVentaController
      * @return
      */
     private boolean getEstadoStockManufacturado(List<Receta> recetas) {
-
+        if (recetas.size() == 0)
+            return false;
         for (Receta receta : recetas) {
             if (receta.getInsumo().getStock().getActual() < receta.getCantidadInsumo())
                 return false;
@@ -227,16 +231,16 @@ public class InformacionArticuloVentaController
      * no tienen stock suficiente para ser fabricados
      *
      * @param articulos
-     * @param manufacturados
      * @return
      */
-    private List<ArticuloManufacturado> setUpManufacturados(List<InformacionArticuloVenta> articulos,
-                                                            List<ArticuloManufacturado> manufacturados) {
+    private List<InformacionArticuloVenta> setUpManufacturados(List<InformacionArticuloVenta> articulos) {
         // Dejamos de lado los artículos de tipo Insumo
+        List<ArticuloManufacturado> manufacturados = new ArrayList<>();
         for (InformacionArticuloVenta art : articulos) {
             if (art instanceof ArticuloManufacturado) {
                 ((ArticuloManufacturado) art).setRecetas(this.getRecetasXManufacturado(art.getId()));
-                manufacturados.add((ArticuloManufacturado) art);
+                if (((ArticuloManufacturado) art).getRecetas().size() > 0)
+                    manufacturados.add((ArticuloManufacturado) art);
             }
         }
 
@@ -268,7 +272,8 @@ public class InformacionArticuloVentaController
                                 rs.getLong("idArticuloVenta"), rs.getBoolean("aptoCeliaco"), rs.getBoolean("vegano"),
                                 rs.getBoolean("vegetariano"), rs.getString("denominacion"), rs.getFloat("precioVenta"),
                                 false,
-                                rs.getString("descripcion")
+                                rs.getString("descripcion"),
+                                rs.getString("imagen")
                         ));
 
             else if (existe("Select Count(idInsumoVenta) From informacionarticuloventa_insumo Where idInsumoVenta = ?", id))
@@ -279,7 +284,8 @@ public class InformacionArticuloVentaController
                                 rs.getLong("idArticuloVenta"), false, false,
                                 false, rs.getString("denominacion"), rs.getFloat("precioVenta"),
                                 true,
-                                rs.getString("descripcion")
+                                rs.getString("descripcion"),
+                                rs.getString("imagen")
 
                         ));
             else

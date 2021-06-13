@@ -10,11 +10,13 @@ public class ArticuloVentaWrapper {
     private float precioVenta;
     private boolean esInsumo;
     private String descripcion;
+    private String imagen;
 
     public ArticuloVentaWrapper() {
     }
 
-    public ArticuloVentaWrapper(Long idArticuloVenta, boolean aptoCeliaco, boolean vegano, boolean vegetariano, String denominacion, float precioVenta, boolean esInsumo, String descripcion) {
+    public ArticuloVentaWrapper(Long idArticuloVenta, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
+                                String denominacion, float precioVenta, boolean esInsumo, String descripcion, String imagen) {
         this.idArticuloVenta = idArticuloVenta;
         this.aptoCeliaco = aptoCeliaco;
         this.vegano = vegano;
@@ -23,6 +25,7 @@ public class ArticuloVentaWrapper {
         this.precioVenta = precioVenta;
         this.esInsumo = esInsumo;
         this.descripcion = descripcion;
+        this.imagen = imagen;
     }
 
     public Long getIdArticuloVenta() {
@@ -87,5 +90,13 @@ public class ArticuloVentaWrapper {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 }

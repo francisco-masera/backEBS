@@ -1,7 +1,5 @@
 package ebs.back.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Time;
@@ -16,7 +14,7 @@ public class Pedido implements Serializable {
     private long numero;
     private String estado;
     private LocalTime hora;
-	private boolean formaPago;
+    private boolean formaPago;
     private boolean tipoEntrega;
     private Factura factura;
     private Cliente cliente;
@@ -38,20 +36,20 @@ public class Pedido implements Serializable {
         this.detalles = detalles;
     }
 
-	public Pedido(Long id, long numero, String estado, LocalTime hora, boolean tipoEntrega, Factura factura,
-				  Cliente cliente, boolean formaPago, List<DetallePedido> detalles) {
-		this.id = id;
-		this.numero = numero;
-		this.estado = estado;
-		this.hora = hora;
-		this.tipoEntrega = tipoEntrega;
-		this.factura = factura;
-		this.cliente = cliente;
-		this.formaPago = formaPago;
-		this.detalles = detalles;
-	}
+    public Pedido(Long id, long numero, String estado, LocalTime hora, boolean tipoEntrega, Factura factura,
+                  Cliente cliente, boolean formaPago, List<DetallePedido> detalles) {
+        this.id = id;
+        this.numero = numero;
+        this.estado = estado;
+        this.hora = hora;
+        this.tipoEntrega = tipoEntrega;
+        this.factura = factura;
+        this.cliente = cliente;
+        this.formaPago = formaPago;
+        this.detalles = detalles;
+    }
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idPedido")
     public Long getId() {
@@ -88,16 +86,16 @@ public class Pedido implements Serializable {
         this.hora = hora;
     }
 
-	public boolean isFormaPago() {
-		return formaPago;
-	}
+    public boolean isFormaPago() {
+        return formaPago;
+    }
 
-	public void setFormaPago(boolean formaPago) {
-		this.formaPago = formaPago;
-	}
+    public void setFormaPago(boolean formaPago) {
+        this.formaPago = formaPago;
+    }
 
 
-	@Column(nullable = false)
+    @Column(nullable = false)
     public boolean isTipoEntrega() {
         return tipoEntrega;
     }
@@ -116,7 +114,7 @@ public class Pedido implements Serializable {
     }
 
     @ManyToOne
-    @JoinColumn(name = "idCliente", nullable = false, unique = true, updatable = false)
+    @JoinColumn(name = "idCliente", nullable = false, updatable = false)
     public Cliente getCliente() {
         return cliente;
     }
