@@ -57,9 +57,9 @@ public class EmpleadoController extends BaseController<Empleado, EmpleadoService
             if (esCliente)
                 throw new Exception("El proceso de autenticación falló.");
 
-            empleado = this.jdbcTemplate.queryForObject("SELECT * FROM Persona p INNER JOIN Empleado e ON " +
+            empleado = this.jdbcTemplate.queryForObject("SELECT * FROM Persona p INNER JOIN Empleado e ON" +
                             " p.idPersona = e.idEmpleado" +
-                            " WHERE (email = ? OR usuario = ?) AND contrasenia = ? ",
+                            " WHERE (email = ? OR usuario = ?) AND contrasenia = ?",
                     new Object[]{email, email, pass}, (rs, rowNum) ->
                             new Empleado(
                                     rs.getLong("idPersona"),
@@ -80,7 +80,7 @@ public class EmpleadoController extends BaseController<Empleado, EmpleadoService
             return empleado;
         } catch (EmptyResultDataAccessException ex) {
             ex.printStackTrace();
-            throw new Exception("No se encontró un usuario registrado con los datos ingresados.", new Throwable(ex.getCause()));
+            throw new Exception("No se encontró un usuario registrado con los datos ingresados.");
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
@@ -97,7 +97,7 @@ public class EmpleadoController extends BaseController<Empleado, EmpleadoService
 
             this.save(empleado);
 
-            return this.loginEmpleado(empleado.getEmail(), empleado.getContrasenia(), empleado.getUsuario());
+            return this.loginEmpleado(empleado.getEmail(), empleado.getUsuario(), empleado.getContrasenia());
         } catch (EmptyResultDataAccessException ex) {
             ex.printStackTrace();
             throw new Exception("No se encontró un usuario registrado con los datos ingresados.", new Throwable(ex.getCause()));
