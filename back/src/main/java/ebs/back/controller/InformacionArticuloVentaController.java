@@ -4,6 +4,7 @@ import ebs.back.entity.*;
 import ebs.back.entity.wrapper.ArticuloVentaWrapper;
 import ebs.back.service.InformacionArticuloVentaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -294,4 +295,104 @@ public class InformacionArticuloVentaController
         }
     }
 
+    private List<Long> getIdInsumosById(Long id) {
+        return jdbcTemplate.query("SELECT idInsumo FROM Receta Where idManufacturado = " + id,
+                (rs, rowNum) -> rs.getLong(1));
+    }
+
+    private boolean estadoCritico(float actual, float minimo) {
+        return !(actual > (minimo + (minimo * 0.1)));
+    }
+
+    private int establecerEstadoStock(float actual, float maximo, float minimo) {
+        if (actual >= maximo)
+            return 1;
+        else if (actual < minimo)
+            return 2;
+        else if (estadoCritico(actual, minimo))
+            return 3;
+        return 4;
+    }
+
+    private int getEstadoStock(Long id) {
+        try {
+            Stock stock = this.jdbcTemplate.queryForObject(
+                    "SELECT actual, maximo, minimo FROM Stock s INNER JOIN Insumo i ON s.idStock = i.idStock WHERE i.idInsumo = "
+                            + id,
+                    (rs, rowNumber) -> {
+                        Stock stock1 = new Stock();
+                        stock1.setActual(rs.getFloat("actual"));
+                        stock1.setMaximo(rs.getFloat("maximo"));
+                        stock1.setMinimo(rs.getFloat("minimo"));
+                        return stock1;
+                    });
+            return establecerEstadoStock(stock.getActual(), stock.getMaximo(), stock.getMinimo());
+        } catch (EmptyResultDataAccessException e) {
+            return 0;
+        }
+    }
+
+    private boolean getEstadoStockManufacturado(Long id) {
+        List<Integer> estados = getIdInsumosById(id).stream().map(i -> {
+            try {
+                return this.getEstadoStock(i);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }).collect(Collectors.toList());
+
+        return estados.stream().allMatch(e -> e != 2);
+    }
+
+    @GetMapping("/conStock")
+    public List<InformacionArticuloVenta> getConStock() {
+        List<InformacionArticuloVenta> articulos = this.jdbcTemplate.query(
+                "SELECT a.aptoCeliaco, a.baja, a.denominacion, a.tiempoCocina, a.vegano, a.vegetariano, "
+                        + "ia.idArticuloVenta, ia.descripcion, ia.imagen, ia.precioVenta, r.idRubroManufacturado, r.denominacion, r.baja "
+                        + "FROM ArticuloManufacturado a INNER JOIN InformacionArticuloVenta ia "
+                        + "ON ia.idArticuloVenta = a.idArticuloManufacturado "
+                        + "INNER JOIN RubroManufacturado r ON a.idRubro = r.idRubroManufacturado WHERE a.Baja = 0 AND r.baja = 0 "
+                        + "ORDER BY a.denominacion",
+
+                (rs, rowNum) -> new ArticuloManufacturado(rs.getLong(7), rs.getString(8), rs.getFloat(10),
+                        rs.getString(9), null, null, rs.getInt(4), rs.getBoolean(1), rs.getBoolean(5), rs.getBoolean(6),
+                        rs.getString(3), rs.getBoolean(2),
+                        new RubroManufacturado(rs.getLong(11), rs.getString(12), rs.getBoolean(13), null), null));
+
+        articulos = articulos.stream().filter(a -> this.getEstadoStockManufacturado(a.getId())).collect(Collectors.toList());
+
+        articulos.addAll(getInsumosConStock());
+
+        return articulos;
+    }
+
+
+    @GetMapping("/insumosConStock")
+    public List<InformacionArticuloVenta> getInsumosConStock() {
+        List<Insumo> insumos = this.jdbcTemplate.query(
+                "SELECT i.idInsumo, i.unidadMedida, i.denominacion, i.baja, "
+                        + "s.idStock, s.actual, r.idRubroInsumo, r.denominacion "
+                        + "FROM Insumo i INNER JOIN Stock s ON i.idStock = s.idStock "
+                        + "INNER JOIN RubroInsumo r ON r.idRubroInsumo = i.idRubro "
+                        + "WHERE i.esInsumo = 0 AND i.Baja = 0 AND s.actual > 0 ORDER BY i.denominacion",
+                (rs, rowNum) -> new Insumo(rs.getLong(1), rs.getString(2), rs.getString(3), false, false,
+                        rs.getBoolean(4), new Stock(rs.getLong(5), rs.getFloat(6), 0.0F, 0.0F, null),
+                        new RubroInsumo(rs.getLong(7), rs.getString(8), null), null, null, null));
+
+        List<InformacionArticuloVenta> insumosVenta = new ArrayList<>();
+        for (Insumo insumo : insumos) {
+
+            InformacionInsumoVenta informacion = this.jdbcTemplate.queryForObject(
+                    "SELECT ia.idArticuloVenta, ia.imagen, ia.descripcion, ia.precioVenta  "
+                            + "FROM Insumo i INNER JOIN informacionarticuloventa_insumo ii ON i.idInsumo = ii.idInsumo "
+                            + "INNER JOIN InformacionArticuloVenta ia ON ia.idArticuloVenta = ii.idInsumoVenta "
+                            + "WHERE i.esInsumo = 0 AND i.Baja = 0 AND i.idInsumo = ?",
+                    new Object[]{insumo.getIdInsumo()}, (rs, rowNum) -> new InformacionInsumoVenta(rs.getLong(1),
+                            rs.getString(3), rs.getFloat(4), rs.getString(2), null, null, insumo));
+            informacion.setInsumo(insumo);
+            insumosVenta.add(informacion);
+        }
+        return insumosVenta;
+    }
 }
