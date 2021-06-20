@@ -97,9 +97,9 @@ public class InformacionArticuloVentaController
 
             out = jdbcCall.execute(terminos);
 
-            articulos.addAll((List<InformacionArticuloVenta>) out.get("insumos"));
+            filtrados.addAll((List<InformacionArticuloVenta>) out.get("insumos"));
 
-            return articulos;
+            return filtrados;
 
         } catch (Exception ex) {
             return null;
