@@ -3,6 +3,7 @@ package ebs.back.controller;
 import ebs.back.entity.*;
 import ebs.back.entity.wrapper.ArticuloVentaWrapper;
 import ebs.back.service.InformacionArticuloVentaService;
+import ebs.back.entity.InformacionArticuloVenta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.query.Procedure;
