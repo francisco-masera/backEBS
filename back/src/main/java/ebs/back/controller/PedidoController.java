@@ -28,7 +28,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
 
             List<ItemPedidoPendiente> items = jdbcTemplate.query("SELECT * FROM DetallePedido "
                     + " INNER JOIN InformacionArticuloVenta IAV on DetallePedido.idArticulo = IAV.idArticuloVenta"
-                    + " LEFT JOIN Pedido P on P.idPedido = DetallePedido.idPedido where p.idCliente = ? AND p.estado = 'Pendiente'",
+                    + " LEFT JOIN Pedido P on P.idPedido = DetallePedido.idPedido where p.idCliente = ? AND p.estado = 'En Espera'",
                     new Object[] { idCliente }, (rs, rowNum) -> new ItemPedidoPendiente(rs.getLong("idDetalle"), rs.getLong("idArticuloVenta"), rs.getInt("cantidad"), rs.getFloat("precioVenta"), ""));
 
             for (ItemPedidoPendiente item : items) {
@@ -60,7 +60,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
             // Float total = precios.stream().reduce(0F, Float::sum);
 
             return jdbcTemplate.queryForObject(
-                    "SELECT * FROM Pedido Where idCliente= ? AND estado = ?", new Object[] { idCliente, "Pendiente" }, (
+                    "SELECT * FROM Pedido Where idCliente= ? AND estado = ?", new Object[] { idCliente, "En Espera" }, (
                             rs, rowNum
                     ) -> new PedidoPendiente(rs.getLong("idPedido"), rs.getLong("idCliente"),
                             rs.getBoolean("formaPago"), rs.getBoolean("tipoEntrega"), rs.getString("estado"),
@@ -84,7 +84,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
 
     private Boolean existePedido() {
         try {
-            return jdbcTemplate.queryForObject("Select Count(idPedido) FROM Pedido Where estado = 'PENDIENTE'",
+            return jdbcTemplate.queryForObject("Select Count(idPedido) FROM Pedido Where estado = 'En Espera'",
                     Integer.class) == 1;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -104,10 +104,8 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
     }
 
     @PostMapping("/saveCarrito")
-    public void pedidoPendiente(@RequestBody PedidoPendiente carrito) {
-        Boolean hayPedidoPendiente;
-
-        hayPedidoPendiente = existePedido();
+    public void guardarCarrito(@RequestBody PedidoPendiente carrito) {
+        Boolean hayPedidoPendiente = existePedido();
 
         // LocalTime local = LocalTime.now();
         Time horaEstimada = Time.valueOf(LocalTime.of(0, 0, 0));
@@ -132,7 +130,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
 
             Long idPedido = jdbcTemplate.queryForObject(
                     "Select idPedido From Pedido Where estado = ? " + "AND idCliente = ? Order BY idPedido Desc",
-                    new Object[] { "Pendiente", carrito.getIdCliente() }, Long.class);
+                    new Object[] { "En Espera", carrito.getIdCliente() }, Long.class);
             carrito.getItems().forEach(d -> {
                 if (!existeDetalle(d.getIdArticuloVenta(), idPedido))
                     this.jdbcTemplate.update("INSERT INTO DetallePedido (cantidad, idArticulo, idPedido) VALUES(?,?,?)",
@@ -153,7 +151,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
         try {
             Long idPedido = jdbcTemplate.queryForObject(
                     "SELECT idPedido FROM Pedido WHERE idCliente = ? AND " + " estado = ?",
-                    new Object[] { idCliente, "PENDIENTE" }, Long.class);
+                    new Object[] { idCliente, "En Espera" }, Long.class);
             jdbcTemplate.update("DELETE FROM DetallePedido WHERE idPedido = ?", idPedido);
             jdbcTemplate.update("DELETE FROM Pedido WHERE idPedido = ?", idPedido);
         } catch (Exception ex) {
@@ -174,15 +172,15 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
 
     }
 
-    @PutMapping("/confirmarPedido")
-    public boolean confirmarPedido(@RequestBody PedidoPendiente pedido) {
+    @PutMapping("/confirmarPedidoCliente")
+    public boolean confirmarPedidoCliente(@RequestBody PedidoPendiente pedido) {
         try {
             LocalTime time = LocalTime.now();
             time = time.plusMinutes(pedido.getTiempoEstimado());
             Time hora = Time.valueOf(time);
             jdbcTemplate.update(
                     "Update Pedido SET estado = ?, formaPago = ?, tipoEntrega = ?, hora = ? WHERE idPedido = ?",
-                    "Confirmado", pedido.getFormaPago(), pedido.getTipoEntrega(), time, pedido.getIdPedido());
+                    "Pendiente", pedido.getFormaPago(), pedido.getTipoEntrega(), time, pedido.getIdPedido());
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
