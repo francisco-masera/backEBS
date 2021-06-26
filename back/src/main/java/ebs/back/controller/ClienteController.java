@@ -134,7 +134,7 @@ public class ClienteController extends BaseController<Cliente, ClienteService> {
     @PutMapping("/generarToken")
     public ResponseEntity<?> generarToken(@RequestParam String email) throws Exception {
         try {
-            int existe = this.jdbcTemplate.queryForObject("Select Count(idPersona) From Persona WHERE email = ?",
+            int existe = this.jdbcTemplate.queryForObject("Select Count(idPersona) From Persona WHERE email = ? AND baja = 0",
                     new Object[]{email}, Integer.class);
             boolean esEmpleado = !this.jdbcTemplate.queryForList("Select e.idEmpleado FROM Empleado e INNER JOIN Persona p" +
                     " ON e.idEmpleado = p.idPersona AND email = ?", new Object[]{email}, ArrayList.class).isEmpty();
@@ -169,7 +169,7 @@ public class ClienteController extends BaseController<Cliente, ClienteService> {
     @PutMapping("/recuperarPass")
     public boolean recuperarPass(@RequestParam String pass, @RequestParam String email, @RequestParam int token) throws Exception {
         try {
-            int existe = this.jdbcTemplate.queryForObject("Select Count(idPersona) From Persona WHERE email = ?",
+            int existe = this.jdbcTemplate.queryForObject("Select Count(idPersona) From Persona WHERE email = ? AND baja = 0",
                     new Object[]{email}, Integer.class);
             if (existe != 1) {
                 throw new Exception("Su email no se encuentra registrado.");
@@ -181,7 +181,7 @@ public class ClienteController extends BaseController<Cliente, ClienteService> {
             }
             try {
                 existe = jdbcTemplate.queryForObject("SELECT Count(idPersona) From Persona INNER JOIN Cliente" +
-                        " ON Persona.idPersona = Cliente.idCliente WHERE email = ? AND token = ?", Integer.class, email, token);
+                        " ON Persona.idPersona = Cliente.idCliente WHERE email = ? AND token = ? AND baja = 0", Integer.class, email, token);
                 if (existe != 1)
                     throw new Exception("El código es incorrecto.");
             } catch (Exception ex) {
