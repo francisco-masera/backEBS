@@ -96,7 +96,10 @@ public class ClienteController extends BaseController<Cliente, ClienteService> {
                                     null
 
                             ));
-
+            if (cliente.getBaja() && cliente.getContrasenia().isEmpty()) {
+                cliente.setBaja(false);
+                jdbcTemplate.update("UPDATE Persona SET baja = false WHERE email = ? AND contrasenia = ?", cuenta, pass);
+            }
             if (cliente.getBaja())
                 throw new Exception("Este usuario no tiene acceso al portal.");
             return cliente;

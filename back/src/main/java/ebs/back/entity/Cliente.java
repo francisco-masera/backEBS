@@ -10,7 +10,7 @@ import java.util.List;
 @PrimaryKeyJoinColumn(name = "idCliente")
 public class Cliente extends Persona {
 
-    private int token;
+    private Integer token;
     private List<TarjetaDebito> tarjetas;
     private List<Pedido> pedidos;
 
@@ -30,11 +30,11 @@ public class Cliente extends Persona {
         this.pedidos = pedidos;
     }
 
-    public int getToken() {
+    public Integer getToken() {
         return token;
     }
 
-    public void setToken(int token) {
+    public void setToken(Integer token) {
         this.token = token;
     }
 
