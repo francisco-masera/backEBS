@@ -127,7 +127,7 @@ public class ClienteController extends BaseController<Cliente, ClienteService> {
             return this.loginCliente(cliente.getEmail(), "");
         } catch (EmptyResultDataAccessException ex) {
             ex.printStackTrace();
-            throw new Exception("No se encontró un usuario registrado con los datos ingresados.", new Throwable(ex.getCause()));
+            throw new Exception("No se encontró un usuario registrado con los datos ingresados.");
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
@@ -194,6 +194,25 @@ public class ClienteController extends BaseController<Cliente, ClienteService> {
             jdbcTemplate.update("UPDATE Persona P SET contrasenia = ? WHERE email = ?", pass, email);
 
             return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
+    @PutMapping("/reabrirCuenta")
+    public boolean reabrirCuenta(@RequestParam String email, @RequestParam String pass) throws Exception {
+        try {
+            int existe = this.jdbcTemplate.queryForObject("Select Count(idPersona) From Persona WHERE email = ? AND contrasenia  = ? AND baja = ?",
+                    new Object[]{email, pass, 1}, Integer.class);
+            if (existe != 1) {
+                throw new Exception("No se encontró un usuario registrado con los datos ingresados.");
+            }
+
+            jdbcTemplate.update("UPDATE persona SET baja = 0 where email = ? AND contrasenia = ?", email, pass);
+
+            return true;
+
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
