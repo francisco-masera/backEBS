@@ -1,5 +1,6 @@
 package ebs.back.controller;
 
+import ebs.back.entity.InformacionInsumoVenta;
 import ebs.back.entity.Insumo;
 import ebs.back.entity.RubroInsumo;
 import ebs.back.entity.Stock;
@@ -34,19 +35,23 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
     }
 
     @GetMapping("/getDetalleByID/{id}")
-    public Insumo getDetalleByID(@PathVariable long id) {
+    public InformacionInsumoVenta getDetalleByID(@PathVariable long id) {
         try {
-            return this.jdbcTemplate.queryForObject("SELECT i.idInsumo, i.baja, i.denominacion, i.esExtra, i.esInsumo, i.unidadMedida, ii.idInsumoVenta," +
-                            "s.idStock, s.actual, s.maximo, s.minimo, r.idRubroInsumo, r.denominacion " +
-                            "FROM Insumo i LEFT JOIN informacionarticuloventa_insumo ii ON i.idInsumo = ii.idInsumo " +
+            return this.jdbcTemplate.queryForObject("SELECT * FROM Insumo i LEFT JOIN informacionarticuloventa_insumo ii ON i.idInsumo = ii.idInsumo " +
                             "LEFT JOIN Stock s ON i.idStock = s.idStock " +
                             "INNER JOIN RubroInsumo r on i.idRubro = r.idRubroInsumo " +
+                            "LEFT JOIN  informacionarticuloventa iav on ii.idInsumoVenta = iav.idArticuloVenta " +
                             "WHERE i.idInsumo = ?", new Object[]{id},
-                    (rs, rowNum) -> new Insumo(rs.getLong(1), rs.getString(6), rs.getString(3), rs.getBoolean(4),
-                            rs.getBoolean(2), rs.getBoolean(5), new Stock(
-                            rs.getLong(8), rs.getFloat(9), rs.getFloat(11), rs.getFloat(10), null
-                    ), new RubroInsumo(rs.getLong(12), rs.getString(13), null),
-                            null, null, null));
+                    (rs, rowNum) -> new InformacionInsumoVenta(
+                            rs.getLong("idArticuloVenta"), rs.getString("descripcion"), rs.getFloat("precioVenta"),
+                            rs.getString("imagen"), null, null,
+                            new Insumo(rs.getLong("idInsumo"), rs.getString("unidadMedida"), rs.getString("denominacion"),
+                                    rs.getBoolean("esExtra"), rs.getBoolean("baja"), rs.getBoolean("esInsumo"), new Stock(
+                                    rs.getLong("idStock"), rs.getFloat("actual"), rs.getFloat("minimo"),
+                                    rs.getFloat("maximo"), null
+                            ), new RubroInsumo(rs.getLong("idRubroInsumo"), rs.getString("denominacion"), null),
+                                    null, null, null)));
+
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
