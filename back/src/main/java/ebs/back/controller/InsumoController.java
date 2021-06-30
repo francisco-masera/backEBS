@@ -45,11 +45,11 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
                     (rs, rowNum) -> new InformacionInsumoVenta(
                             rs.getLong("idArticuloVenta"), rs.getString("descripcion"), rs.getFloat("precioVenta"),
                             rs.getString("imagen"), null, null,
-                            new Insumo(rs.getLong("idInsumo"), rs.getString("unidadMedida"), rs.getString("denominacion"),
+                            new Insumo(rs.getLong("idInsumo"), rs.getString("unidadMedida"), rs.getString("i.denominacion"),
                                     rs.getBoolean("esExtra"), rs.getBoolean("baja"), rs.getBoolean("esInsumo"), new Stock(
                                     rs.getLong("idStock"), rs.getFloat("actual"), rs.getFloat("minimo"),
                                     rs.getFloat("maximo"), null
-                            ), new RubroInsumo(rs.getLong("idRubroInsumo"), rs.getString("denominacion"), null),
+                            ), new RubroInsumo(rs.getLong("idRubroInsumo"), rs.getString("r.denominacion"), null),
                                     null, null, null)));
 
         } catch (Exception ex) {
