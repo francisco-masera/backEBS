@@ -143,6 +143,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
             });
         } catch (Exception ex) {
             ex.printStackTrace();
+            throw ex;
         }
     }
 
@@ -167,6 +168,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
             this.jdbcTemplate
                     .update("UPDATE Pedido set estado = " + "'" + estado + "'" + "where idPedido = " + "'" + id + "'");
         } catch (Exception e) {
+            e.printStackTrace();
             throw e;
         }
 

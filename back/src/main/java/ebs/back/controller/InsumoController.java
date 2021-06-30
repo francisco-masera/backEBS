@@ -6,6 +6,8 @@ import ebs.back.entity.RubroInsumo;
 import ebs.back.entity.Stock;
 import ebs.back.service.InsumoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,35 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
 
     @Autowired
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+
+
+    @DeleteMapping("/bajaInsumo/{id}")
+    public ResponseEntity<?> bajaInsumo(@PathVariable Long id) throws Exception {
+        try {
+            Boolean deBaja = jdbcTemplate.queryForObject("SELECT baja FROM insumo WHERE idInsumo = ?", new Object[]{id}, Boolean.class);
+
+            if (deBaja == null)
+                throw new Exception("Error del servidor, reintente.");
+            if (!deBaja) {
+                Integer tieneReceta = jdbcTemplate.queryForObject(
+                        "SELECT Count(*) FROM Receta  WHERE idInsumo = ?"
+                        , new Object[]{id}, Integer.class);
+                if (tieneReceta != null && tieneReceta.equals(0)) {
+                    jdbcTemplate.update("UPDATE insumo SET baja = ? WHERE idInsumo = ?", true, id);
+                    return new ResponseEntity<Insumo>(HttpStatus.OK);
+
+                } else {
+                    throw new Exception("No se puede eliminar el insumo. Aún hay recetas asociadas.");
+                }
+            }
+
+            return super.delete(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return new ResponseEntity<>("{\"message\":" + "\"" + e.getMessage() + "\"" + "}", HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @GetMapping("/idStock/{id}")
     public Long getIdStock(@PathVariable Long id) {
