@@ -3,7 +3,6 @@ package ebs.back.controller;
 import ebs.back.entity.*;
 import ebs.back.entity.wrapper.ArticuloVentaWrapper;
 import ebs.back.service.InformacionArticuloVentaService;
-import ebs.back.entity.InformacionArticuloVenta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.query.Procedure;
@@ -93,7 +92,7 @@ public class InformacionArticuloVentaController
             }
             jdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("getInsumosVentaByFiltro")
                     .returningResultSet("insumos", (rs, rowNum) -> new InformacionInsumoVenta(rs.getLong(1), rs.getString(2), rs.getFloat(4),
-                            rs.getString(3), null, null, new Insumo(rs.getLong(8), "", rs.getString(5), false,
+                            rs.getString(3), null, null, new Insumo(rs.getLong(8), "", rs.getString(5),
                             false, false, null, null, null, null, null)));
 
             out = jdbcCall.execute(terminos);
@@ -175,7 +174,7 @@ public class InformacionArticuloVentaController
             return this.jdbcTemplate.query(sql,
                     (rs, rowNum) -> new InformacionInsumoVenta(rs.getLong("ia.idArticuloVenta"),
                             rs.getString("ia.descripcion"), rs.getFloat("ia.precioVenta"), rs.getString("ia.imagen"),
-                            null, null, new Insumo(rs.getLong("i.idInsumo"), "", rs.getString("i.denominacion"), false,
+                            null, null, new Insumo(rs.getLong("i.idInsumo"), "", rs.getString("i.denominacion"),
                             false, false, null, null, null, null, null)));
         }
         return null;
@@ -378,7 +377,7 @@ public class InformacionArticuloVentaController
                         + "FROM Insumo i INNER JOIN Stock s ON i.idStock = s.idStock "
                         + "INNER JOIN RubroInsumo r ON r.idRubroInsumo = i.idRubro "
                         + "WHERE i.esInsumo = 0 AND i.Baja = 0 AND s.actual > 0 ORDER BY i.denominacion",
-                (rs, rowNum) -> new Insumo(rs.getLong(1), rs.getString(2), rs.getString(3), false, false,
+                (rs, rowNum) -> new Insumo(rs.getLong(1), rs.getString(2), rs.getString(3), false,
                         rs.getBoolean(4), new Stock(rs.getLong(5), rs.getFloat(6), 0.0F, 0.0F, null),
                         new RubroInsumo(rs.getLong(7), rs.getString(8), null), null, null, null));
 

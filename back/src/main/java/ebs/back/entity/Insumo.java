@@ -12,7 +12,6 @@ public class Insumo implements Serializable {
     private Long idInsumo;
     private String unidadMedida;
     private String denominacion;
-    private boolean esExtra;
     private boolean baja;
     private boolean esInsumo;
     private Stock stock = new Stock();
@@ -24,13 +23,12 @@ public class Insumo implements Serializable {
     public Insumo() {
     }
 
-    public Insumo(Long idInsumo, String unidadMedida, String denominacion, boolean esExtra, boolean baja,
+    public Insumo(Long idInsumo, String unidadMedida, String denominacion, boolean baja,
                   boolean esInsumo, Stock stock, RubroInsumo rubroInsumo, List<Receta> recetas,
                   List<RecetaSugerida> recetasSugeridas, List<HistorialCompraAProveedores> historialCompras) {
         this.idInsumo = idInsumo;
         this.unidadMedida = unidadMedida;
         this.denominacion = denominacion;
-        this.esExtra = esExtra;
         this.baja = baja;
         this.esInsumo = esInsumo;
         this.stock = stock;
@@ -77,15 +75,6 @@ public class Insumo implements Serializable {
 
     public void setDenominacion(String denominacion) {
         this.denominacion = denominacion;
-    }
-
-    @Column(nullable = false)
-    public boolean isEsExtra() {
-        return esExtra;
-    }
-
-    public void setEsExtra(boolean esExtra) {
-        this.esExtra = esExtra;
     }
 
     @Column(nullable = false, columnDefinition = "boolean default false")

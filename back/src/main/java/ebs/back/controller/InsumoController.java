@@ -30,7 +30,7 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
         return this.jdbcTemplate.query(
                 "SELECT * FROM Insumo i NATURAL LEFT JOIN HistorialCompraAProveedores hc " +
                         "WHERE i.esInsumo = 1 AND i.Baja = 0 AND hc.IdInsumo IS NOT NULL GROUP BY hc.idInsumo",
-                (rs, rowNum) -> new Insumo(rs.getLong(1), rs.getString(6), rs.getString(3), rs.getBoolean(4),
+                (rs, rowNum) -> new Insumo(rs.getLong(1), rs.getString(6), rs.getString(3),
                         rs.getBoolean(2), rs.getBoolean(5), null, null, null, null, null));
     }
 
@@ -46,7 +46,7 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
                             rs.getLong("idArticuloVenta"), rs.getString("descripcion"), rs.getFloat("precioVenta"),
                             rs.getString("imagen"), null, null,
                             new Insumo(rs.getLong("idInsumo"), rs.getString("unidadMedida"), rs.getString("i.denominacion"),
-                                    rs.getBoolean("esExtra"), rs.getBoolean("baja"), rs.getBoolean("esInsumo"), new Stock(
+                                    rs.getBoolean("baja"), rs.getBoolean("esInsumo"), new Stock(
                                     rs.getLong("idStock"), rs.getFloat("actual"), rs.getFloat("minimo"),
                                     rs.getFloat("maximo"), null
                             ), new RubroInsumo(rs.getLong("idRubroInsumo"), rs.getString("r.denominacion"), null),
@@ -54,16 +54,6 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw ex;
-        }
-    }
-
-    @GetMapping("/getAdicionales")
-    public List<Insumo> getAdicionales() {
-        try {
-            return jdbcTemplate.query("SELECT idInsumo, denominacion From Insumo WHERE esExtra = ?", new Object[]{true}, (rs, rowNum) -> new Insumo(
-                    rs.getLong("idInsumo"), null, rs.getString("denominacion")));
-        } catch (Exception ex) {
             throw ex;
         }
     }
