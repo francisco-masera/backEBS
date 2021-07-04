@@ -20,7 +20,7 @@ public class DomicilioController extends BaseController<Domicilio, DomicilioServ
     @Autowired
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-    @GetMapping("getByIDPersona/{idUsuario}")
+    @GetMapping("/getByIDPersona/{idUsuario}")
     public List<Domicilio> getByIDPersona(@PathVariable Long idUsuario) {
         try {
             return jdbcTemplate.query("SELECT * FROM Domicilio WHERE idPersona = ? AND baja = false", new Object[]{idUsuario}, (rs, rowNum) -> new Domicilio(

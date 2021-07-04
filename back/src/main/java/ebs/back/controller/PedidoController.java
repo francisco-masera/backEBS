@@ -4,7 +4,6 @@ import ebs.back.entity.Pedido;
 import ebs.back.entity.wrapper.ItemPedidoPendiente;
 import ebs.back.entity.wrapper.PedidoPendiente;
 import ebs.back.service.PedidoService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +13,8 @@ import java.time.LocalTime;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
-        RequestMethod.DELETE })
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+        RequestMethod.DELETE})
 @RequestMapping(path = "buensabor/pedido")
 public class PedidoController extends BaseController<Pedido, PedidoService> {
 
@@ -27,9 +26,9 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
         try {
 
             List<ItemPedidoPendiente> items = jdbcTemplate.query("SELECT * FROM DetallePedido "
-                    + " INNER JOIN InformacionArticuloVenta IAV on DetallePedido.idArticulo = IAV.idArticuloVenta"
-                    + " LEFT JOIN Pedido P on P.idPedido = DetallePedido.idPedido where p.idCliente = ? AND p.estado = 'En Espera'",
-                    new Object[] { idCliente }, (rs, rowNum) -> new ItemPedidoPendiente(rs.getLong("idDetalle"), rs.getLong("idArticuloVenta"), rs.getInt("cantidad"), rs.getFloat("precioVenta"), ""));
+                            + " INNER JOIN InformacionArticuloVenta IAV on DetallePedido.idArticulo = IAV.idArticuloVenta"
+                            + " LEFT JOIN Pedido P on P.idPedido = DetallePedido.idPedido where p.idCliente = ? AND p.estado = 'En Espera'",
+                    new Object[]{idCliente}, (rs, rowNum) -> new ItemPedidoPendiente(rs.getLong("idDetalle"), rs.getLong("idArticuloVenta"), rs.getInt("cantidad"), rs.getFloat("precioVenta"), ""));
 
             for (ItemPedidoPendiente item : items) {
                 String denominacion;
@@ -38,13 +37,13 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
                         item.getIdArticuloVenta())) {
                     denominacion = jdbcTemplate.queryForObject(
                             "Select denominacion FROM ArticuloManufacturado WHERE idArticuloManufacturado = ?",
-                            new Object[] { item.getIdArticuloVenta() }, String.class);
+                            new Object[]{item.getIdArticuloVenta()}, String.class);
 
                 } else {
                     denominacion = jdbcTemplate.queryForObject(
                             "SELECT I.denominacion from informacionarticuloventa_insumo IA "
                                     + "INNER JOIN Insumo I on IA.idInsumo = I.idInsumo" + " WHERE IA.idInsumoVenta = ?",
-                            new Object[] { item.getIdArticuloVenta() }, String.class);
+                            new Object[]{item.getIdArticuloVenta()}, String.class);
                 }
                 item.setDenominacion(denominacion);
             }
@@ -60,7 +59,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
             // Float total = precios.stream().reduce(0F, Float::sum);
 
             return jdbcTemplate.queryForObject(
-                    "SELECT * FROM Pedido Where idCliente= ? AND estado = ?", new Object[] { idCliente, "En Espera" }, (
+                    "SELECT * FROM Pedido Where idCliente= ? AND estado = ?", new Object[]{idCliente, "En Espera"}, (
                             rs, rowNum
                     ) -> new PedidoPendiente(rs.getLong("idPedido"), rs.getLong("idCliente"),
                             rs.getBoolean("formaPago"), rs.getBoolean("tipoEntrega"), rs.getString("estado"),
@@ -75,17 +74,17 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
 
     private Boolean existeByID(String sql, Long id) {
         try {
-            return jdbcTemplate.queryForObject(sql, new Object[] { id }, Integer.class) == 1;
+            return jdbcTemplate.queryForObject(sql, new Object[]{id}, Integer.class) == 1;
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
         }
     }
 
-    private Boolean existePedido() {
+    private Boolean existePedido(Long idCliente) {
         try {
-            return jdbcTemplate.queryForObject("Select Count(idPedido) FROM Pedido Where estado = 'En Espera'",
-                    Integer.class) == 1;
+            return jdbcTemplate.queryForObject("Select Count(idPedido) FROM Pedido Where estado = 'En Espera' AND idCliente = ?",
+                    Integer.class, idCliente) == 1;
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
@@ -95,8 +94,8 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
     private Boolean existeDetalle(Long idArticulo, Long idPedido) {
         try {
             return jdbcTemplate.queryForObject(
-                    "Select Count(idDetalle) FROM DetallePedido Where idArticulo = ? AND idPedido=?",
-                    new Object[] { idArticulo, idPedido }, Integer.class) > 0;
+                    "Select Count(idDetalle) FROM DetallePedido Where idArticulo = ? AND idPedido = ?",
+                    new Object[]{idArticulo, idPedido}, Integer.class) > 0;
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
@@ -105,7 +104,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
 
     @PostMapping("/saveCarrito")
     public void guardarCarrito(@RequestBody PedidoPendiente carrito) {
-        Boolean hayPedidoPendiente = existePedido();
+        Boolean hayPedidoPendiente = existePedido(carrito.getIdCliente());
 
         // LocalTime local = LocalTime.now();
         Time horaEstimada = Time.valueOf(LocalTime.of(0, 0, 0));
@@ -130,7 +129,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
 
             Long idPedido = jdbcTemplate.queryForObject(
                     "Select idPedido From Pedido Where estado = ? " + "AND idCliente = ? Order BY idPedido Desc",
-                    new Object[] { "En Espera", carrito.getIdCliente() }, Long.class);
+                    new Object[]{"En Espera", carrito.getIdCliente()}, Long.class);
             carrito.getItems().forEach(d -> {
                 if (!existeDetalle(d.getIdArticuloVenta(), idPedido))
                     this.jdbcTemplate.update("INSERT INTO DetallePedido (cantidad, idArticulo, idPedido) VALUES(?,?,?)",
@@ -152,7 +151,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
         try {
             Long idPedido = jdbcTemplate.queryForObject(
                     "SELECT idPedido FROM Pedido WHERE idCliente = ? AND " + " estado = ?",
-                    new Object[] { idCliente, "En Espera" }, Long.class);
+                    new Object[]{idCliente, "En Espera"}, Long.class);
             jdbcTemplate.update("DELETE FROM DetallePedido WHERE idPedido = ?", idPedido);
             jdbcTemplate.update("DELETE FROM Pedido WHERE idPedido = ?", idPedido);
         } catch (Exception ex) {
