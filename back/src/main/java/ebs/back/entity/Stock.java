@@ -24,6 +24,11 @@ public class Stock implements Serializable {
 
 	}
 
+	public Stock(Float actual, Float minimo) {
+		this.actual = actual;
+		this.minimo = minimo;
+	}
+
 	public Stock(Long id, Float actual, Float minimo, Float maximo, Insumo insumo) {
 		this.id = id;
 		this.actual = actual;

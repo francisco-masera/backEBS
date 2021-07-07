@@ -1,9 +1,11 @@
 package ebs.back.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.lang.Nullable;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
 import java.util.List;
 
 @Entity
@@ -28,6 +30,11 @@ public class Cliente extends Persona {
         super(id, nombre, apellido, telefono, email, foto, usuario, contrasenia, baja, domicilios);
         this.tarjetas = tarjetas;
         this.pedidos = pedidos;
+    }
+
+    public Cliente(String nombreCompleto, String email) {
+        this.nombre = nombreCompleto;
+        this.email = email;
     }
 
     public Integer getToken() {

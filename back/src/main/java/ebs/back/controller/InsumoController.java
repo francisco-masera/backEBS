@@ -88,4 +88,19 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
             throw ex;
         }
     }
+
+    @GetMapping("/enStockBajo")
+    public List<Insumo> enStockBajo() {
+        try {
+            return this.jdbcTemplate.query("Select i.idInsumo, i.denominacion, i.unidadMedida, s.minimo, s.actual" +
+                    " From insumo i INNER JOIN stock s on i.idStock = s.idStock" +
+                    " WHERE s.actual < s.minimo", (rs, rowNum) -> new Insumo(
+                    rs.getLong("idInsumo"), rs.getString("unidadMedida"), rs.getString("denominacion"),
+                    new Stock(rs.getFloat("actual"), rs.getFloat("minimo"))
+            ));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
 }

@@ -44,6 +44,13 @@ public class Insumo implements Serializable {
         this.denominacion = denominacion;
     }
 
+    public Insumo(Long idInsumo, String unidadMedida, String denominacion, Stock stock) {
+        this.idInsumo = idInsumo;
+        this.unidadMedida = unidadMedida;
+        this.denominacion = denominacion;
+        this.stock = stock;
+    }
+
     public Insumo(Long idInsumo) {
         this.idInsumo = idInsumo;
     }

@@ -18,6 +18,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -395,5 +397,31 @@ public class InformacionArticuloVentaController
             insumosVenta.add(informacion);
         }
         return insumosVenta;
+    }
+
+    @GetMapping("/masVendidos")
+    public List<ArticuloManufacturado> getMasVendidos(@RequestParam int yMax, @RequestParam int mMax, @RequestParam int dMax,
+                                                      @RequestParam int yMin, @RequestParam int mMin, @RequestParam int dMin) throws Exception {
+        try {
+            java.sql.Timestamp maxFecha = Timestamp.valueOf(LocalDateTime.of(yMax, mMax, dMax, 0, 0, 0));
+            java.sql.Timestamp minFecha = Timestamp.valueOf(LocalDateTime.of(yMin, mMin, dMin, 0, 0, 0));
+            if (minFecha.after(maxFecha)) {
+                throw new Exception("La fecha mínima no puede ser mayor a la máxima.");
+            }
+            return this.jdbcTemplate.query(
+                    "SELECT a.precioVenta, "
+                            + " m.denominacion, COUNT( h.idArticulo ) "
+                            + "AS total FROM HistorialVentas h inner join InformacionArticuloVenta a on "
+                            + "h.idArticulo=a.idArticuloVenta inner join ArticuloManufacturado m on m.idArticuloManufacturado "
+                            + "= a.idArticuloVenta where m.baja = 0 group BY idArticulo ORDER BY total DESC LIMIT 10",
+
+                    (rs, rowNum) -> new ArticuloManufacturado(0L, "", rs.getFloat(2),
+                            "", false, false, false,
+                            rs.getString(5)));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+
     }
 }

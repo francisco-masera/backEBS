@@ -1,5 +1,7 @@
 package ebs.back.controller;
 
+import ebs.back.entity.Cliente;
+import ebs.back.entity.Factura;
 import ebs.back.entity.Pedido;
 import ebs.back.entity.wrapper.ItemPedidoPendiente;
 import ebs.back.entity.wrapper.PedidoPendiente;
@@ -9,6 +11,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -188,5 +192,34 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
         }
         return true;
     }
+
+    @GetMapping("/pedidosPorCliente")
+    public List<Pedido> pedidosPorCliente(@RequestParam int yMax, @RequestParam int mMax, @RequestParam int dMax,
+                                          @RequestParam int yMin, @RequestParam int mMin, @RequestParam int dMin) throws Exception {
+        try {
+            java.sql.Timestamp maxFecha = Timestamp.valueOf(LocalDateTime.of(yMax, mMax, dMax, 0, 0, 0));
+            java.sql.Timestamp minFecha = Timestamp.valueOf(LocalDateTime.of(yMin, mMin, dMin, 0, 0, 0));
+            if (minFecha.after(maxFecha)) {
+                throw new Exception("La fecha mínima no puede ser mayor a la máxima.");
+            }
+            return jdbcTemplate.query("SELECT p.tipoEntrega, F.numero, p2.email, CONCAT(p2.nombre, ' ', p2.apellido) as nombreCompleto, " +
+                    "F.fechaHora as fechaFacturacion, F.porcentajeDescuento, F.total, F.formaPago" +
+                    " FROM Pedido p INNER JOIN cliente c on p.idCliente = c.idCliente" +
+                    " INNER JOIN persona p2 on c.idCliente = p2.idPersona" +
+                    " INNER JOIN Factura F on p.idPedido = F.idPedido" +
+                    " WHERE F.fechaHora < ? && f.fechaHora > ?" +
+                    " GROUP BY c.idCliente, p2.apellido", (rs, rowNum) -> new Pedido(
+                    rs.getLong(0), 0L, "", null, rs.getBoolean("tipoEntrega"),
+                    new Factura(0L, rs.getTimestamp("fechaFacturacion").toLocalDateTime(), rs.getLong("numero"),
+                            rs.getFloat("porcentajeDescuento") * rs.getFloat("total"), rs.getFloat("total"),
+                            rs.getBoolean("formaPago"), null), new Cliente(rs.getString("nombreCompleto"),
+                    rs.getString("email")), null
+            ), maxFecha, minFecha);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+
 
 }
