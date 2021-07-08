@@ -28,10 +28,7 @@ public class FacturaController extends BaseController<Factura, FacturaService> {
                 throw new Exception("La fecha mínima no puede ser mayor a la máxima.");
             }
             // List<Double> res = new ArrayList<>();
-            Double res = jdbcTemplate.queryForObject("SELECT SUM(f.total) FROM Factura f" +
-                    " INNER JOIN Pedido P on f.idPedido = P.idPedido" +
-                    " INNER JOIN DetallePedido DP on P.idPedido = DP.idPedido" +
-                    " INNER JOIN informacionarticuloventa i on DP.idArticulo = i.idArticuloVenta" +
+            return jdbcTemplate.queryForObject("SELECT SUM(f.total) FROM Factura f" +
                     " WHERE F.fechaHora < ? && f.fechaHora > ?", Double.class, maxFecha, minFecha);
 
            /* Double ingresosManufacturados = jdbcTemplate.queryForObject("SELECT SUM(f.total) FROM Factura f" +
@@ -50,7 +47,7 @@ public class FacturaController extends BaseController<Factura, FacturaService> {
                     " WHERE F.fechaHora < ? && f.fechaHora > ?", Double.class, maxFecha, minFecha);
 
             res.add(ingresosInsumos);*/
-            return res;
+
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;

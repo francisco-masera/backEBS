@@ -208,7 +208,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
                     " INNER JOIN persona p2 on c.idCliente = p2.idPersona" +
                     " INNER JOIN Factura F on p.idPedido = F.idPedido" +
                     " WHERE F.fechaHora < ? && f.fechaHora > ?" +
-                    " GROUP BY c.idCliente, p2.apellido", (rs, rowNum) -> new Pedido(
+                    " GROUP BY c.idCliente, p2.apellido ORDER BY nombreCompleto", (rs, rowNum) -> new Pedido(
                     rs.getLong(0), 0L, "", null, rs.getBoolean("tipoEntrega"),
                     new Factura(0L, rs.getTimestamp("fechaFacturacion").toLocalDateTime(), rs.getLong("numero"),
                             rs.getFloat("porcentajeDescuento") * rs.getFloat("total"), rs.getFloat("total"),
