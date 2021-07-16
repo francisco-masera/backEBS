@@ -106,6 +106,14 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
         }
     }
 
+    private Long getUltimoNumeroPedido() {
+        try {
+            return jdbcTemplate.queryForObject("SELECT numero FROM Pedido ORDER BY idPedido DESC LIMIT 1", Long.class);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     @PostMapping("/saveCarrito")
     public void guardarCarrito(@RequestBody PedidoPendiente carrito) {
         Boolean hayPedidoPendiente = existePedido(carrito.getIdCliente());
@@ -116,12 +124,18 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
         // if (carrito.getHoraEstimada() != null) horaEstimada =
         // Time.valueOf(carrito.getHoraEstimada());
 
-        if (!hayPedidoPendiente) {
-            try {
 
+        if (!hayPedidoPendiente) {
+
+            try {
+                Long numeroPedido = getUltimoNumeroPedido();
+                if (numeroPedido == null)
+                    numeroPedido = 1L;
+                else
+                    numeroPedido += 1;
                 jdbcTemplate.update(
                         "INSERT INTO Pedido (estado, hora, numero, tipoEntrega, idCliente, formaPago)  VALUES (?,?,?,?,?,?)",
-                        carrito.getEstado(), horaEstimada, carrito.getNumero(), carrito.getTipoEntrega(),
+                        carrito.getEstado(), horaEstimada, numeroPedido, carrito.getTipoEntrega(),
                         carrito.getIdCliente(), carrito.getFormaPago());
 
             } catch (Exception ex) {
@@ -182,7 +196,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
         try {
             LocalTime time = LocalTime.now();
             time = time.plusMinutes(pedido.getTiempoEstimado());
-            Time hora = Time.valueOf(time);
+            //Time hora = Time.valueOf(time);
             jdbcTemplate.update(
                     "Update Pedido SET estado = ?, formaPago = ?, tipoEntrega = ?, hora = ? WHERE idPedido = ?",
                     "Pendiente", pedido.getFormaPago(), pedido.getTipoEntrega(), time, pedido.getIdPedido());
