@@ -1,10 +1,10 @@
 package ebs.back.controller;
 
 import ebs.back.entity.Cliente;
+import ebs.back.entity.DetallePedido;
 import ebs.back.entity.Factura;
 import ebs.back.entity.Pedido;
-import ebs.back.entity.wrapper.ItemPedidoPendiente;
-import ebs.back.entity.wrapper.PedidoPendiente;
+import ebs.back.entity.wrapper.*;
 import ebs.back.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -235,5 +235,46 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
         }
     }
 
+    @GetMapping("/pedidos")
+    public List<PedidoWrapper> pedidos() {
+        try {
 
+            List<PedidoWrapper> pedidos = jdbcTemplate.query("SELECT P.*, PE.nombre, PE.apellido, PE.telefono " +
+                    "FROM Pedido P INNER JOIN cliente c on P.idCliente = c.idCliente INNER JOIN persona PE on c.idCliente = PE.idPersona" +
+                    " ", (rs, rowNum) -> new PedidoWrapper(
+                    rs.getLong("idPedido"), rs.getLong("numero"), rs.getString("estado"),
+                    rs.getTime("hora").toLocalTime(), rs.getBoolean("formaPago"),
+                    rs.getBoolean("tipoEntrega"), null, new Cliente(
+                    rs.getLong("idCliente"), rs.getString("nombre"),
+                    rs.getString("apellido"), rs.getString("telefono")
+            ), null, 0F
+            ));
+
+            pedidos.forEach(p -> p.setDetalles(jdbcTemplate.query("SELECT " +
+                    "DetallePedido.*, a.denominacion as denominacion, " +
+                    "I2.denominacion AS denominacion, I.precioVenta FROM DetallePedido " +
+                    "Natural JOIN informacionarticuloventa I " +// ON DetallePedido.idArticulo = I.idArticuloVenta " +
+                    "LEFT JOIN articulomanufacturado a ON I.idArticuloVenta = a.idArticuloManufacturado " +
+                    "LEFT JOIN informacionarticuloventa_insumo ii ON I.idArticuloVenta = ii.idInsumoVenta " +
+                    "LEFT JOIN insumo I2 ON ii.idInsumo = I2.idInsumo " +
+                    "WHERE idPedido = ? GROUP BY idDetalle ORDER BY idDetalle ASC", (rs, rowNum) -> new DetallePedidoWrapper(
+                    rs.getLong("idDetalle"), rs.getInt("cantidad"), new ArticuloVentaWrapper(
+                    rs.getString("denominacion"), rs.getFloat("precioVenta")
+            )), p.getId())));
+
+            pedidos.forEach(p -> {
+                float total = 0F;
+                for (DetallePedidoWrapper d : p.getDetalles()) {
+                    total += d.getArticulo().getPrecioVenta();
+                }
+                p.setTotal(total);
+            });
+
+            return pedidos;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
+    }
+    
 }

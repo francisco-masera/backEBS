@@ -15,6 +15,11 @@ public class ArticuloVentaWrapper {
     public ArticuloVentaWrapper() {
     }
 
+    public ArticuloVentaWrapper(String denominacion, Float precioVenta) {
+        this.denominacion = denominacion;
+        this.precioVenta = precioVenta;
+    }
+
     public ArticuloVentaWrapper(Long idArticuloVenta, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
                                 String denominacion, float precioVenta, boolean esInsumo, String descripcion, String imagen) {
         this.idArticuloVenta = idArticuloVenta;
