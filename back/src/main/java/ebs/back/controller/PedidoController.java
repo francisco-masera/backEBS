@@ -276,5 +276,5 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
             throw ex;
         }
     }
-    
+
 }
