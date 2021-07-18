@@ -69,4 +69,7 @@ public class DetallePedido implements Serializable {
         return 0.0f;
     }
 
+    public float calcularSubTotal() {
+        return articulo.getPrecioVenta();
+    }
 }

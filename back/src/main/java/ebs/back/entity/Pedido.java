@@ -6,6 +6,7 @@ import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Pedido implements Serializable {
@@ -132,8 +133,8 @@ public class Pedido implements Serializable {
         this.detalles = detalles;
     }
 
-    public float calularTotal() {
-        return 0.0f;
+    public double calularTotal() {
+        return this.detalles.stream().mapToDouble(DetallePedido::calcularSubTotal).sum();
     }
 
     public void agregarDetalle(DetallePedido detalle) {
