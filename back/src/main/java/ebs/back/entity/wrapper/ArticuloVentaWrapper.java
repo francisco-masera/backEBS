@@ -11,6 +11,7 @@ public class ArticuloVentaWrapper {
     private boolean esInsumo;
     private String descripcion;
     private String imagen;
+    private long cantidadVenta;
 
     public ArticuloVentaWrapper() {
     }
@@ -18,6 +19,12 @@ public class ArticuloVentaWrapper {
     public ArticuloVentaWrapper(String denominacion, Float precioVenta) {
         this.denominacion = denominacion;
         this.precioVenta = precioVenta;
+    }
+
+    public ArticuloVentaWrapper(String denominacion, float precioVenta, long cantidadVenta) {
+        this.denominacion = denominacion;
+        this.precioVenta = precioVenta;
+        this.cantidadVenta = cantidadVenta;
     }
 
     public ArticuloVentaWrapper(Long idArticuloVenta, boolean aptoCeliaco, boolean vegano, boolean vegetariano,
@@ -103,5 +110,13 @@ public class ArticuloVentaWrapper {
 
     public void setImagen(String imagen) {
         this.imagen = imagen;
+    }
+
+    public long getCantidadVenta() {
+        return cantidadVenta;
+    }
+
+    public void setCantidadVenta(long cantidadVenta) {
+        this.cantidadVenta = cantidadVenta;
     }
 }

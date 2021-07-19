@@ -3,6 +3,7 @@ package ebs.back.controller;
 import com.itextpdf.html2pdf.HtmlConverter;
 import ebs.back.entity.Factura;
 import ebs.back.entity.Pedido;
+import ebs.back.entity.wrapper.Ingresos;
 import ebs.back.service.FacturaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,17 +30,19 @@ public class FacturaController extends BaseController<Factura, FacturaService> {
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
     @GetMapping("/ingresos")
-    public Double ingresos(@RequestParam int yMax, @RequestParam int mMax, @RequestParam int dMax,
-                           @RequestParam int yMin, @RequestParam int mMin, @RequestParam int dMin) throws Exception {
+    public Ingresos ingresos(@RequestParam int yMax, @RequestParam int mMax, @RequestParam int dMax,
+                             @RequestParam int yMin, @RequestParam int mMin, @RequestParam int dMin) throws Exception {
         try {
-            java.sql.Timestamp maxFecha = Timestamp.valueOf(LocalDateTime.of(yMax, mMax, dMax, 0, 0, 0));
-            java.sql.Timestamp minFecha = Timestamp.valueOf(LocalDateTime.of(yMin, mMin, dMin, 0, 0, 0));
+            Timestamp maxFecha = Timestamp.valueOf(LocalDateTime.of(yMax, mMax, dMax, 0, 0, 0));
+            Timestamp minFecha = Timestamp.valueOf(LocalDateTime.of(yMin, mMin, dMin, 0, 0, 0));
             if (minFecha.after(maxFecha)) {
                 throw new Exception("La fecha mínima no puede ser mayor a la máxima.");
             }
             // List<Double> res = new ArrayList<>();
-            return jdbcTemplate.queryForObject("SELECT SUM(f.total) FROM Factura f" +
-                    " WHERE F.fechaHora < ? && f.fechaHora > ?", Double.class, maxFecha, minFecha);
+            return jdbcTemplate.queryForObject("SELECT SUM(f.total) as total FROM Factura f" +
+                    " WHERE F.fechaHora BETWEEN ? AND ?", (rs, rowNum) -> new Ingresos(
+                    minFecha.toLocalDateTime().toLocalDate(), maxFecha.toLocalDateTime().toLocalDate(), rs.getDouble("total")
+            ), minFecha, maxFecha);
 
            /* Double ingresosManufacturados = jdbcTemplate.queryForObject("SELECT SUM(f.total) FROM Factura f" +
                     " INNER JOIN Pedido P on f.idPedido = P.idPedido" +

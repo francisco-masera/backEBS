@@ -400,24 +400,44 @@ public class InformacionArticuloVentaController
     }
 
     @GetMapping("/masVendidos")
-    public List<ArticuloManufacturado> getMasVendidos(@RequestParam int yMax, @RequestParam int mMax, @RequestParam int dMax,
-                                                      @RequestParam int yMin, @RequestParam int mMin, @RequestParam int dMin) throws Exception {
+    public List<ArticuloVentaWrapper> getMasVendidos(@RequestParam int yMax, @RequestParam int mMax, @RequestParam int dMax,
+                                                     @RequestParam int yMin, @RequestParam int mMin, @RequestParam int dMin) throws Exception {
         try {
             java.sql.Timestamp maxFecha = Timestamp.valueOf(LocalDateTime.of(yMax, mMax, dMax, 0, 0, 0));
             java.sql.Timestamp minFecha = Timestamp.valueOf(LocalDateTime.of(yMin, mMin, dMin, 0, 0, 0));
             if (minFecha.after(maxFecha)) {
                 throw new Exception("La fecha mínima no puede ser mayor a la máxima.");
             }
-            return this.jdbcTemplate.query(
+            List<ArticuloVentaWrapper> ventas = this.jdbcTemplate.query(
                     "SELECT a.precioVenta, "
-                            + " m.denominacion, COUNT( h.idArticulo ) "
-                            + "AS total FROM HistorialVentas h inner join InformacionArticuloVenta a on "
-                            + "h.idArticulo=a.idArticuloVenta inner join ArticuloManufacturado m on m.idArticuloManufacturado "
-                            + "= a.idArticuloVenta where m.baja = 0 group BY idArticulo ORDER BY total DESC LIMIT 10",
+                            + " m.denominacion, COUNT(DP.idArticulo) "
+                            + "AS totalVentas FROM Factura F" +
+                            " INNER JOIN Pedido P on F.idPedido = P.idPedido" +
+                            " INNER JOIN DetallePedido DP on P.idPedido = DP.idPedido " +
+                            "inner join InformacionArticuloVenta a on "
+                            + "DP.idArticulo = a.idArticuloVenta INNER join ArticuloManufacturado m " +
+                            "on m.idArticuloManufacturado = a.idArticuloVenta" +
+                            " WHERE f.fechaHora BETWEEN ? AND ?" +
+                            "GROUP BY a.idArticuloVenta ORDER BY totalVentas DESC LIMIT 50",
 
-                    (rs, rowNum) -> new ArticuloManufacturado(0L, "", rs.getFloat(2),
-                            "", false, false, false,
-                            rs.getString(5)));
+                    (rs, rowNum) -> new ArticuloVentaWrapper(rs.getString("denominacion"), rs.getFloat("precioVenta"),
+                            rs.getLong("totalVentas")), minFecha, maxFecha);
+            ventas.addAll(this.jdbcTemplate.query(
+                    "SELECT a.precioVenta, "
+                            + " i.denominacion, COUNT(DP.idArticulo) "
+                            + "AS totalVentas FROM Factura F" +
+                            " INNER JOIN Pedido P on F.idPedido = P.idPedido" +
+                            " INNER JOIN DetallePedido DP on P.idPedido = DP.idPedido " +
+                            "inner join InformacionArticuloVenta a on "
+                            + "DP.idArticulo = a.idArticuloVenta INNER join informacionarticuloventa_insumo ii " +
+                            "INNER JOIN insumo i on ii.idInsumo = i.idInsumo " +
+                            "WHERE f.fechaHora BETWEEN ? AND ?" +
+                            "GROUP BY a.idArticuloVenta ORDER BY totalVentas DESC LIMIT 50",
+
+                    (rs, rowNum) -> new ArticuloVentaWrapper(rs.getString("denominacion"), rs.getFloat("precioVenta"),
+                            rs.getLong("totalVentas")), minFecha, maxFecha));
+
+            return ventas;
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
