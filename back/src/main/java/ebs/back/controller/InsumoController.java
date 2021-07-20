@@ -61,8 +61,8 @@ public class InsumoController extends BaseController<Insumo, InsumoService> {
         return this.jdbcTemplate.query(
                 "SELECT * FROM Insumo i NATURAL LEFT JOIN HistorialCompraAProveedores hc " +
                         "WHERE i.esInsumo = 1 AND i.Baja = 0 AND hc.IdInsumo IS NOT NULL GROUP BY hc.idInsumo",
-                (rs, rowNum) -> new Insumo(rs.getLong(1), rs.getString(6), rs.getString(3),
-                        rs.getBoolean(2), rs.getBoolean(5), null, null, null, null, null));
+                (rs, rowNum) -> new Insumo(rs.getLong("idInsumo"), rs.getString("unidadMedida"), rs.getString("denominacion"),
+                        rs.getBoolean("baja"), rs.getBoolean("esInsumo"), null, null, null, null, null));
     }
 
     @GetMapping("/getDetalleByID/{id}")
