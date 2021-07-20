@@ -17,8 +17,10 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
@@ -100,6 +102,38 @@ public class FacturaController extends BaseController<Factura, FacturaService> {
             jdbcTemplate.update("INSERT INTO Factura (fechaHora, formaPago, numero, porcentajeDescuento, total, idPedido) " +
                             "VALUES (?,?,?,?,?,?)", factura.getFechaHora(), factura.isFormaPago(), factura.getNumero(), factura.getPorcentajeDescuento(),
                     factura.getTotal(), pedido.getId());
+
+
+            pedido.getDetalles().forEach(dp -> {
+                float costo = 0;
+                Long idArticulo = null;
+                try {
+                    idArticulo = jdbcTemplate.queryForObject(
+                            "SELECT i.idArticuloManufacturado FROM articulomanufacturado i" +
+                                    " Inner JOIN DetallePedido DP on i.idArticuloManufacturado = DP.idArticulo " +
+                                    " WHERE DP.idDetalle= ?", Long.class, dp.getId());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                if (idArticulo == null) {
+
+                    costo = jdbcTemplate.queryForObject("SELECT precioUnitario FROM historialcompraaproveedores h " +
+                            " INNER JOIN insumo i on h.idInsumo = i.idInsumo" +
+                            " INNER JOIN informacionarticuloventa_insumo ii on i.idInsumo = ii.idInsumo" +
+                            " INNER JOIN DetallePedido DP ON dp.idArticulo = ii.idInsumoVenta" +
+                            " WHERE  DP.idDetalle = ?", Float.class, dp.getId());
+                    idArticulo = jdbcTemplate.queryForObject(
+                            "SELECT i.idInsumoVenta FROM informacionarticuloventa_insumo i" +
+                                    " Inner JOIN DetallePedido DP on i.idInsumoVenta = DP.idArticulo " +
+                                    " WHERE DP.idDetalle= ?", Long.class, dp.getId());
+                } else {
+                    costo = getCosto(idArticulo);
+                }
+
+                jdbcTemplate.update("INSERT INTO historialventas (costo, fechaVenta, precioVenta, idArticulo) " +
+                        "VALUES (?,?,?,?)", costo, factura.getFechaHora(), dp.calcularSubTotal(), idArticulo);
+            });
+
             String email = jdbcTemplate.queryForObject("SELECT email FROM persona where idPersona = ?", String.class, pedido.getCliente().getId());
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("elbuensaborfgr@gmail.com");
@@ -112,6 +146,25 @@ public class FacturaController extends BaseController<Factura, FacturaService> {
         } catch (Exception ex) {
             throw ex;
         }
+    }
+
+
+    private Float getCosto(Long idManufacturado) {
+        Map<String, Float> insumos = new HashMap<>();
+        jdbcTemplate.query(
+                "SELECT h.precioUnitario, r.cantidadInsumo FROM insumo INNER JOIN historialcompraaproveedores h on insumo.idInsumo = h.idInsumo" +
+                        " INNER JOIN receta r ON  insumo.idInsumo = r.idInsumo " +
+                        "Inner JOIN articulomanufacturado a on r.idManufacturado = a.idArticuloManufacturado " +
+                        " WHERE a.idArticuloManufacturado = ? Order By h.fechaCompra DESC",
+                (rs, rowNum) -> insumos.put(String.valueOf(rs.getFloat("cantidadInsumo")), rs.getFloat("precioUnitario")),
+                idManufacturado);
+
+        AtomicReference<Float> sumatoria = new AtomicReference<>(0F);
+        insumos.forEach((cantidad, precio) -> {
+            sumatoria.updateAndGet(v -> v + Float.parseFloat(cantidad) * precio);
+        });
+        return sumatoria.get();
+
     }
 
     private JavaMailSenderImpl configEmail() {
