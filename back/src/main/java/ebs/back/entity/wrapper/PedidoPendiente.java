@@ -34,6 +34,18 @@ public class PedidoPendiente {
         this.items = items;
     }
 
+    public PedidoPendiente(Long idPedido, Long idCliente, Boolean formaPago, Boolean tipoEntrega, String estado,
+                           Long numero, LocalTime horaEstimada, List<ItemPedidoPendiente> items, int tiempoEstimado) {
+        this.idPedido = idPedido;
+        this.idCliente = idCliente;
+        this.formaPago = formaPago;
+        this.tipoEntrega = tipoEntrega;
+        this.estado = estado;
+        this.numero = numero;
+        this.horaEstimada = horaEstimada;
+        this.items = items;
+        this.tiempoEstimado = tiempoEstimado;
+    }
 
     public Long getIdPedido() {
         return idPedido;

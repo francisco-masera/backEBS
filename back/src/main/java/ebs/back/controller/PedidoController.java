@@ -6,14 +6,21 @@ import ebs.back.entity.Pedido;
 import ebs.back.entity.wrapper.*;
 import ebs.back.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
@@ -23,6 +30,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
 
     @Autowired
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+
 
     @GetMapping("/getCarritoPediente/{idCliente}")
     public PedidoPendiente getCarritoByCliente(@PathVariable Long idCliente) {
@@ -114,7 +122,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
     }
 
     @PostMapping("/saveCarrito")
-    public void guardarCarrito(@RequestBody PedidoPendiente carrito) {
+    public ResponseEntity<PedidoPendiente> guardarCarrito(@RequestBody PedidoPendiente carrito) {
         Boolean hayPedidoPendiente = existePedido(carrito.getIdCliente());
 
         // LocalTime local = LocalTime.now();
@@ -123,6 +131,8 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
         // if (carrito.getHoraEstimada() != null) horaEstimada =
         // Time.valueOf(carrito.getHoraEstimada());
 
+        PedidoPendiente res = new PedidoPendiente();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
         if (!hayPedidoPendiente) {
 
@@ -132,35 +142,74 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
                     numeroPedido = 1L;
                 else
                     numeroPedido += 1;
-                jdbcTemplate.update(
-                        "INSERT INTO Pedido (estado, hora, numero, tipoEntrega, idCliente, formaPago)  VALUES (?,?,?,?,?,?)",
-                        carrito.getEstado(), horaEstimada, numeroPedido, carrito.getTipoEntrega(),
-                        carrito.getIdCliente(), carrito.getFormaPago());
+//                jdbcTemplate.update(
+//                        "INSERT INTO Pedido (estado, hora, numero, tipoEntrega, idCliente, formaPago)  VALUES (?,?,?,?,?,?)", keyHolder,
+//                        new Object[]{carrito.getEstado(), horaEstimada, numeroPedido, carrito.getTipoEntrega(),
+//                                carrito.getIdCliente(), carrito.getFormaPago()});
 
+                AtomicInteger i = new AtomicInteger(1);
+                Long finalNumeroPedido = numeroPedido;
+                jdbcTemplate.update(con -> {
+                    PreparedStatement ps = con.prepareStatement("INSERT INTO Pedido" +
+                            " (estado, hora, numero, tipoEntrega, idCliente, formaPago)  VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                    ps.setString(i.getAndIncrement(), carrito.getEstado());
+                    ps.setTime(i.getAndIncrement(), horaEstimada);
+                    ps.setLong(i.getAndIncrement(), finalNumeroPedido);
+                    ps.setBoolean(i.getAndIncrement(), carrito.getTipoEntrega());
+                    ps.setLong(i.getAndIncrement(), carrito.getIdCliente());
+                    ps.setBoolean(i.getAndIncrement(), carrito.getFormaPago());
+                    return ps;
+                }, keyHolder);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw ex;
             }
         }
         try {
-
-            Long idPedido = jdbcTemplate.queryForObject(
-                    "Select idPedido From Pedido Where estado = ? " + "AND idCliente = ? Order BY idPedido Desc",
-                    new Object[]{"En Espera", carrito.getIdCliente()}, Long.class);
+            long idPedido;
+            if (keyHolder.getKey() != null) {
+                idPedido = keyHolder.getKey().longValue();
+            } else {
+                idPedido = carrito.getIdPedido();
+            }
             carrito.getItems().forEach(d -> {
                 if (!existeDetalle(d.getIdArticuloVenta(), idPedido))
                     this.jdbcTemplate.update("INSERT INTO DetallePedido (cantidad, idArticulo, idPedido) VALUES(?,?,?)",
                             d.getCantidad(), d.getIdArticuloVenta(), idPedido);
                 else
                     this.jdbcTemplate.update(
-                            "UPDATE  DetallePedido SET cantidad = ? WHERE idPedido = ? AND idArticulo  = ?",
-                            d.getCantidad(), idPedido, d.getIdArticuloVenta());
+                            "UPDATE DetallePedido SET cantidad = ? WHERE idPedido = ? AND idArticulo  = ?",
+                            d.getCantidad(), d.getIdArticuloVenta(), idPedido);
 
             });
+
+            res = jdbcTemplate.queryForObject("Select p.idPedido, p.tipoEntrega, p.formaPago, p.estado, p.hora, " +
+                    "c.idCliente FROM Pedido p" +
+                    " INNER JOIN cliente c on p.idCliente = c.idCliente" +
+                    " WHERE p.idPedido = ?", (rs, rowNum) -> new PedidoPendiente(
+                    rs.getLong("idPedido"), rs.getLong("idCliente"), rs.getBoolean("formaPago"),
+                    rs.getBoolean("tipoEntrega"), rs.getString("estado"), 0L, rs.getTime("hora").toLocalTime(),
+                    new ArrayList<>(), carrito.getTiempoEstimado()
+            ), idPedido);
+
+            res.setItems(jdbcTemplate.query("SELECT dp.idDetalle, cantidad, idArticulo, " +
+                    " a.denominacion, i2.denominacion, i.precioVenta FROM DetallePedido dp " +
+                    "INNER JOIN informacionarticuloventa i on dp.idArticulo = i.idArticuloVenta" +
+                    " LEFT JOIN articulomanufacturado a on i.idArticuloVenta = a.idArticuloManufacturado" +
+                    " LEFT JOIN informacionarticuloventa_insumo ii on i.idArticuloVenta = ii.idInsumoVenta" +
+                    " LEFT JOIN insumo i2 on i2.idInsumo = ii.idInsumo" +
+                    " Where dp.idPedido = ?", (rs, rowNum) -> new ItemPedidoPendiente(
+                    rs.getLong("idDetalle"), rs.getLong("idArticulo"), rs.getInt("cantidad"),
+                    rs.getFloat("precioVenta"), rs.getString("denominacion")
+            ), idPedido));
+
+            return ResponseEntity.ok(res);
+
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
         }
+
     }
 
     @DeleteMapping("/eliminarPedido/{idCliente}")
