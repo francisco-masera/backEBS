@@ -13,18 +13,30 @@ import ebs.back.entity.Persona;
 import ebs.back.service.PersonaService;
 
 @RestController
-@CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
-		RequestMethod.DELETE })
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+        RequestMethod.DELETE})
 @RequestMapping(path = "buensabor/persona")
 public class PersonaController extends BaseController<Persona, PersonaService> {
 
-	@Autowired
-	private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    @Autowired
+    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-	@GetMapping("/validarContrasenia")
-	public boolean validarContrasenia(@RequestParam Long id, @RequestParam String password) {
-		String contrasenia = this.jdbcTemplate.queryForObject("SELECT contrasenia FROM Persona WHERE idPersona=?",
-				new Object[] { id }, String.class);
-		return contrasenia.equals(password);
-	}
+    @GetMapping("/validarContrasenia")
+    public boolean validarContrasenia(@RequestParam Long id, @RequestParam String password) {
+        String contrasenia = this.jdbcTemplate.queryForObject("SELECT contrasenia FROM Persona WHERE idPersona=?",
+                new Object[]{id}, String.class);
+        return contrasenia.equals(password);
+    }
+
+    @GetMapping("/verificarEmail")
+    public boolean verificarEmail(@RequestParam String email) throws Exception {
+        try {
+            int existe = this.jdbcTemplate.queryForObject("SELECT Count(email) FROM Persona WHERE email=?",
+                    Integer.class, email);
+            if (existe != 0) throw new Exception("El e-mail ya está registrado");
+            return true;
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
 }

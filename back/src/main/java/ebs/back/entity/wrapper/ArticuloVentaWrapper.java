@@ -16,6 +16,10 @@ public class ArticuloVentaWrapper {
     public ArticuloVentaWrapper() {
     }
 
+    public ArticuloVentaWrapper(Long idArticuloVenta) {
+        this.idArticuloVenta = idArticuloVenta;
+    }
+
     public ArticuloVentaWrapper(String denominacion, Float precioVenta) {
         this.denominacion = denominacion;
         this.precioVenta = precioVenta;

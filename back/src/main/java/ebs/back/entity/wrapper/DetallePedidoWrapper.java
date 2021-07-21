@@ -1,8 +1,5 @@
 package ebs.back.entity.wrapper;
 
-import ebs.back.entity.InformacionArticuloVenta;
-import ebs.back.entity.Pedido;
-
 public class DetallePedidoWrapper {
 
     private Long id;

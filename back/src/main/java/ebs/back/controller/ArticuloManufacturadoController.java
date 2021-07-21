@@ -1,13 +1,16 @@
 package ebs.back.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import ebs.back.entity.*;
-import ebs.back.entity.wrapper.ArticuloManufacturadoWrapper;
-import ebs.back.service.ArticuloManufacturadoService;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -15,19 +18,29 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import ebs.back.entity.ArticuloManufacturado;
+import ebs.back.entity.Insumo;
+import ebs.back.entity.Receta;
+import ebs.back.entity.RubroManufacturado;
+import ebs.back.entity.Stock;
+import ebs.back.entity.wrapper.ArticuloManufacturadoWrapper;
+import ebs.back.service.ArticuloManufacturadoService;
 
 /**
  * @author franc
@@ -343,6 +356,7 @@ public class ArticuloManufacturadoController
                 tiempo = tiemposEstimados.stream().reduce(0L, Long::sum);
             if (esDelivery)
                 tiempo += 10L;
+            if (tiempo == 0) return 10L;
             return tiempo;
 
         } catch (Exception ex) {

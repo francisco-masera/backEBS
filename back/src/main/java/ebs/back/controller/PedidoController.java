@@ -1,8 +1,6 @@
 package ebs.back.controller;
 
-import ebs.back.entity.Cliente;
-import ebs.back.entity.Factura;
-import ebs.back.entity.Pedido;
+import ebs.back.entity.*;
 import ebs.back.entity.wrapper.*;
 import ebs.back.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,30 +121,21 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
 
     @PostMapping("/saveCarrito")
     public ResponseEntity<PedidoPendiente> guardarCarrito(@RequestBody PedidoPendiente carrito) {
+
         Boolean hayPedidoPendiente = existePedido(carrito.getIdCliente());
 
-        // LocalTime local = LocalTime.now();
-        Time horaEstimada = Time.valueOf(LocalTime.of(0, 0, 0));
 
-        // if (carrito.getHoraEstimada() != null) horaEstimada =
-        // Time.valueOf(carrito.getHoraEstimada());
-
-        PedidoPendiente res = new PedidoPendiente();
+        PedidoPendiente res;
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         if (!hayPedidoPendiente) {
-
+            Time horaEstimada = Time.valueOf(LocalTime.of(0, 0, 0));
             try {
                 Long numeroPedido = getUltimoNumeroPedido();
                 if (numeroPedido == null)
                     numeroPedido = 1L;
                 else
                     numeroPedido += 1;
-//                jdbcTemplate.update(
-//                        "INSERT INTO Pedido (estado, hora, numero, tipoEntrega, idCliente, formaPago)  VALUES (?,?,?,?,?,?)", keyHolder,
-//                        new Object[]{carrito.getEstado(), horaEstimada, numeroPedido, carrito.getTipoEntrega(),
-//                                carrito.getIdCliente(), carrito.getFormaPago()});
-
                 AtomicInteger i = new AtomicInteger(1);
                 Long finalNumeroPedido = numeroPedido;
                 jdbcTemplate.update(con -> {
@@ -178,8 +167,8 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
                             d.getCantidad(), d.getIdArticuloVenta(), idPedido);
                 else
                     this.jdbcTemplate.update(
-                            "UPDATE DetallePedido SET cantidad = ? WHERE idPedido = ? AND idArticulo  = ?",
-                            d.getCantidad(), d.getIdArticuloVenta(), idPedido);
+                            "UPDATE DetallePedido SET cantidad = ? WHERE idDetalle = ? AND idArticulo = ?",
+                            d.getCantidad(), d.getIdItem(), d.getIdArticuloVenta());
 
             });
 
@@ -202,7 +191,7 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
                     rs.getLong("idDetalle"), rs.getLong("idArticulo"), rs.getInt("cantidad"),
                     rs.getFloat("precioVenta"), rs.getString("denominacion")
             ), idPedido));
-
+            res.setIdPedido(idPedido);
             return ResponseEntity.ok(res);
 
         } catch (Exception ex) {
@@ -227,11 +216,54 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
     }
 
     @PutMapping("/pedidoEntregado/{id}/{estado}")
-    private void cambiarEstado(@PathVariable String id, @PathVariable String estado) {
+    private ResponseEntity cambiarEstado(@PathVariable String id, @PathVariable String estado) {
 
         try {
+
+            if (estado.equals("Listo")) {
+                List<DetallePedidoWrapper> detalles = jdbcTemplate.query(
+                        "Select d.*, i.idArticuloVenta From DetallePedido d INNER JOIN informacionarticuloventa i" +
+                                " ON d.idArticulo = i.idArticuloVenta  WHERE idPedido = ?", (rs, rowNum) -> new DetallePedidoWrapper(
+                                rs.getLong("idDetalle"), rs.getInt("cantidad"), new ArticuloVentaWrapper(
+                                rs.getLong("idArticuloVenta")
+                        )), id);
+                for (DetallePedidoWrapper d : detalles
+                ) {
+                    Long idStock = jdbcTemplate.queryForObject(
+                            "SELECT idStock FROm insumo WHERE idInsumo = ?", Long.class, d.getArticulo().getIdArticuloVenta());
+                    Float actual = jdbcTemplate.queryForObject("Select actual from stock where stock.idStock = ?", Float.class, idStock);
+                    if (actual - d.getCantidad() < 0) {
+
+                        return ResponseEntity.badRequest().body("No se puede realizar el pedido por falta de stock");
+
+                    }
+                    Long idArticulo = null;
+
+                    try {
+                        idArticulo = jdbcTemplate.queryForObject(
+                                "Select idArticuloManufacturado FROM articulomanufacturado where idArticuloManufacturado = ?",
+                                Long.class, d.getArticulo().getIdArticuloVenta());
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    if (idArticulo == null) {
+                        jdbcTemplate.update("UPDATE Stock Set actual = (actual - ?) WHERE stock.idStock = ? ", d.getCantidad(), idStock);
+
+                    } else {
+
+                        jdbcTemplate.query("SELECT idInsumo From receta where  idManufacturado = ?",
+                                (rs, rowNum) -> rs.getLong("idInsumo"), idArticulo)
+                                .forEach(i -> {
+                                    jdbcTemplate.update("UPDATE Stock Set actual = (actual - ?) WHERE stock.idStock = ? ", d.getCantidad(), idStock);
+                                });
+                    }
+                }
+            }
+
             this.jdbcTemplate
                     .update("UPDATE Pedido set estado = " + "'" + estado + "'" + "where idPedido = " + "'" + id + "'");
+            return ResponseEntity.ok(true);
+
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -256,28 +288,42 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
     }
 
     @GetMapping("/pedidosPorCliente")
-    public List<Pedido> pedidosPorCliente(@RequestParam int yMax, @RequestParam int mMax, @RequestParam int dMax,
-                                          @RequestParam int yMin, @RequestParam int mMin, @RequestParam int dMin) throws Exception {
+    public List<PedidoWrapper> pedidosPorCliente(@RequestParam int yMax, @RequestParam int mMax, @RequestParam int dMax,
+                                                 @RequestParam int yMin, @RequestParam int mMin, @RequestParam int dMin) throws Exception {
         try {
             Timestamp maxFecha = Timestamp.valueOf(LocalDateTime.of(yMax, mMax, dMax, 0, 0, 0));
             Timestamp minFecha = Timestamp.valueOf(LocalDateTime.of(yMin, mMin, dMin, 0, 0, 0));
             if (minFecha.after(maxFecha)) {
                 throw new Exception("La fecha mínima no puede ser mayor a la máxima.");
             }
-            List<Pedido> pedidos = jdbcTemplate.query("SELECT p.idPedido, p.tipoEntrega, F.numero, p2.idPersona, p2.email, " +
+            List<PedidoWrapper> pedidos = jdbcTemplate.query("SELECT p.idPedido, p.tipoEntrega, F.numero, p2.idPersona, p2.email, " +
                     "CONCAT(p2.nombre, ' ', p2.apellido) as nombreCompleto, " +
                     "F.fechaHora as fechaFacturacion, F.porcentajeDescuento, F.total, F.formaPago FROM Pedido p" +
                     " INNER JOIN cliente c on p.idCliente = c.idCliente" +
                     " INNER JOIN persona p2 on c.idCliente = p2.idPersona" +
                     " INNER JOIN Factura F on p.idPedido = F.idPedido" +
                     " WHERE F.fechaHora BETWEEN ? AND ?" +
-                    " GROUP BY p2.idPersona, nombreCompleto ORDER BY nombreCompleto", (rs, rowNum) -> new Pedido(
-                    rs.getLong("idPedido"), 0L, "", null, rs.getBoolean("tipoEntrega"),
-                    new Factura(0L, rs.getTimestamp("fechaFacturacion").toLocalDateTime(), rs.getLong("numero"),
-                            rs.getFloat("porcentajeDescuento") * rs.getFloat("total"), rs.getFloat("total"),
-                            rs.getBoolean("formaPago"), null), new Cliente(rs.getString("nombreCompleto"),
-                    rs.getString("email")), null
-            ), minFecha, maxFecha);
+                    " GROUP BY p2.idPersona, nombreCompleto ORDER BY nombreCompleto", (rs, rowNum) -> new PedidoWrapper(
+                    rs.getLong("idPedido"), 0, "",
+                    null, rs.getBoolean("formaPago"), rs.getBoolean("tipoEntrega"),
+                    new Factura(
+                            0L, rs.getTimestamp("fechaFacturacion").toLocalDateTime(), rs.getLong("numero"),
+                            rs.getFloat("porcentajeDescuento"), rs.getFloat("total"),
+                            rs.getBoolean("formaPago"), null),
+                    new Cliente(
+                            rs.getString("nombreCompleto"), rs.getString("email")
+                    ), new ArrayList<>(), 0F), minFecha, maxFecha);
+
+            for (PedidoWrapper p : pedidos) {
+                List<DetallePedidoWrapper> detalles = jdbcTemplate.query(
+                        "Select d.*, i.precioVenta From DetallePedido d INNER JOIN informacionarticuloventa i" +
+                                " ON d.idArticulo = i.idArticuloVenta  WHERE idPedido = ?", (rs, rowNum) -> new DetallePedidoWrapper(
+                                rs.getLong("idDetalle"), rs.getInt("cantidad"), new ArticuloVentaWrapper(
+                                "", rs.getFloat("precioVenta")
+                        )), p.getId());
+                p.setDetalles(detalles);
+            }
+
             return pedidos;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -300,18 +346,27 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
             ), null, 0F
             ));
 
-            pedidos.forEach(p -> p.setDetalles(jdbcTemplate.query("SELECT " +
-                    "DetallePedido.*, a.denominacion as denominacion, " +
-                    "I2.denominacion AS denominacion, I.precioVenta FROM DetallePedido " +
-                    "Natural JOIN informacionarticuloventa I " +// ON DetallePedido.idArticulo = I.idArticuloVenta " +
-                    "LEFT JOIN articulomanufacturado a ON I.idArticuloVenta = a.idArticuloManufacturado " +
-                    "LEFT JOIN informacionarticuloventa_insumo ii ON I.idArticuloVenta = ii.idInsumoVenta " +
-                    "LEFT JOIN insumo I2 ON ii.idInsumo = I2.idInsumo " +
-                    "WHERE idPedido = ? GROUP BY idDetalle ORDER BY idDetalle ASC", (rs, rowNum) -> new DetallePedidoWrapper(
-                    rs.getLong("idDetalle"), rs.getInt("cantidad"), new ArticuloVentaWrapper(
-                    rs.getString("denominacion"), rs.getFloat("precioVenta")
-            )), p.getId())));
+            for (PedidoWrapper p : pedidos) {
+                List<DetallePedidoWrapper> detalles = new ArrayList<>();
 
+                detalles.addAll(jdbcTemplate.query("SELECT DetallePedido.*, a.denominacion, I.precioVenta FROM DetallePedido " +
+                        "INNER JOIN informacionarticuloventa I ON DetallePedido.idArticulo = I.idArticuloVenta " +
+                        "INNER JOIN articulomanufacturado a ON I.idArticuloVenta = a.idArticuloManufacturado " +
+                        "WHERE idPedido = ? GROUP BY idDetalle ORDER BY idDetalle", (rs, rowNum) -> new DetallePedidoWrapper(
+                        rs.getLong("idDetalle"), rs.getInt("cantidad"), new ArticuloVentaWrapper(
+                        rs.getString("denominacion"), rs.getFloat("precioVenta")
+                )), p.getId()));
+                detalles.addAll(jdbcTemplate.query("SELECT DetallePedido.*, I2.denominacion, I.precioVenta FROM DetallePedido " +
+                        "INNER JOIN informacionarticuloventa I ON DetallePedido.idArticulo = I.idArticuloVenta " +
+                        "INNER JOIN informacionarticuloventa_insumo ii ON I.idArticuloVenta = ii.idInsumoVenta " +
+                        "INNER JOIN insumo I2 ON ii.idInsumo = I2.idInsumo " +
+                        "WHERE idPedido = ? GROUP BY idDetalle ORDER BY idDetalle", (rs, rowNum) -> new DetallePedidoWrapper(
+                        rs.getLong("idDetalle"), rs.getInt("cantidad"), new ArticuloVentaWrapper(
+                        rs.getString("denominacion"), rs.getFloat("precioVenta")
+                )), p.getId()));
+                p.setDetalles(detalles);
+
+            }
             pedidos.forEach(p -> {
                 float total = 0F;
                 for (DetallePedidoWrapper d : p.getDetalles()) {
