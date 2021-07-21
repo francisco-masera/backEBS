@@ -1,0 +1,5 @@
+insert into elbuensabor.persona (idPersona, apellido, baja, contrasenia, email, foto, nombre, telefono, usuario) values (1, 'Martín', 0, '234', '1234@gmail.com', 'FB_IMG_1550216258434.jpg', 'Silvio', '234254', 'egomez');
+insert into elbuensabor.persona (idPersona, apellido, baja, contrasenia, email, foto, nombre, telefono, usuario) values (2, 'Masera', 0, '123', '1235@gmail.com', 'sdqrtgrsfg4t.jpg', 'Francisco', '123', 'fm94');
+insert into elbuensabor.persona (idPersona, apellido, baja, contrasenia, email, foto, nombre, telefono, usuario) values (3, 'Tec', 0, '123', 'elvis-tec@gmail.com', 'Thomas_Ortega.jpg', 'Elvis', '0261444444', 'elvistec');
+insert into elbuensabor.persona (idPersona, apellido, baja, contrasenia, email, foto, nombre, telefono, usuario) values (4, 'Na', 0, '123', 'susi@gmail.com', 'Thomas_Ortega.jpg', 'Susa', '12345678', 'susi');
+insert into elbuensabor.persona (idPersona, apellido, baja, contrasenia, email, foto, nombre, telefono, usuario) values (5, 'alvarez', 0, '123', 'r@r.cop', 'Thomas_Ortega.jpg', 'rodrigo', '123542', 'rodri');

@@ -39,28 +39,28 @@ public class InformacionInsumoVentaController
 
                 (rs, rowNum) -> {
                     InformacionInsumoVenta insumoVenta = new InformacionInsumoVenta();
-                    insumoVenta.setId(rs.getLong(1));
-                    insumoVenta.setDescripcion(rs.getString(12));
-                    insumoVenta.setImagen(rs.getString(13));
-                    insumoVenta.setPrecioVenta(rs.getFloat(14));
+                    insumoVenta.setId(rs.getLong("idInsumoVenta"));
+                    insumoVenta.setDescripcion(rs.getString("descripcion"));
+                    insumoVenta.setImagen(rs.getString("imagen"));
+                    insumoVenta.setPrecioVenta(rs.getFloat("precioVenta"));
 
                     Insumo insu = new Insumo();
-                    insu.setIdInsumo(rs.getLong(2));
-                    insu.setBaja(rs.getBoolean(4));
-                    insu.setDenominacion(rs.getString(5));
-                    insu.setEsInsumo(rs.getBoolean(7));
-                    insu.setUnidadMedida(rs.getString(8));
+                    insu.setIdInsumo(rs.getLong("idInsumo"));
+                    insu.setBaja(rs.getBoolean("baja"));
+                    insu.setDenominacion(rs.getString("denominacion"));
+                    insu.setEsInsumo(rs.getBoolean("esInsumo"));
+                    insu.setUnidadMedida(rs.getString("unidadMedida"));
 
                     Stock stock = new Stock();
-                    stock.setId(rs.getLong(10));
-                    stock.setActual(rs.getFloat(16));
-                    stock.setMaximo(rs.getFloat(17));
-                    stock.setMinimo(rs.getFloat(18));
+                    stock.setId(rs.getLong("idStock"));
+                    stock.setActual(rs.getFloat("actual"));
+                    stock.setMaximo(rs.getFloat("maximo"));
+                    stock.setMinimo(rs.getFloat("minimo"));
                     insu.setStock(stock);
 
                     RubroInsumo rubro = new RubroInsumo();
-                    rubro.setId(rs.getLong(9));
-                    rubro.setDenominacion(rs.getString(20));
+                    rubro.setId(rs.getLong("idRubroInsumo"));
+                    rubro.setDenominacion(rs.getString("denominacion"));
                     insu.setRubroInsumo(rubro);
                     insumoVenta.setInsumo(insu);
                     return insumoVenta;
