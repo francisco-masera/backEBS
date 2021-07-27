@@ -2,16 +2,17 @@ package ebs.back.entity.wrapper;
 
 import java.time.LocalDate;
 
-public class Ingresos {
+public class Ingreso {
+
 
     private LocalDate fechaMin;
     private LocalDate fechaMax;
     private Double ingresos;
 
-    public Ingresos() {
+    public Ingreso() {
     }
 
-    public Ingresos(LocalDate fechaMin, LocalDate fechaMax, Double ingresos) {
+    public Ingreso(LocalDate fechaMin, LocalDate fechaMax, Double ingresos) {
         this.fechaMin = fechaMin;
         this.fechaMax = fechaMax;
         this.ingresos = ingresos;

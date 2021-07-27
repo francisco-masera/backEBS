@@ -3,7 +3,7 @@ package ebs.back.controller;
 import com.itextpdf.html2pdf.HtmlConverter;
 import ebs.back.entity.Factura;
 import ebs.back.entity.Pedido;
-import ebs.back.entity.wrapper.Ingresos;
+import ebs.back.entity.wrapper.Ingreso;
 import ebs.back.service.FacturaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,8 +32,8 @@ public class FacturaController extends BaseController<Factura, FacturaService> {
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
     @GetMapping("/ingresos")
-    public Ingresos ingresos(@RequestParam int yMax, @RequestParam int mMax, @RequestParam int dMax,
-                             @RequestParam int yMin, @RequestParam int mMin, @RequestParam int dMin) throws Exception {
+    public Ingreso ingresos(@RequestParam int yMax, @RequestParam int mMax, @RequestParam int dMax,
+                            @RequestParam int yMin, @RequestParam int mMin, @RequestParam int dMin) throws Exception {
         try {
             Timestamp maxFecha = Timestamp.valueOf(LocalDateTime.of(yMax, mMax, dMax, 0, 0, 0));
             Timestamp minFecha = Timestamp.valueOf(LocalDateTime.of(yMin, mMin, dMin, 0, 0, 0));
@@ -42,7 +42,7 @@ public class FacturaController extends BaseController<Factura, FacturaService> {
             }
             // List<Double> res = new ArrayList<>();
             return jdbcTemplate.queryForObject("SELECT SUM(f.total) as total FROM Factura f" +
-                    " WHERE F.fechaHora BETWEEN ? AND ?", (rs, rowNum) -> new Ingresos(
+                    " WHERE F.fechaHora BETWEEN ? AND ?", (rs, rowNum) -> new Ingreso(
                     minFecha.toLocalDateTime().toLocalDate(), maxFecha.toLocalDateTime().toLocalDate(), rs.getDouble("total")
             ), minFecha, maxFecha);
 
