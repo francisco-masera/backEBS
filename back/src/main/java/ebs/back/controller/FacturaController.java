@@ -18,6 +18,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,36 +33,19 @@ public class FacturaController extends BaseController<Factura, FacturaService> {
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
     @GetMapping("/ingresos")
-    public Ingreso ingresos(@RequestParam int yMax, @RequestParam int mMax, @RequestParam int dMax,
-                            @RequestParam int yMin, @RequestParam int mMin, @RequestParam int dMin) throws Exception {
+    public List<Ingreso> ingresos(@RequestParam int yMax, @RequestParam int mMax, @RequestParam int dMax,
+                                  @RequestParam int yMin, @RequestParam int mMin, @RequestParam int dMin) throws Exception {
         try {
             Timestamp maxFecha = Timestamp.valueOf(LocalDateTime.of(yMax, mMax, dMax, 0, 0, 0));
             Timestamp minFecha = Timestamp.valueOf(LocalDateTime.of(yMin, mMin, dMin, 0, 0, 0));
             if (minFecha.after(maxFecha)) {
                 throw new Exception("La fecha mínima no puede ser mayor a la máxima.");
             }
-            // List<Double> res = new ArrayList<>();
-            return jdbcTemplate.queryForObject("SELECT SUM(f.total) as total FROM Factura f" +
+
+            return jdbcTemplate.query("SELECT SUM(f.total) as total FROM Factura f" +
                     " WHERE F.fechaHora BETWEEN ? AND ?", (rs, rowNum) -> new Ingreso(
                     minFecha.toLocalDateTime().toLocalDate(), maxFecha.toLocalDateTime().toLocalDate(), rs.getDouble("total")
             ), minFecha, maxFecha);
-
-           /* Double ingresosManufacturados = jdbcTemplate.queryForObject("SELECT SUM(f.total) FROM Factura f" +
-                    " INNER JOIN Pedido P on f.idPedido = P.idPedido" +
-                    " INNER JOIN DetallePedido DP on P.idPedido = DP.idPedido" +
-                    " INNER JOIN informacionarticuloventa i on DP.idArticulo = i.idArticuloVenta" +
-                    " INNER JOIN articulomanufacturado a on i.idArticuloVenta = a.idArticuloManufacturado" +
-                    " WHERE F.fechaHora < ? && f.fechaHora > ?", Double.class, maxFecha, minFecha);
-            res.add(ingresosManufacturados);*/
-
-         /*   Double ingresosInsumos = jdbcTemplate.queryForObject("SELECT SUM(f.total) FROM Factura f" +
-                    " INNER JOIN Pedido P on f.idPedido = P.idPedido" +
-                    " INNER JOIN DetallePedido DP on P.idPedido = DP.idPedido" +
-                    " INNER JOIN informacionarticuloventa i on DP.idArticulo = i.idArticuloVenta" +
-                    " INNER JOIN informacionarticuloventa_insumo ii on i.idArticuloVenta = ii.idInsumoVenta" +
-                    " WHERE F.fechaHora < ? && f.fechaHora > ?", Double.class, maxFecha, minFecha);
-
-            res.add(ingresosInsumos);*/
 
         } catch (Exception ex) {
             ex.printStackTrace();
