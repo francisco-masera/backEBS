@@ -122,6 +122,7 @@ public class InformacionArticuloVentaController
         List<InformacionArticuloVenta> articulos;
 
         if (tipo == 0) {
+
             sql = "SELECT am.denominacion, ia.idArticuloVenta, ia.descripcion, ia.imagen, "
                     + "ia.precioVenta, r.idRubroManufacturado, r.denominacion "
                     + "FROM ArticuloManufacturado am INNER JOIN InformacionArticuloVenta ia "
@@ -168,16 +169,31 @@ public class InformacionArticuloVentaController
             return articulos;
 
         } else if (tipo == 1) {
-            sql = "SELECT DISTINCT ia.idArticuloVenta, ia.descripcion, ia.precioVenta, ia.imagen, i.idInsumo, i.denominacion "
-                    + "FROM  Insumo i INNER JOIN informacionarticuloventa_insumo ii ON i.idInsumo = ii.idInsumo "
-                    + "INNER JOIN InformacionArticuloVenta ia ON ii.idInsumoVenta = ia.idArticuloVenta "
-                    + "INNER JOIN RubroInsumo r INNER JOIN Stock s ON s.idStock = i.idStock WHERE "
-                    + "i.baja = 0 AND s.actual > 0 AND r.idRubroInsumo LIKE '1%'";
-            return this.jdbcTemplate.query(sql,
-                    (rs, rowNum) -> new InformacionInsumoVenta(rs.getLong("ia.idArticuloVenta"),
-                            rs.getString("ia.descripcion"), rs.getFloat("ia.precioVenta"), rs.getString("ia.imagen"),
-                            null, null, new Insumo(rs.getLong("i.idInsumo"), "", rs.getString("i.denominacion"),
-                            false, false, null, null, null, null, null)));
+            if (categoria == 1) {
+                sql = "SELECT DISTINCT ia.idArticuloVenta, ia.descripcion, ia.precioVenta, ia.imagen, i.idInsumo, i.denominacion "
+                        + "FROM  Insumo i INNER JOIN informacionarticuloventa_insumo ii ON i.idInsumo = ii.idInsumo "
+                        + "INNER JOIN InformacionArticuloVenta ia ON ii.idInsumoVenta = ia.idArticuloVenta "
+                        + "INNER JOIN RubroInsumo r INNER JOIN Stock s ON s.idStock = i.idStock WHERE "
+                        + "i.baja = 0 AND s.actual > 0 AND r.idRubroInsumo LIKE '1%'";
+
+                return this.jdbcTemplate.query(sql,
+                        (rs, rowNum) -> new InformacionInsumoVenta(rs.getLong("ia.idArticuloVenta"),
+                                rs.getString("ia.descripcion"), rs.getFloat("ia.precioVenta"), rs.getString("ia.imagen"),
+                                null, null, new Insumo(rs.getLong("i.idInsumo"), "", rs.getString("i.denominacion"),
+                                false, false, null, null, null, null, null)));
+            }else{
+                sql = "SELECT DISTINCT ia.idArticuloVenta, ia.descripcion, ia.precioVenta, ia.imagen, i.idInsumo, i.denominacion "
+                        + "FROM  Insumo i INNER JOIN informacionarticuloventa_insumo ii ON i.idInsumo = ii.idInsumo "
+                        + "INNER JOIN InformacionArticuloVenta ia ON ii.idInsumoVenta = ia.idArticuloVenta "
+                        + "INNER JOIN RubroInsumo r INNER JOIN Stock s ON s.idStock = i.idStock WHERE "
+                        + "i.baja = 0 AND s.actual > 0 AND r.idRubroInsumo = '2'";
+
+                return this.jdbcTemplate.query(sql,
+                        (rs, rowNum) -> new InformacionInsumoVenta(rs.getLong("ia.idArticuloVenta"),
+                                rs.getString("ia.descripcion"), rs.getFloat("ia.precioVenta"), rs.getString("ia.imagen"),
+                                null, null, new Insumo(rs.getLong("i.idInsumo"), "", rs.getString("i.denominacion"),
+                                false, false, null, null, null, null, null)));
+            }
         }
         return null;
     }
@@ -345,7 +361,7 @@ public class InformacionArticuloVentaController
             }
         }).collect(Collectors.toList());
 
-        return estados.stream().allMatch(e -> e != 2);
+        return estados.size() > 0 && estados.stream().allMatch(e -> e != 2);
     }
 
     @GetMapping("/conStock")

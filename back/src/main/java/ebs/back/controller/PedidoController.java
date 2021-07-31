@@ -1,6 +1,8 @@
 package ebs.back.controller;
 
-import ebs.back.entity.*;
+import ebs.back.entity.Cliente;
+import ebs.back.entity.Factura;
+import ebs.back.entity.Pedido;
 import ebs.back.entity.wrapper.*;
 import ebs.back.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Time;
@@ -280,6 +283,29 @@ public class PedidoController extends BaseController<Pedido, PedidoService> {
             jdbcTemplate.update(
                     "Update Pedido SET estado = ?, formaPago = ?, tipoEntrega = ?, hora = ? WHERE idPedido = ?",
                     "Pendiente", pedido.getFormaPago(), pedido.getTipoEntrega(), time, pedido.getIdPedido());
+
+
+            List<DecrementoInsumo> decrementoInsumos = jdbcTemplate.query(
+                    "SELECT i.idInsumo, r.cantidadInsumo, d.cantidad FROM insumo i inner JOIN receta r on i.idInsumo = r.idInsumo" +
+                            " inner  JOIN  articulomanufacturado a on r.idManufacturado = a.idArticuloManufacturado" +
+                            " inner JOIN DetallePedido d On d.idArticulo = a.idArticuloManufacturado" +
+                            " Where d.idPedido = ?",
+                    (rs, rowNum) -> new DecrementoInsumo(
+                            rs.getLong("idInsumo"), rs.getBigDecimal("cantidadInsumo"), rs.getInt("cantidad")
+                    ),
+                    pedido.getIdPedido());
+
+            decrementoInsumos.forEach(i -> {
+                Long idStock = jdbcTemplate.query("SELECT idStock from stock where idStock = ?",
+                        (rs, n) -> rs.getLong("idStock"), i.getIdInsumo()).get(0);
+                BigDecimal dism = jdbcTemplate.query("SELECT actual from stock where idStock = ?",
+                        (rs, n) -> BigDecimal.valueOf(rs.getFloat("actual")), idStock).get(0).subtract(
+                        i.getCantidad().multiply(BigDecimal.valueOf(i.getCantidadDetalle())));
+                jdbcTemplate.update(
+                        "UPDATE stock SET actual = ? WHERE idStock = ?"
+                        , dism.floatValue(), idStock);
+            });
+
         } catch (Exception ex) {
             ex.printStackTrace();
             throw ex;
